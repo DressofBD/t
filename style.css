@@ -779,16 +779,38 @@ color: #1B1951;
     padding: 0;
 }
 .menu ul li a {
-    padding:5px 7px;
+    padding:5px 6px;
     margin: 0;
 }
 .menu li i{
     margin-left: 7px;
 }
 .dropmenu {
-    padding: 6px 15px !important;
+    padding: 10px 15px !important;
     margin: 0px !important;
+    color: #fff;
+    cursor: pointer;
 }
+input[type="checkbox"] {
+    -webkit-appearance: none;
+    background-color: #fff;
+    padding: 7px 9px;
+    display: inline-block;
+    position: relative;
+}
+input[type="checkbox"]:checked {
+    background-color: #0a00a8;
+    background-image: url('img/tick.png');
+    background-size: 12px 10px;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding: 6px 11px;
+    border: 1px solid #fff;
+}
+input[type="checkbox"]:active, input[type="checkbox"]:checked:active {
+    background-color: #000;
+}
+
 .recent-news-section .container{
 }
 .recent-news-section a:hover, .top-section a:hover{
