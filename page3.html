@@ -1,0 +1,258 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+        <link rel="stylesheet" href="css/font-awesome.min.css">
+        <link rel="stylesheet" href="css/slicknav.css">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="responsive.css">
+        <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+        <script src="js/vendor/modernizr-2.8.3.min.js"></script>
+
+        <!--upload Script -->
+        <script type="text/javascript" src="js/uploadjs/jquery.fileupload.js"></script>
+        <script type="text/javascript" src="js/uploadjs/jquery.fileupload-validate.js"></script>
+        <script type="text/javascript" src="js/uploadjs/jquery.fileupload-process.js"></script>
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <section class="top-menu-section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                        <ul>
+                            <li>
+                        <div class="sidenav-opening">
+                            <span onclick="openNav()" style="cursor:pointer" class="openNav"><i class="glyphicon glyphicon-menu-hamburger"></i></span>
+                            <ul id="mySidenav" class="sidenav">
+                                <span onclick="closeNav()" class="closeNav"><i class="glyphicon glyphicon-menu-hamburger"></i></span>
+                                <li><a href="#" class="user"><img src="img/user.jpg" alt=""></a></li>
+                                <li><a href="#" class=""><i class="fa fa-pie-chart"></i></a></li>
+                                <li><a href="#" class=""><i class="fa fa-gavel"></i></a></li>
+                                <li><a href="#" class=""><i class="fa fa-code-fork"></i></a></li>
+                                <li><a href="#" class=""><i class="fa fa-renren"></i></a></li>
+                                <li><a href="#" class=""><i class="fa fa-tachometer"></i></a></li>
+                                <li><a href="#" class=""><i class="fa fa-medkit"></i></a></li>
+                                <li><a href="#" class=""><i class="fa fa-briefcase"></i></a></li>
+                                <li><a href="#" class=""><i class="fa fa-list-alt"></i></a></li>
+                                <li><a href="#" class=""><i class="fa fa-cogs"></i></a></li>
+                                <li><a href="#" class=""><i class="fa fa-question"></i></a></li>
+                            </ul>
+                        </div>
+                            </li>
+                            <li>
+                        <div class="logo">
+                            <a href="#"><img src="img/logo.jpg" alt=""></a>
+                        </div>
+                            </li>
+                    </ul>
+                    </div>
+                    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12" id="mobile">
+                        <div class="navbar">
+                            <ul>
+                                <li><a href="#"><i class="fa fa-book"></i></a></li>
+                                <li><a href="#"><i class="fa fa-support"></i></a></li>
+                                <li><a href="#"><i class="fa fa-bell-o"></i><span class="notification">15</span></a></li>
+                                <li class="dropdown">
+                                    <button class="dropbtn">Upload Controls 
+                                      <i class="fa fa-caret-down"></i>
+                                    </button>
+                                    <ul class="dropdown-content">
+                                      <li><a href="#">Risk Mapping</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <button class="dropbtn">Mike Harris 
+                                      <i class="fa fa-caret-down"></i>
+                                    </button>
+                                    <ul class="dropdown-content">
+                                      <li><a href="#">Profile</a></li>
+                                      <li><a href="#">Notifications</a></li>
+                                      <li><a href="#">Log Out</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+<div id="main">
+        <section class="goverance-at-glance">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12 controls-mapping">
+                        <ul>
+                            <li class="goverence-icon"><i class="fa fa-pie-chart"></i></li>
+                            <li><h3>Control Selection & Update Portal</h3></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12  dashboards-link">
+                        <span class=" float-right"><a href="#">Controls ></a> Upload</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="controls-ingestion">
+            <div class="container">
+                <div class="row">
+                    <h2 class="text-center">Controls Ingestion Tool</h2>
+                    <h3 class="text-center">Select Compliance/Regulatory Frameworks Below:</h3>
+                    <form class="" action="#">
+                        <input type="file" name="file-1[]" id="file-1" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" multiple />
+                        <label for="file-1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg> <span>Upload File&hellip;</span></label>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="dropdown-section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4 c0l-md-4 col-sm-4">
+                        <ul class="menu">
+                            <li><a href="#" class="dropmenu">General IT <i class="fa fa-chevron-down"></i></a>
+                                <ul class="dropd drop1">
+                                  <li><a href="#" class="small" data-value="option1" tabIndex="-1"><input type="checkbox"/>&nbsp; NIST</a></li>
+                                  <li><a href="#" class="small" data-value="option2" tabIndex="-1"><input type="checkbox"/>&nbsp; ITIL</a></li>
+                                  <li><a href="#" class="small" data-value="option3" tabIndex="-1"><input type="checkbox"/>&nbsp; ISO</a></li>
+                                  <li><a href="#" class="small" data-value="option4" tabIndex="-1"><input type="checkbox"/>&nbsp; COBIT</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-4 c0l-md-4 col-sm-4">
+                        <ul class="menu">
+                            <li><a href="#" class="dropmenu">Financial<i class="fa fa-chevron-down"></i></a>
+                                <ul class="dropd drop1">
+                                  <li><a href="#" class="small" data-value="option1" tabIndex="-1"><input type="checkbox"/>&nbsp; FFIEC</a></li>
+                                  <li><a href="#" class="small" data-value="option2" tabIndex="-1"><input type="checkbox"/>&nbsp; Federal Reserve Board</a></li>
+                                  <li><a href="#" class="small" data-value="option3" tabIndex="-1"><input type="checkbox"/>&nbsp; OCC</a></li>
+                                  <li><a href="#" class="small" data-value="option4" tabIndex="-1"><input type="checkbox"/>&nbsp; FDIC</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-4 c0l-md-4 col-sm-4">
+                        <ul class="menu">
+                            <li><a href="#" class="dropmenu">Healthcare<i class="fa fa-chevron-down"></i></a>
+                                <ul class="dropd drop1">
+                                  <li><a href="#" class="small" data-value="option1" tabIndex="-1"><input type="checkbox"/>&nbsp; HIPAA-NIST</a></li>
+                                  <li><a href="#" class="small" data-value="option2" tabIndex="-1"><input type="checkbox"/>&nbsp; HITRUST</a></li>
+                                  <li><a href="#" class="small" data-value="option3" tabIndex="-1"><input type="checkbox"/>&nbsp; CMS (Medicare/Medicaid)</a></li>
+                                  <li><a href="#" class="small" data-value="option4" tabIndex="-1"><input type="checkbox"/>&nbsp; OSHA</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="copyright-section">
+            <div class="container copyright">
+                <div class="row">
+                    <div class=" col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <p>&copy 2019, Greensight Technologies.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+</div>
+
+
+
+
+        <script src="js/vendor/jquery-1.11.3.min.js"></script>
+        <script src="js/plugins.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/jquery.slicknav.min.js"></script>  
+        <script src="js/main.js"></script>
+
+        <!--for top left menu-->
+        <script>
+        function openNav() {
+          document.getElementById("mySidenav").style.width = "75px";
+          document.getElementById("main").style.marginLeft = "120px";
+        }
+
+        function closeNav() {
+          document.getElementById("mySidenav").style.width = "0";
+          document.getElementById("main").style.marginLeft= "0";
+        }
+        </script>
+
+        <!-- For Checkbox-->
+        <script type="text/javascript">
+            var options = [];
+
+            $( '.dropd a' ).on( 'click', function( event ) {
+
+               var $target = $( event.currentTarget ),
+                   val = $target.attr( 'data-value' ),
+                   $inp = $target.find( 'input' ),
+                   idx;
+
+               if ( ( idx = options.indexOf( val ) ) > -1 ) {
+                  options.splice( idx, 1 );
+                  setTimeout( function() { $inp.prop( 'checked', false ) }, 0);
+               } else {
+                  options.push( val );
+                  setTimeout( function() { $inp.prop( 'checked', true ) }, 0);
+               }
+
+               $( event.target ).blur();
+
+               console.log( options );
+               return false;
+            });
+        </script>
+
+
+
+
+
+
+
+
+
+
+
+
+        <script type="text/javascript">
+            $('.fileinput').fileupload({
+                // The regular expression for allowed file types, matches
+                // against either file type or file name:
+                acceptFileTypes: /(\.|\/)(xls?x|xls|csv)$/i,
+                // The maximum allowed file size in bytes:
+                maxFileSize: 10000000, // 10 MB
+                // The minimum allowed file size in bytes:
+                minFileSize: undefined, // No minimal file size
+                // The limit of files to be uploaded:
+                maxNumberOfFiles: 10
+              }).on('fileuploadprocessalways', function (e, data) {
+                var currentFile = data.files[data.index];
+                if (data.files.error && currentFile.error) {
+                  // there was an error, do something about it
+                  console.log(currentFile.error);
+                }
+              });
+        </script>
+
+    </body>
+</html>
+
+
