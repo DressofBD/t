@@ -1,0 +1,636 @@
+/*! HTML5 Boilerplate v5.2.0 | MIT License | https://html5boilerplate.com/ */
+
+/*
+ * What follows is the result of much research on cross-browser styling.
+ * Credit left inline and big thanks to Nicolas Gallagher, Jonathan Neal,
+ * Kroc Camen, and the H5BP dev community and team.
+ */
+
+/* ==========================================================================
+   Base styles: opinionated defaults
+   ========================================================================== */
+
+html {
+    color: #222;
+    font-size: 1em;
+    line-height: 1.4;
+}
+
+/*
+ * Remove text-shadow in selection highlight:
+ * https://twitter.com/miketaylr/status/12228805301
+ *
+ * These selection rule sets have to be separate.
+ * Customize the background color to match your design.
+ */
+
+::-moz-selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+::selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+/*
+ * A better looking default horizontal rule
+ */
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+}
+
+/*
+ * Remove the gap between audio, canvas, iframes,
+ * images, videos and the bottom of their containers:
+ * https://github.com/h5bp/html5-boilerplate/issues/440
+ */
+
+audio,
+canvas,
+iframe,
+img,
+svg,
+video {
+    vertical-align: middle;
+}
+
+/*
+ * Remove default fieldset styles.
+ */
+
+fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+/*
+ * Allow only vertical resizing of textareas.
+ */
+
+textarea {
+    resize: vertical;
+}
+
+/* ==========================================================================
+   Browser Upgrade Prompt
+   ========================================================================== */
+
+.browserupgrade {
+    margin: 0.2em 0;
+    background: #ccc;
+    color: #000;
+    padding: 0.2em 0;
+}
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ==========================================================================
+   Helper classes
+   ========================================================================== */
+
+/*
+ * Hide visually and from screen readers:
+ */
+
+.hidden {
+    display: none !important;
+}
+
+/*
+ * Hide only visually, but have it available for screen readers:
+ * http://snook.ca/archives/html_and_css/hiding-content-for-accessibility
+ */
+
+.visuallyhidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+/*
+ * Extends the .visuallyhidden class to allow the element
+ * to be focusable when navigated to via the keyboard:
+ * https://www.drupal.org/node/897638
+ */
+
+.visuallyhidden.focusable:active,
+.visuallyhidden.focusable:focus {
+    clip: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    position: static;
+    width: auto;
+}
+
+/*
+ * Hide visually and from screen readers, but maintain layout
+ */
+
+.invisible {
+    visibility: hidden;
+}
+
+/*
+ * Clearfix: contain floats
+ *
+ * For modern browsers
+ * 1. The space content is one way to avoid an Opera bug when the
+ *    `contenteditable` attribute is included anywhere else in the document.
+ *    Otherwise it causes space to appear at the top and bottom of elements
+ *    that receive the `clearfix` class.
+ * 2. The use of `table` rather than `block` is only necessary if using
+ *    `:before` to contain the top-margins of child elements.
+ */
+
+.clearfix:before,
+.clearfix:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+/* ==========================================================================
+   EXAMPLE Media Queries for Responsive Design.
+   These examples override the primary ('mobile first') styles.
+   Modify as content requires.
+   ========================================================================== */
+
+@media only screen and (min-width: 35em) {
+    /* Style adjustments for viewports that meet the condition */
+}
+
+@media print,
+       (-webkit-min-device-pixel-ratio: 1.25),
+       (min-resolution: 1.25dppx),
+       (min-resolution: 120dpi) {
+    /* Style adjustments for high resolution devices */
+}
+
+/* ==========================================================================
+   Print styles.
+   Inlined to avoid the additional HTTP request:
+   http://www.phpied.com/delay-loading-your-print-css/
+   ========================================================================== */
+
+@media print {
+    *,
+    *:before,
+    *:after {
+        background: transparent !important;
+        color: #000 !important; /* Black prints faster:
+                                   http://www.sanbeiji.com/archives/953 */
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    a,
+    a:visited {
+        text-decoration: underline;
+    }
+
+    a[href]:after {
+        content: " (" attr(href) ")";
+    }
+
+    abbr[title]:after {
+        content: " (" attr(title) ")";
+    }
+
+    /*
+     * Don't show links that are fragment identifiers,
+     * or use the `javascript:` pseudo protocol
+     */
+
+    a[href^="#"]:after,
+    a[href^="javascript:"]:after {
+        content: "";
+    }
+
+    pre,
+    blockquote {
+        border: 1px solid #999;
+        page-break-inside: avoid;
+    }
+
+    /*
+     * Printing Tables:
+     * http://css-discuss.incutio.com/wiki/Printing_Tables
+     */
+
+    thead {
+        display: table-header-group;
+    }
+
+    tr,
+    img {
+        page-break-inside: avoid;
+    }
+
+    img {
+        max-width: 100% !important;
+    }
+
+    p,
+    h2,
+    h3 {
+        orphans: 3;
+        widows: 3;
+    }
+
+    h2,
+    h3 {
+        page-break-after: avoid;
+    }
+}
+
+li{
+    list-style: none;
+}
+ul{
+    padding: 0;
+    margin: 0;
+}
+a:focus, a:hover{text-decoration: none; color: #ff252e !important;}
+
+body{
+    background-color: #fff;
+    color: #fff;
+}
+
+
+
+
+/*top header section*/
+.top-header{}
+.logo{
+    max-width: 180px;
+}
+.btn-login {
+    float: right;
+    background-color: #ff5f66;
+    padding: 10px 18px;
+    top: 25px;
+    position: relative;
+}
+.btn-login{}
+
+
+/*Banner section*/
+.banner {
+    background-image: url(img/bannerbg.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: auto 100%;
+}
+.register-form {
+    max-width: 372px;
+    background-color: rgba(1, 1, 1, 0.55);
+    border-top: 6px solid #ff5f66;
+    margin: 30px 0;
+    padding: 5px 25px 25px 25px;
+    text-align: center;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    position: relative;
+}
+.register-form h1{
+    margin-bottom: 12px;
+}
+.fa-heart{
+    color: #ff5f66;
+}
+form{
+    padding-top: 25px;
+}
+.register-form span::before, .register-form span::after {
+    content: "";
+    position: absolute;
+    width: 42%;
+    height: 1px;
+    background: white;
+    top: 76px;
+}
+.register-form span::before{
+    left: 16px;
+}
+.register-form span::after {
+    right: 16px;
+}
+.register-form form input {
+    color: #f0f0f0;
+    -webkit-appearance: none;
+    background: transparent;
+    padding: 10px 6px;
+    border-radius: 8px;
+    width: 96%;
+    margin-bottom: 20px;
+    border: 1px solid #aeaeae;
+}
+.gndr {
+    width: 50% !important;
+    margin-right: 18px;
+}
+.age{
+    width: 40% !important;
+}
+.btn-danger {
+    background-color: #ff5f66;
+    width: 96%;
+    font-weight: 700;
+}
+.register-form select{}
+.or{
+    display: block;
+    padding: 10px 0;
+}
+div.or::before, div.or::after {
+    content: "";
+    position: absolute;
+    width: 32%;
+    height: 1px;
+    background: white;
+    top: 408px;
+}
+div.or::before{
+    left: 48px;
+}
+div.or::after{
+    right: 48px;
+}
+.btn{
+    border-radius: 8px;
+    padding: 10px;
+    border: none;
+    color: #fff;
+    text-transform: uppercase;
+}
+.btn-success {
+    background-color: #515dd7;
+    width: 96%;
+}
+.register-form p {
+    font-size: 11px;
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+.register-form a{
+    font-size: 12px;
+    color: #fff;
+}
+/*welcome section*/
+.welcome, .why-choose, .step-to-find, .sweet-stories, .footer-top{
+    padding: 70px 0;
+}
+.{}
+.{}
+.section-heading{
+    color: #262626;
+    padding-bottom: 20px;
+}
+.section-heading a{
+    color: #ff5f66;
+}
+.content{
+    text-align: center;
+}
+.content a {
+    color: #ff5f66;
+    font-size: 17px;
+}
+.content a img {
+    display: block;
+    margin: 0 auto;
+    padding-bottom: 20px;
+    -webkit-transition:.5s;
+    transition: .5s;
+}
+.content a:hover img, .lovers a:hover img{
+    transform: scale(1.2);
+    -webkit-transform: scale(1.2);
+    -ms-transform: scale(1.2);
+}
+
+.content p{
+    color: #262626;
+    margin-top: 8px;
+}
+
+.content-block{}
+.content-block a{}
+.content-block a img{}
+.content-block p{}
+
+/*why chooses section*/
+.why-choose{
+    background-image: url(img/whyrbg.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: auto 100%;
+}
+.why-choose h1.section-heading{
+    color: #fff;
+}
+.why-choose p{}
+.why-choose h3{}
+.videos {
+    position: relative;
+    text-align: center;
+    margin-top: 130px;
+    margin-bottom: 80px;
+}
+.join-free {
+    color: #fff;
+    font-size: 20px;
+    border: 2px solid #fff;
+    padding: 13px 49px;
+    border-radius: 8px;
+    position: relative;
+    left: 30%;
+    text-align: center;
+}
+
+/*step to find section*/
+.step-to-find{}
+.soul-mstes{}
+.soul-mstes a{}
+.soul-mstes a img{}
+.soul-mstes p{}
+
+/*sweet stories section*/
+
+.sweet-stories{
+    background-color: #fafafa;
+}
+.lover-content {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    position: relative;
+    margin-top: 100px;
+}
+.lovers {
+    border: 1px solid #e3e3e3;
+    text-align: center;
+    padding: 72px 25px 50px 25px;
+    background-color: #fff;
+}
+.lovers a {
+    color: #ff5f66;
+    font-size: 17px;
+}
+.lovers img {
+    left: 50%;
+    display: block;
+    position: absolute;
+    top: -71px;
+    width: 120px;
+    margin-left: -60px;
+    border-radius: 100%;
+    -webkit-transition:.5s;
+    transition: .5s;
+}
+.lovers p {
+    color: #262626;
+    margin-top: 8px;
+    font-style: italic;
+}
+.lovers p::before, .lovers p::after {
+    content: "";
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 75%;
+}
+.lovers p::before{
+    top: 59px;
+    left: 33px;
+    background-image: url(img/quotationleft.jpg);
+}
+.lovers p::after{
+    top: 161px;
+    right: 33px;
+    background-image: url(img/quotationright.jpg);
+}
+
+
+
+/*footer top section*/
+.footer-top{
+    background-color: #2e3d44;
+}
+.footer-top p{}
+.footer-top ul{}
+.footer-top ul li{}
+.footer-top ul li a {
+    color: #fff;
+    display: block;
+    border-bottom: 1px solid #48575e;
+    padding: 9px 0;
+}
+.footer-top ul li a:hover{
+
+}
+.footer-top{}
+.footer-top{
+    padding-bottom: 40px;
+}
+
+.social{
+    margin-top: 25px;
+}
+.social li{}
+.social li a {
+    text-align: center;
+    font-size: 26px;
+    float: left;
+    margin-right: 20px;
+    border: 0px !important;
+    padding: 0px !important;
+}
+.social li a .fa {
+    border-radius: 100%;
+    width: 40px;
+    height: 40px;
+    padding: 8px !important;
+}
+.fa-facebook{background:#3d5a9e;}
+.fa-twitter{background:#4ea8fe;}
+.fa-instagram{background:#b025a2;}
+.fa-pinterest{background:#ca1f25;}
+.social li a:hover .fa{
+    background:#fff !important;
+}
+/*copyright section*/
+.copyright{
+    background-color: #2e3d44;
+    border-top: 1px solid #48575e;
+}
+.copyright p{
+    padding: 20px 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media only screen and (max-width: 767px) {
+    .lovers {
+    margin-bottom: 100px;
+}
+}
