@@ -324,16 +324,17 @@ body{
 
 /*---Banner section---*/
 .banner {
-    background-image: url(img/bannerbg.jpg);
-    background-repeat: no-repeat;
+    background-image: url(img/banner.jpg);
+    background-repeat: repeat;
     background-position: center;
     background-size: auto 100%;
+    padding: 15px 0;
 }
 .register-form {
     max-width: 372px;
     background-color: rgba(1, 1, 1, 0.55);
     border-top: 6px solid #ff5f66;
-    margin: 30px 0;
+    margin: 30px 0 40px 0;
     padding: 5px 25px 25px 25px;
     text-align: center;
     border-bottom-left-radius: 10px;
@@ -471,9 +472,9 @@ div.or::after{
 .content-block p{}
 
 /*---why chooses section---*/
-.why-choose{
-    background-image: url(img/whyrbg.jpg);
-    background-repeat: no-repeat;
+.why-choose {
+    background-image: url(img/why.jpg);
+    background-repeat: repeat;
     background-position: center;
     background-size: auto 100%;
 }
@@ -636,7 +637,6 @@ div.or::after{
 .copyright p{
     padding: 20px 0;
 }
-
 
 
 
