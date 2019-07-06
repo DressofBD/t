@@ -657,6 +657,7 @@ div.or::after{
 
 
 
+
 /*---Responsive Codes---*/
 
 @media only screen and (max-width: 767px) {
@@ -675,6 +676,11 @@ div.or::after{
 }
 .banner {
     margin-top: 20px;
+}
+}
+@media only screen and (max-width: 387px){
+    .register-form span::before, .register-form span::after {
+    top: 104px;
 }
 }
 @media only screen and (min-width: 768px) and (max-width: 991px) {
