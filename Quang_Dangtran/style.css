@@ -324,17 +324,16 @@ body{
 
 /*---Banner section---*/
 .banner {
-    background-image: url(img/banner.jpg);
+    background-image: url(img/newbanner.png);
     background-repeat: repeat;
     background-position: center;
     background-size: auto 100%;
-    padding: 15px 0;
 }
 .register-form {
     max-width: 372px;
-    background-color: rgba(1, 1, 1, 0.55);
+    background-color: rgba(1, 1, 1, 0.65);
     border-top: 6px solid #ff5f66;
-    margin: 30px 0 40px 0;
+    margin: 30px 0;
     padding: 5px 25px 25px 25px;
     text-align: center;
     border-bottom-left-radius: 10px;
