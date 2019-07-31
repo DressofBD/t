@@ -1,0 +1,111 @@
+(function () {
+    function escapeRegExp(string) {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
+
+    function formatRequest(obj, suffix) {
+        var result = "";
+
+        for (var key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                if (typeof obj[key] === "object") {
+                    result += formatRequest(obj[key], key);
+                } else {
+                    result += encodeURIComponent(key + (suffix || "")) + "=" + encodeURIComponent(obj[key]) + "&";
+                }
+            }
+        }
+
+        return result;
+    }
+
+    function getCookie(name) {
+        return document.cookie.replace(new RegExp("(?:(?:^|.*;\\s*)" + escapeRegExp(name) + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1");
+    }
+
+    function getParameter(name) {
+        return document.location.search.replace(new RegExp("(?:(?:.*[?&])" + escapeRegExp(name) + "\\=([^&]*).*$)|^.*$"), "$1");
+    }
+
+    function setCookie(name, value) {
+        document.cookie = name + "=" + encodeURIComponent(value) + "; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/";
+    }
+
+    var cfclick = getParameter("cfclick");
+
+    if (cfclick !== "") {
+        setCookie("cfjump-cfclick", cfclick);
+    }
+
+    var cfgclid = getParameter("cfgclid");
+
+    if (cfgclid !== "") {
+        setCookie("cfjump-cfgclid", cfgclid);
+    }
+
+    var q = (window.CommissionFactory && window.CommissionFactory.q) || null;
+
+    var request = { };
+
+    window.CommissionFactory = function (command, key, value) {
+        switch (command) {
+            case "add": {
+                (request[key] = request[key] || [ ]).push(value);
+
+                break;
+            }
+
+            case "set": {
+                request[key] = value;
+
+                break;
+            }
+
+            case "track": {
+                request.client = "browser";
+
+                if (request.merchant === undefined) {
+                    request.merchant = 42872;
+                }
+
+                var cfclick = getCookie("cfjump-cfclick");
+
+                if (cfclick !== "") {
+                    request.click = cfclick;
+                }
+
+                var cfgclid = getCookie("cfjump-cfgclid");
+
+                if (cfgclid !== "") {
+                    request.cfgclid = cfgclid;
+                }
+
+                var visitor = getCookie("cfjump-visitor");
+
+                if (visitor !== "") {
+                    request.visitor = visitor;
+                }
+
+                var newNode = document.createElement("script");
+
+                newNode.async = true;
+                newNode.src = "https://t.cfjump.com/track?" + formatRequest(request);
+                newNode.type = "application/javascript";
+
+                var referenceNode = document.getElementsByTagName("script")[0];
+
+                referenceNode.parentNode.insertBefore(newNode, referenceNode);
+
+                request = { };
+
+                break;
+            }
+        }
+    };
+
+    if (q !== null) {
+        for (var i = 0; i < q.length; i++) {
+            CommissionFactory.apply(window, q[i]);
+        }
+    }
+})();
