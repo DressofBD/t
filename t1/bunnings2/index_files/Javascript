@@ -1,0 +1,22 @@
+$(function () {
+   console.log('soo-global-js');
+
+   //clear Feature Toggle cookie
+   var resetCookie = (document.cookie.match(/^(?:.*;)?\s*siteFeatureToggles_VICMetro_reset\s*=\s*([^;]+)(?:.*)?$/)||[,null])[1];
+   if (resetCookie != '3') {
+      document.cookie = 'siteFeatureToggles_VICMetro=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+      document.cookie = 'siteFeatureToggles_VICMetro_reset=3; Path=/; Expires=Fri, 31 Dec 9999 23:59:59 GMT';
+   }
+   console.log('soo-reset',resetCookie);
+
+  /* setTimeout(function () {
+      console.log('soo-delivery');
+      $('[data-component]="ConfirmedOption" .panel_container.panel_container--delivery p:last').text('Leaves supplier warehouse in 2-3 business days.');
+   },200);*/
+
+});
+
+
+/*Powerfront Live chat JS snippet start*/
+(function(u,t,d){ var i=d.createElement(t);i.type='text/javascript';i.async=true;i.src='//'+u; var s=d.getElementsByTagName(t)[0]; s.parentNode.insertBefore(i,s); })('au12-tracker.inside-graph.com/gtm/IN-1000746/include.js','script',document);
+/*Powerfront Live chat JS snippet end*/
