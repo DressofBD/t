@@ -1,0 +1,29 @@
+/* Ticks */
+.product-list__item .product-list__del {  
+}
+
+[data-component="ConfirmedOption"] .panel_container.panel_container--delivery p:last-child {
+   /*visibility: hidden;*/
+}
+.diyhowtovideo-page-type .RefreshComponent .message-notification.message-notification--warning.message-notification--slim {
+    display: none;
+}
+#RefreshHeader .header_navbar-item .header_navbar-link--cart {
+	z-index: 25;
+}
+.default-device.home-page-type .js-trade-mode.product-list .product-list__price sup, 
+.default-device.home-page-type article.js-trade-mode .product-list__price sup,
+.default-device .product-list__item.product-list__item-with-trade-mode .product-list__price sup, 
+.default-device .product-list__item.special-order-product.product-list__item-with-trade-mode .product-list__price sup {
+    bottom: 1ex;
+}
+.featuredproductbrand-page-type.brand-page .homepage-carousel-wrapper .page .product-list__item-with-trade-mode .product-list__details-nobrand .product-list__prodname {
+    margin-top: 0px;
+}
+@-moz-document url-prefix() {
+  @media only screen and (min-width: 60em)  {
+    .root .pickup-summary__choose-store__button-wrapper .pickup-summary__change-store-button.bui-btn--mini {
+      padding: 9px !important;
+   }
+  }
+}
