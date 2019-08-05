@@ -297,7 +297,16 @@ color: #FFF;
 padding-top: 15px;
 background: #08454a;
 }
-.store-info_header__top{}
+.store-info_header__top {
+    display: block;
+    position: relative;
+    overflow: hidden;
+}
+.navbar-toggler{
+    background: #ccc;
+
+padding: 5px 15px;
+}
 .store-info_header__top a:hover{
     text-decoration: underline;
     color: #fff;
@@ -390,7 +399,12 @@ background: #08454a;
     padding-left: 26px;
     background-position: -2px;
 }
-.header_lowest-price-policy{}
+.header_lowest-price-policy {
+    overflow: hidden;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
 .header_lowest-price-policy img{}
 .header-bottom {
     margin: 15px 0;
@@ -632,6 +646,9 @@ padding: 10px 20px;
     .search-container_btn {
     top: 83px;
     right: 87px;
+}
+.header_navbar {
+    float: none;
 }
 .search-container_term[type="text"] {
     margin-bottom: 10px;
