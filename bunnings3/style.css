@@ -1,0 +1,652 @@
+/*! HTML5 Boilerplate v5.2.0 | MIT License | https://html5boilerplate.com/ */
+
+/*
+ * What follows is the result of much research on cross-browser styling.
+ * Credit left inline and big thanks to Nicolas Gallagher, Jonathan Neal,
+ * Kroc Camen, and the H5BP dev community and team.
+ */
+
+/* ==========================================================================
+   Base styles: opinionated defaults
+   ========================================================================== */
+
+html {
+    color: #222;
+    font-size: 1em;
+    line-height: 1.4;
+}
+
+/*
+ * Remove text-shadow in selection highlight:
+ * https://twitter.com/miketaylr/status/12228805301
+ *
+ * These selection rule sets have to be separate.
+ * Customize the background color to match your design.
+ */
+
+::-moz-selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+::selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+/*
+ * A better looking default horizontal rule
+ */
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+}
+
+/*
+ * Remove the gap between audio, canvas, iframes,
+ * images, videos and the bottom of their containers:
+ * https://github.com/h5bp/html5-boilerplate/issues/440
+ */
+
+audio,
+canvas,
+iframe,
+img,
+svg,
+video {
+    vertical-align: middle;
+}
+
+/*
+ * Remove default fieldset styles.
+ */
+
+fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+/*
+ * Allow only vertical resizing of textareas.
+ */
+
+textarea {
+    resize: vertical;
+}
+
+/* ==========================================================================
+   Browser Upgrade Prompt
+   ========================================================================== */
+
+.browserupgrade {
+    margin: 0.2em 0;
+    background: #ccc;
+    color: #000;
+    padding: 0.2em 0;
+}
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ==========================================================================
+   Helper classes
+   ========================================================================== */
+
+/*
+ * Hide visually and from screen readers:
+ */
+
+.hidden {
+    display: none !important;
+}
+
+/*
+ * Hide only visually, but have it available for screen readers:
+ * http://snook.ca/archives/html_and_css/hiding-content-for-accessibility
+ */
+
+.visuallyhidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+/*
+ * Extends the .visuallyhidden class to allow the element
+ * to be focusable when navigated to via the keyboard:
+ * https://www.drupal.org/node/897638
+ */
+
+.visuallyhidden.focusable:active,
+.visuallyhidden.focusable:focus {
+    clip: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    position: static;
+    width: auto;
+}
+
+/*
+ * Hide visually and from screen readers, but maintain layout
+ */
+
+.invisible {
+    visibility: hidden;
+}
+
+/*
+ * Clearfix: contain floats
+ *
+ * For modern browsers
+ * 1. The space content is one way to avoid an Opera bug when the
+ *    `contenteditable` attribute is included anywhere else in the document.
+ *    Otherwise it causes space to appear at the top and bottom of elements
+ *    that receive the `clearfix` class.
+ * 2. The use of `table` rather than `block` is only necessary if using
+ *    `:before` to contain the top-margins of child elements.
+ */
+
+.clearfix:before,
+.clearfix:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+/* ==========================================================================
+   EXAMPLE Media Queries for Responsive Design.
+   These examples override the primary ('mobile first') styles.
+   Modify as content requires.
+   ========================================================================== */
+
+@media only screen and (min-width: 35em) {
+    /* Style adjustments for viewports that meet the condition */
+}
+
+@media print,
+       (-webkit-min-device-pixel-ratio: 1.25),
+       (min-resolution: 1.25dppx),
+       (min-resolution: 120dpi) {
+    /* Style adjustments for high resolution devices */
+}
+
+/* ==========================================================================
+   Print styles.
+   Inlined to avoid the additional HTTP request:
+   http://www.phpied.com/delay-loading-your-print-css/
+   ========================================================================== */
+
+@media print {
+    *,
+    *:before,
+    *:after {
+        background: transparent !important;
+        color: #000 !important; /* Black prints faster:
+                                   http://www.sanbeiji.com/archives/953 */
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    a,
+    a:visited {
+        text-decoration: underline;
+    }
+
+    a[href]:after {
+        content: " (" attr(href) ")";
+    }
+
+    abbr[title]:after {
+        content: " (" attr(title) ")";
+    }
+
+    /*
+     * Don't show links that are fragment identifiers,
+     * or use the `javascript:` pseudo protocol
+     */
+
+    a[href^="#"]:after,
+    a[href^="javascript:"]:after {
+        content: "";
+    }
+
+    pre,
+    blockquote {
+        border: 1px solid #999;
+        page-break-inside: avoid;
+    }
+
+    /*
+     * Printing Tables:
+     * http://css-discuss.incutio.com/wiki/Printing_Tables
+     */
+
+    thead {
+        display: table-header-group;
+    }
+
+    tr,
+    img {
+        page-break-inside: avoid;
+    }
+
+    img {
+        max-width: 100% !important;
+    }
+
+    p,
+    h2,
+    h3 {
+        orphans: 3;
+        widows: 3;
+    }
+
+    h2,
+    h3 {
+        page-break-after: avoid;
+    }
+}
+
+ul{
+    padding-top: 0;
+    margin: 0;
+}
+li {
+    float: left;
+    display: inline-block;
+}
+
+
+
+.header-top{
+    position: relative;
+border-bottom: 1px solid #3D7579;
+color: #FFF;
+padding-top: 15px;
+background: #08454a;
+}
+.store-info_header__top{}
+.store-info_header__top a:hover{
+    text-decoration: underline;
+    color: #fff;
+}
+.store-info_header__top ul li {
+    top: -24px;
+    position: relative;
+    left: 88px;
+    font-size: 17px;
+    color: #fff;
+}
+.mentone {
+    background-image: url(img/Mentone.png) !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-left: 0;
+    background-repeat: no-repeat !important;
+    background-position: -3px !important;
+    padding-left: 35px;
+    color: #fff !important;
+}
+.ChangeStore {
+    margin-left: 25px;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-top: -5px;
+}
+.ChangeStore:hover{
+    background:#fff !important;
+    color: #08454a !important;
+}
+.main-top-menu{}
+.main-top-menu ul li {
+    margin: 0 14px;
+}
+.main-top-menu ul li a {
+    color: #A6BFBF;
+    font-weight: 700;
+    font-size: 16px;
+}
+.main-top-menu ul li:hover{}
+.header-middle{
+    background: #0D5257;
+}
+.navbar-nav {
+    float: right;
+}
+.header_logo{}
+.header_logo a {}
+.header_logo a img{}
+.navbar {
+    margin-bottom: 0;
+}
+.navbar-collapse{}
+.navbar-nav{}
+.nav-item{}
+.nav-link{}
+.header_navbar {
+    float: right;
+}
+.header_navbar-item{}
+.header_navbar-item a {
+    display: block;
+    line-height: 12px;
+    margin-left: 8px;
+    margin-top: 12px;
+    max-width: 180px;
+    color: #fff;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 26px;
+}
+.fauser{
+    background: url(img/fauser.png);
+    background-repeat: no-repeat;
+    padding: 26px;
+    background-position: -6px;
+}
+.falist{
+    background: url(img/falist.png);
+    background-repeat: no-repeat;
+    padding: 26px;
+    background-position: -6px;
+}
+.fatime{
+    background: url(img/fatime.png);
+    background-repeat: no-repeat;
+    padding-left: 26px;
+    background-position: -2px;
+}
+.header_lowest-price-policy{}
+.header_lowest-price-policy img{}
+.header-bottom {
+    margin: 15px 0;
+    border-bottom: 1px solid #E0E0E0;
+}
+.header-bottom ul{}
+.header-bottom ul li{
+    margin-right: 18px;
+}
+.header-bottom ul li a {
+    padding: 8px;
+    height: 48px;
+    white-space: nowrap;
+    color: #0D5257;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: 1px solid #E0E0E0;
+    border-radius: 2px;
+    font-weight: bold;
+    font-size: 18px;
+    border-radius: 3px;
+}
+.header-bottom ul li a:hover{
+    text-decoration: none;
+}
+.OurRange:hover{
+    background-color: #0D5257;
+    color: #fff !important;
+}
+.Advice{
+    color: #DA291C !important;
+}
+.Advice:hover{
+    background-color: #DA291C;
+    color: #fff !important;
+}
+.search-container_term[type="text"] {
+    background-color: #F5F5F5;
+    height: 48px;
+    font-size: inherit;
+    width: 90%;
+    border: 1px solid #E0E0E0;
+    padding-left: 10px;
+}
+.header-search{}
+.search-container_term{}
+.search-container_btn {
+    height: 21px;
+    position: absolute;
+    top: 24px;
+    right: 70px;
+    transform: translateY(-50%);
+    z-index: 20;
+    border: 0;
+    background: 0 0;
+    box-sizing: content-box;
+    border-radius: 0;
+    padding: 0 12px;
+    background-image: url(img/redsrc.png);
+    background-repeat: no-repeat;
+    background-position: -3px;
+    padding: 10px 20px;
+}
+.header-trade-link{
+    color: #08454a;
+}
+.trade {
+    border: 1px solid #E0E0E0;
+    max-width: 78px;
+    padding: 5px 9px;
+    cursor: pointer;
+}
+.trade:hover{
+    background-color: #08454a;
+}
+.trade:hover a{
+    color: #fff !important;
+    text-decoration: none;
+}
+.modal-top-menu{}
+.modal-top-menu-links{}
+.modal-top-menu-links ul{}
+.modal-top-menu-links ul li{
+    margin: 0 10px;
+}
+.modal-top-menu-links ul li a{
+    color: #222;
+}
+.modal-top-menu-links ul li a:after{
+}
+.shareprint {
+    position: relative;
+    right: 0px !important;
+}
+.share{}
+.share ul{}
+.share ul li{
+    margin: 0 10px;
+}
+.share ul li a{}
+.share ul li a i{}
+.print{}
+.MondellaWELS{
+font-size: 47px;
+line-height: 50px;
+font-family: 'Futura W01 Heavy',sans-serif;
+color: #0d5257;
+letter-spacing: .2px
+
+}
+.Pricecorrectas{
+width: 200px !important;
+display: flex;
+top: 74px;
+position: relative;
+float: right;
+}
+
+.modal-top{}
+.modal-top img{}
+.modal-top a{}
+.modal-section{}
+.modal-section .modal-top-feedback{}
+.modal-section{}
+.modal-top-feedback p{}
+.modal-top-feedback span{}
+.main-model{}
+.main-model-side{}
+.main-model-side p{}
+.main-model-side{}
+.in-stock {
+    display: block;
+    max-width: 100%;
+    border-left: 7px solid #0d5257;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    cursor: pointer;
+    padding: 10px 57px;
+    background-image: url(img/location.png);
+    background-repeat: no-repeat;
+    background-position: 20px 11px;
+    margin-bottom: 10px;
+}
+.in-stock p{}
+.in-stock a{}
+.Contactyourneareststore{}
+.cart-box {
+    border: 1px solid #ccc;
+    padding: 36px;
+    background-image: url(img/pickup.png);
+    background-repeat: no-repeat;
+    background-position: 5px 36px;
+    margin: 20px 0px;
+}
+.cart-box input[type="number"] {
+    border: 1px solid #ccc;
+    max-width: 65px;
+    padding: 7px;
+}
+.cart-box p{}
+.btn-danger {
+    background: #da291c;
+    background-clip: border-box;
+    border: 1px solid #911913;
+    width: 176px;
+    padding: 7px;
+    margin-top: -2px;
+}
+.btn-default {
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+    margin-top: 20px;
+    position: relative;
+    display: block;
+    width: 176px;
+}
+.ClickCollect {
+    background-image: url(img/ClickCollect.png);
+    background-repeat: no-repeat;
+    background-position: 5px 1px;
+    padding-left: 60px;
+}
+.ClickCollect a{
+color: #0d5257 !important;
+}
+.btn-info{
+background: transparent;
+color: #666;
+border: 1px solid #ccc;
+border-radius: 3px;
+padding: 10px 20px;
+}
+.Formoreinformation{}
+.product-description{
+    margin-bottom: 100px;
+}
+.YouMightAlsoLike{}
+#demo1 ul{}
+#demo1 ul li {
+    list-style: disc;
+    display: list-item;
+    clear: both;
+}
+.navbar-light .navbar-toggler-icon {
+    background-image: url(../img/Navbar.png);
+}
+
+
+
+
+
+
+
+
+
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+    .Pricecorrectas {
+    top: 0;
+    float: none;
+}
+}
+@media(min-width:667px){
+
+.navbar-toggler {
+    display: none;
+}
+.navbar-nav {
+    float: left;
+}
+
+}
+
+@media(max-width:992px){
+    .search-container_btn {
+    top: 83px;
+    right: 87px;
+}
+.search-container_term[type="text"] {
+    margin-bottom: 10px;
+}
+.trade {
+    margin-bottom: 15px;
+}
+}
+@media(max-width:387px){
+    .search-container_btn {
+    top: 144px;
+    right: 44px;
+}
+.Pricecorrectas {
+    top: 0;
+    float: none;
+}
+}
