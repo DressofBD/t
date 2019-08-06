@@ -1793,10 +1793,12 @@ max-width: 200px
     z-index: 999;
 }
 .MondellaWELS {
-    font-size: 30px;
+    font-size: 26px;
     line-height: 30px;
     position: relative;
-    left: 18px;
+    left: 30px;
+    max-width: 300px !important;
+    display: block;
 }
 .time-menu{
     position: relative;
@@ -1813,12 +1815,17 @@ margin-top: -20px;
     position: relative;
     left: -20px !important;
 }
-
 .banner-title-container {
-	display: none;
+    display: none;
 }
 .product-list.product-list__compare.compare-big .product-list__item {
-	margin-bottom: 15px;
+    margin-bottom: 15px;
+}
+.btn-info {
+    margin: 4px;
+}
+.modal-top {
+    padding-top: 15px;
 }
 
 
@@ -1845,6 +1852,8 @@ margin-top: -20px;
 .MondellaWELS {
     font-size: 25px;
     line-height: 20px;
+    left: 40px;
+    max-width: 221px !important;
 }
 
 
