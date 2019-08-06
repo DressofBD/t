@@ -372,7 +372,10 @@ padding: 5px 15px;
 .header_navbar {
     float: right;
 }
-.header_navbar-item{}
+.header_navbar-item{
+    position: relative;
+    top: -8px;
+}
 .header_navbar-item a {
     display: block;
     line-height: 12px;
@@ -382,7 +385,7 @@ padding: 5px 15px;
     color: #fff;
     font-weight: bold;
     font-size: 16px;
-    padding: 26px;
+    padding: 18px;
 }
 .fauser{
     background: url(img/fauser.png);
@@ -393,8 +396,7 @@ padding: 5px 15px;
 .falist{
     background: url(img/falist.png);
     background-repeat: no-repeat;
-    padding: 26px;
-    background-position: -6px;
+    background-position: -2px 4px;
 }
 .fatime{
     background: url(img/fatime.png);
@@ -635,7 +637,6 @@ padding: 10px 20px;
     clear: both;
 }
 .navbar-light .navbar-toggler-icon {
-    background-image: url(img/Navbar.png);
 }
 .special-full-width {
     position: relative;
@@ -1627,9 +1628,9 @@ body{
 }
 
 
-
-
-
+.for-mobile, .for-mobile2, .for-mobile3{
+    display: none;
+}
 
 
 
@@ -1745,19 +1746,20 @@ max-width: 200px
 }
 .navbar-toggler {
     position: relative;
-    left: 42%;
-    background-image: url(img/Navbar.png);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 45px;
+    width: 50px;
     height: 40px;
+    background: transparent;
+    border: 0;
+    color: #fff;
+    font-size: 25px;
 }
 .navbar-nav {
     float: none;
     padding: 0;
-    margin: 0 auto;
     max-width: 150px;
+}
+.navbar-nav>li>a{
+    color: #fff;
 }
 .nav-item {
     clear: both;
@@ -1765,6 +1767,41 @@ max-width: 200px
 .main-top-menu ul li {
     margin: 10px 14px;
 }
+.header-top, .header-middle, .header-bottom, .modal-top-menu{
+    display: none;
+}
+.for-mobile, .for-mobile2, .for-mobile3{
+    display: block;
+}
+.for-mobile{
+    position: relative;
+    border-bottom: 1px solid #3D7579;
+    color: #FFF;
+    padding-top: 15px;
+    background: #08454a;
+}
+.for-mobile2{
+    background: #0D5257;
+    margin-bottom: 10px;
+}
+.for-mobile3{
+
+}
+.for-mobile2 .header_navbar-item a{
+    position: relative;
+    z-index: 999;
+}
+
+
+
+
+
+
+
+
+
+
+
 }
 
 
