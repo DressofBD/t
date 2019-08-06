@@ -1817,7 +1817,9 @@ margin-top: -20px;
 .banner-title-container {
 	display: none;
 }
-
+.product-list.product-list__compare.compare-big .product-list__item {
+	margin-bottom: 15px;
+}
 
 
 
