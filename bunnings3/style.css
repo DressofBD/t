@@ -314,7 +314,6 @@ padding: 5px 15px;
 .store-info_header__top ul li {
     top: -24px;
     position: relative;
-    left: 75px;
     font-size: 17px;
     color: #fff;
 }
@@ -1791,9 +1790,20 @@ max-width: 200px
     position: relative;
     z-index: 999;
 }
-
-
-
+.MondellaWELS {
+    font-size: 30px;
+    line-height: 30px;
+    left: 50px;
+    position: relative;
+}
+.time-menu{
+    position: relative;
+margin-top: -20px;
+}
+.for-mobile {
+    height: 55px;
+    overflow: hidden;
+}
 
 
 
@@ -1821,9 +1831,14 @@ max-width: 200px
     width: 360px;
     height: 360px;
 }
-
-
-
+.MondellaWELS {
+    font-size: 25px;
+    line-height: 20px;
+    left: 46px;
+}
+.modal-top img {
+    max-width: 100px;
+}
 
 
 }
