@@ -1616,7 +1616,9 @@ width: 100%;
 body{
     background-color: #F5F5F5;
 }
-
+html, body {
+  overflow-x:hidden 
+} 
 
 
 
@@ -1793,8 +1795,8 @@ max-width: 200px
 .MondellaWELS {
     font-size: 30px;
     line-height: 30px;
-    left: 50px;
     position: relative;
+    left: 18px;
 }
 .time-menu{
     position: relative;
@@ -1804,7 +1806,9 @@ margin-top: -20px;
     height: 55px;
     overflow: hidden;
 }
-
+.modal-top img {
+    max-width: 85px;
+}
 
 
 
@@ -1835,9 +1839,6 @@ margin-top: -20px;
     font-size: 25px;
     line-height: 20px;
     left: 46px;
-}
-.modal-top img {
-    max-width: 100px;
 }
 
 
