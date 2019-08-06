@@ -1809,7 +1809,10 @@ margin-top: -20px;
 .modal-top img {
     max-width: 85px;
 }
-
+#plattar-8fe576a4df44 {
+    position: relative;
+    left: -20px !important;
+}
 
 
 
