@@ -1814,7 +1814,9 @@ margin-top: -20px;
     left: -20px !important;
 }
 
-
+.banner-title-container {
+	display: none;
+}
 
 
 
