@@ -1,0 +1,223 @@
+/**
+ * Betta Map.
+ *
+ * @category  Mage
+ *
+ * @author    Phuoc Nguyen <phuoc@balanceinternet.com.au>
+ * @copyright 2019 Balance Internet Pty Ltd (https://www.balanceinternet.com.au)
+ */
+/*global define*/
+define([
+    'jquery',
+    'uiComponent',
+    'mage/translate'
+], function ($, Component) {
+    return Component.extend({
+        defaults: {
+            provider: "osm",
+            country: 'AU',
+            radius: 30000,
+        },
+
+        /**
+         * Component Constructor
+         */
+        initialize: function () {
+            if ($('.findstore-validate-address').length > 0) {
+                $('.findstore-validate-address').hide();
+            }
+            this._super();
+            this.observe(['fulltextSearch', 'currentResult']);
+            this.street_number = '';
+            this.route = '';
+            this.locality = '';
+            this.administrative_area_level_1 = '';
+            this.postal_code = '';
+        },
+
+        /**
+         * Init the geocoder component
+         *
+         * @param element   Element triggering the init
+         * @param component The JS Component
+         */
+        initGeocoder: function (element, component) {
+            if (typeof component.element === 'undefined' || component.hasOwnProperty('element') === false) {
+                component.element = $(element);
+            }
+
+            if (component.provider !== null && (typeof component.provider === 'function' || typeof component.provider === 'object')) {
+                component.provider.init(
+                    component,
+                    component.onGeocoderReady.bind(component),
+                    component.onPlaceChanged.bind(component)
+                );
+            } else {
+                require(['betta-map-geocoder-provider-' + component.provider], function(provider) {
+                    provider.init(
+                        component,
+                        component.onGeocoderReady.bind(component),
+                        component.onPlaceChanged.bind(component)
+                    );
+                    component.provider = provider;
+                }).bind(this);
+            }
+        },
+
+        /**
+         * Assign geocoder component after init. Used as a callback.
+         */
+        onGeocoderReady: function() {
+            this.geocoder = this.provider.getGeocoder();
+        },
+
+        /**
+         * Listens to place_changed event of google maps. Used as a callback.
+         */
+        onPlaceChanged: function() {
+            var place = this.geocoder.autocomplete.getPlace();
+
+            if (place.hasOwnProperty('formatted_address')) {
+                this.fulltextSearch(place.formatted_address);
+            }
+            var componentForm = {
+                street_number: 'short_name',
+                route: 'long_name',
+                locality: 'long_name',
+                administrative_area_level_1: 'short_name',
+                country: 'long_name',
+                postal_code: 'short_name'
+            };
+            this.street_number = '';
+            this.route = '';
+            this.locality = '';
+            this.administrative_area_level_1 = '';
+            this.postal_code = '';
+            if (place.hasOwnProperty('address_components')) {
+                for (var i = 0; i < place.address_components.length; i++) {
+                    var addressType = place.address_components[i].types[0];
+                    if (componentForm[addressType]) {
+                        var val = place.address_components[i][componentForm[addressType]];
+                        if (addressType == 'street_number') {
+                            this.street_number = val;
+                        } else if (addressType == 'route') {
+                            this.route = val;
+                        } else if (addressType == 'locality') {
+                            this.locality = val;
+                        } else if (addressType == 'administrative_area_level_1') {
+                            this.administrative_area_level_1 = val;
+                        } else if (addressType == 'postal_code') {
+                            this.postal_code = val;
+                        }
+                    }
+                }
+            }
+            if ($('.findstore-validate-address') !== undefined) {
+                if (this.locality != '') {
+                    $('.findstore-validate-address').hide();
+                } else {
+                    $('.findstore-validate-address').show();
+                }
+
+            }
+            if ($('.no-delivery-results-msg') !== undefined) {
+                $('.no-delivery-results-msg').hide();
+            }
+        },
+
+        /**
+         * Trigger the geocoding on search. Exposes current result then.
+         */
+        onSearch: function() {
+            if (!this.fulltextSearch() || this.fulltextSearch().trim().length === 0 ||
+                this.fulltextSearch().trim().match(/[a-zA-Z]/g) === null ||
+                this.fulltextSearch().trim().match(/[a-zA-Z]/g).length < 3) {
+                this.currentResult(null);
+                if ($('.findstore-validate-address') !== undefined) {
+                    $('.findstore-validate-address').show();
+                }
+            } else {
+                if ($('.findstore-validate-address') !== undefined) {
+                    $('.findstore-validate-address').hide();
+                }
+                var geocodingOptions = {};
+                this.geocoder.geocode(this.fulltextSearch(), geocodingOptions, function (results) {
+                    if (results.length > 0) {
+                        this.currentResult(results[0]);
+                    }
+                }.bind(this));
+            }
+        },
+
+        /**
+         * Filters a given list of markers being around a position, for the current radius
+         *
+         * @param markersList    An array containing the markers
+         * @param centerPosition The center position
+         * @param radius         The radius to check
+         *
+         * @returns {*|Array}
+         */
+        filterMarkersListByPositionRadius: function(markersList, centerPosition, radius) {
+            if (!radius) {
+                radius = parseInt(this.radius, 10);
+            }
+            return this.geocoder.filterMarkersListByPositionRadius(markersList, centerPosition, radius)
+        },
+
+        /**
+         * Geolocalize current user
+         * Uses navigator.geolocation object to retrieve position.
+         *
+         * Fallbacks to a localization by API if
+         * @param callback
+         */
+        geolocalize: function(callback) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    callback,
+                    function(error) {
+                        if (error.message.indexOf("Only secure origins are allowed") === 0
+                            || error.code === error.POSITION_UNAVAILABLE
+                            || error.code === error.TIMEOUT) {
+                            this.geoLocalizeViaApi(callback);
+                        }
+                    }.bind(this),
+                    {maximumAge: 50000, timeout: 20000, enableHighAccuracy: true}
+                );
+            }
+        },
+
+        /**
+         * Geolocalizes the user via the geocoder provider.
+         * Called as a fallback when geolocation through user browser fails.
+         *
+         * @param callback
+         * @returns {*}
+         */
+        geoLocalizeViaApi: function(callback) {
+            return this.geocoder.geoLocalizeViaApi(callback);
+        },
+        onSearchTop: function() {
+            if (this.fulltextSearch().trim().match(/[a-zA-Z]/g).length >= 3) {
+                var geocodingOptions = {};
+                this.geocoder.geocode(this.fulltextSearch(), geocodingOptions, function (results) {
+                    if (results.length > 0) {
+                        if (results[0] && results[0].location) {
+                            this.geolocationSuccess({coords: {latitude: results[0].location.lat, longitude: results[0].location.lng}}, this.fulltextSearch());
+                        }
+                    }
+                }.bind(this));
+            }
+        },
+        geolocationSuccess: function(position, query) {
+            if (position.coords && position.coords.latitude && position.coords.longitude) {
+                var url = this.storeLocatorHomeUrl;
+                if (query !== undefined && query.trim !== "") {
+                    url += '?query=' + query;
+                }
+                window.location.href =  url + "#" + position.coords.latitude + "," + position.coords.longitude;
+            }
+        }
+    })
+});

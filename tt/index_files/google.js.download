@@ -1,0 +1,193 @@
+define(['jquery', 'leaflet'], function ($, L) {
+
+    /**
+     * Retrieve Google Maps API
+     *
+     * @param config the config (contains API Key, country, etc...).
+     *
+     * @returns {string}
+     */
+    function getApiUrl(config) {
+        var apiKey = config['api_key'];
+        var country = config['country'] || 'FR';
+        var locale = config['locale'] || 'fr_FR';
+        var libraries = config['libraries'] || 'geometry';
+
+        return '//maps.google.com/maps/api/js?key=' + apiKey + '&libraries=' + libraries + '&language=' + locale + '&country=' + country;
+    }
+
+    /**
+     * Retrieve Google Geolocalization API URL
+     *
+     * @param config the config (contains API Key, country, etc...).
+     *
+     * @returns {string}
+     */
+    function getGeolocalizeApi(config) {
+        var apiKey = config['api_key'];
+        return 'https://www.googleapis.com/geolocation/v1/geolocate?key=' + apiKey;
+    }
+
+    var geocoder = null;
+
+    /**
+     * Geocoder constructor
+     *
+     * @param options Options configuration
+     * @constructor
+     */
+    function Geocoder(options) {
+        this.options = options;
+    }
+
+    /**
+     * Geocode a text query (address, postcode, etc...)
+     *
+     * @param queryText The query text
+     * @param options   The geocoder options
+     * @param callback  potential callback to call on results
+     */
+    Geocoder.prototype.geocode = function (queryText, options, callback) {
+        if (geocoder === null && google && google.maps) {
+            geocoder = new google.maps.Geocoder();
+        } else if (geocoder === null) {
+            throw __('Google Maps API is not ready yet.')
+        }
+
+        var request = {address: queryText, region: 'FR'};
+
+        geocoder.geocode(request, function(results) {
+            results = results.map(this.prepareResult);
+
+            if (options['bounds']) {
+                results = results.filter(function(result) { return options['bounds'].contains(result.location); });
+            }
+
+            callback(results);
+        }.bind(this));
+    };
+
+    /**
+     * Parse results before returning them
+     *
+     * @param result
+     * @returns {{name: *, bounds: o.LatLngBounds, location: o.LatLng}}
+     */
+    Geocoder.prototype.prepareResult = function (result) {
+        var processedResult = {};
+
+        if (result['geometry'].viewport) {
+            processedResult = {
+                name: result['address_components'][0]['short_name'],
+                bounds: new L.LatLngBounds(
+                    {
+                        lat: result['geometry'].viewport.getNorthEast().lat(),
+                        lng: result['geometry'].viewport.getNorthEast().lng()
+                    },
+                    {
+                        lat: result['geometry'].viewport.getSouthWest().lat(),
+                        lng: result['geometry'].viewport.getSouthWest().lng()
+                    }
+                ),
+                location: new L.LatLng(result['geometry']['location'].lat(), result['geometry']['location'].lng())
+            };
+        }
+
+        return processedResult;
+    };
+
+    /**
+     * Filter a markerlist to return only those being on a radius around a given position.
+     *
+     * @param markersList    The marker lists
+     * @param centerPosition The center position
+     * @param radius         The radius to check, in meters
+     *
+     * @returns {Array}
+     */
+    Geocoder.prototype.filterMarkersListByPositionRadius = function (markersList, centerPosition, radius) {
+
+        var center = new google.maps.LatLng(centerPosition.lat, centerPosition.lng);
+        var list = [];
+
+        markersList.forEach(function(marker) {
+            var itemPosition = new google.maps.LatLng(marker.latitude, marker.longitude);
+            var distance = google.maps.geometry.spherical.computeDistanceBetween(itemPosition, center);
+            if (distance <= radius) {
+                /*marker.distance(distance);*/
+                marker.distance = distance;
+                list.push(marker);
+            }
+        }, this);
+
+        list = sortDistanceStore(list);
+        return list;
+    };
+
+    /**
+     * sortDistanceStore
+     * @param list
+     * @returns {*}
+     */
+    function sortDistanceStore(list) {
+        if (list instanceof Array && list.length <= 1) {
+            return list;
+        }
+        list.sort(function(a, b) {
+            var isInStockA = 0, isInStockB = 0;
+            if (a.isAvailable === false) {
+                isInStockA = 100000;
+            }
+            if (b.isAvailable === false) {
+                isInStockB = 100000;
+            }
+            return (a.distance + isInStockA)  - (b.distance + isInStockB);
+        });
+        return list;
+    }
+
+    /**
+     * Retrieve User Geolocalization. Used as a fallback when navigator.geolocation.getCurrentPosition fails
+     *
+     * @param callback
+     */
+    Geocoder.prototype.geoLocalizeViaApi = function (callback) {
+        $.post(getGeolocalizeApi(this.options), function(success) {callback({coords: {latitude: success.location.lat, longitude: success.location.lng}})});
+    };
+
+    /**
+     * Immutable provider for Geocoder retrieval.
+     *
+     * @type {{init: Provider.init, getGeocoder: Provider.getGeocoder}}
+     */
+    Provider = {
+        init: function(config, callback, extraCallbacks) {
+            var self = this;
+            require([getApiUrl(config)], function() {
+                Provider.geocoder = new Geocoder(config);
+                self.initAutocomplete(config, extraCallbacks);
+                if (callback !== undefined) {
+                    return callback();
+                }
+            });
+        },
+
+        initAutocomplete: function(config, extraCallbacks) {
+            Provider.geocoder.autocomplete = new google.maps.places.Autocomplete(
+                config.element.find('input')[0],
+                {types: ['geocode']}
+            );
+            Provider.geocoder.autocomplete.setComponentRestrictions({country: config['country']});
+
+            if (extraCallbacks !== undefined) {
+                Provider.geocoder.autocomplete.addListener('place_changed', extraCallbacks);
+            }
+        },
+
+        getGeocoder: function() {
+            return Provider.geocoder;
+        }
+    };
+
+    return Provider;
+});
