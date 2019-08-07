@@ -1,0 +1,176 @@
+/**
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this module to newer
+ * versions in the future.
+ *
+ *
+ * @category  Smile
+ * @package   Smile\RetailerOffer
+ * @author    Romain Ruaud <romain.ruaud@smile.fr>
+ * @copyright 2016 Smile
+ * @license   Open Software License ("OSL") v. 3.0
+ */
+
+/*jshint browser:true jquery:true*/
+/*global alert*/
+
+define([
+    'jquery',
+    'uiComponent',
+    'mage/storage',
+    'Magento_Customer/js/customer-data',
+    'moment',
+    'ko',
+    'uiRegistry',
+    'Betta_StockAvailability/js/model/stores',
+    'mage/translate'
+], function ($, Component, storage, customerData, moment, ko, registry, StoreCollection, $t) {
+
+    "use strict";
+
+    var retailer = customerData.get('current-store');
+
+    return Component.extend({
+        /**
+         * Constructor
+         */
+        initialize: function () {
+            this._super();
+            var storeList = new StoreCollection({items : this.offers});
+            this.stores = ko.observable(storeList.getList());
+            this.displayedStores = ko.observable([]);
+            this.initGeocoderBinding();
+            $(document).on('click', '#top-storelocator-chooser-betta .store-search-form input', function(event) {
+                if ($('#top-storelocator-chooser-betta .no-results-msg') !== undefined) {
+                    $('#top-storelocator-chooser-betta .no-results-msg').hide();
+                }
+            });
+        },
+
+        /**
+         * Init the geocoding component binding
+         */
+        initGeocoderBinding: function() {
+            var self = this;
+            registry.get(this.name + '.geocoder', function (geocoder) {
+                this.geocoder = geocoder;
+                geocoder.currentResult.subscribe(function (result) {
+                    if (result && result.location) {
+                        var offers = geocoder.filterMarkersListByPositionRadius(this.stores(), result.location);
+                        this.displayedStores(offers);
+                    } else {
+                        this.displayedStores(this.stores);
+                    }
+                    var storeAvailableTop = null;
+                    if (this.displayedStores().length > 0) {
+                        storeAvailableTop = this.displayedStores()[0];
+                    }
+                    if (storeAvailableTop !== null) {
+                        var serviceUrl = 'rest/default/V1/guest-betta-locator/auto-select-store-locator',
+                            payload = JSON.stringify({
+                                    address: {
+                                        'retailer_id': storeAvailableTop.sellerId
+                                    }
+                                }
+                            );
+                        self.autoSelectStoreLocator(payload, serviceUrl);
+                    } else {
+                        if ($('#top-storelocator-chooser-betta .no-results-msg') !== undefined) {
+                            $('#top-storelocator-chooser-betta .no-results-msg').show();
+                        }
+                    }
+                }.bind(this));
+            }.bind(this));
+        },
+
+        /**
+         *
+         * @param payload
+         * @param serviceUrl
+         */
+        autoSelectStoreLocator: function (payload, serviceUrl) {
+            var self = this;
+            var body = $('body').loader();
+            body.loader('show');
+            storage.post(
+                serviceUrl, payload, false
+            ).done(
+                function (response) {
+                    if (response === true) {
+                        customerData.reload(['current-store'], false).done(function () {
+                            body.loader('hide');
+                            if ($('body') !== undefined) {
+                                $('body').trigger('click');
+                            }
+                        }).fail(
+                            function () {
+                                body.loader('hide');
+                            }
+                        );
+                    } else {
+                        body.loader('hide');
+                        if ($('#top-storelocator-chooser-betta .no-results-msg') !== undefined) {
+                            $('#top-storelocator-chooser-betta .no-results-msg').show();
+                        }
+                    }
+                }
+            ).fail(
+                function () {
+                    body.loader('hide');
+                }
+            );
+        },
+
+        /**
+         * Check if there is a current store
+         *
+         * @returns {boolean}
+         */
+        hasStore : function () {
+            return (retailer().entity_id !== null) && (retailer().entity_id !== undefined);
+        },
+
+        /**
+         * Retrieve link label
+         *
+         * @returns {string}
+         */
+        getLinkLabel : function () {
+            return $.mage.__('View availability in stores ...');
+        },
+
+        /**
+         * Get current store name
+         *
+         * @returns {*}
+         */
+        getStoreName : function () {
+            return retailer().name;
+        },
+
+        /**
+         * Get current city
+         *
+         * @returns {*}
+         */
+        getCity : function () {
+            if(retailer().address_data){
+                return retailer().address_data.city;
+            }
+            return null;
+        },
+
+        /**
+         * Get current postcode
+         *
+         * @returns {*}
+         */
+        getPostCode : function () {
+            if(retailer().address_data){
+                return retailer().address_data.postcode;
+            }
+            return null;
+        }
+    })
+});

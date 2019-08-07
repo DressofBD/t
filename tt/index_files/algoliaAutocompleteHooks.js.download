@@ -1,0 +1,87 @@
+define(['jquery'], function($) {
+    window.algoliaHookBeforeAutocompleteStart = function(sources, options, algoliaClient) {
+        sources.forEach(function(source) {
+            if(source.name == 'products') {
+                source.templates.footer = function (query, content) {
+                    var allUrl = algoliaConfig.baseUrl + '/catalogsearch/result/?q=' + encodeURIComponent(query.query);
+                    var returnFooter = '<div id="autocomplete-products-footer"><a class="button search-more" href="' + allUrl +  '">More Products</a>';
+                    returnFooter += '</div>';
+                    return returnFooter;
+                }
+            }
+        });
+
+        var extraSections = algoliaConfig.autocomplete.extraSections;
+        if (typeof extraSections !== 'undefined') {
+            extraSections.forEach(function (extraSection) {
+                sources.push({
+                    source: function (query, callback) {
+                        require([
+                            'algoliaBundle'
+                        ], function (algoliaBundle) {
+                            if (typeof algoliaBundle.Hogan !== 'undefined') {
+                                // Save Hogan instance to use it later for rendering.
+                                window.algoliaHogan = algoliaBundle.Hogan;
+                            }
+
+                            var hit = algoliaBundle.$.fn.autocomplete.sources.hits(
+                                algoliaClient.initIndex(extraSection.indexName),
+                                extraSection.indexOptions
+                            );
+
+                            hit(query, callback);
+                        });
+                    },
+                    name: extraSection.name,
+                    templates: {
+                        empty: function (hit) {
+                            if (typeof window.algoliaHogan !== 'undefined') {
+                                return window.algoliaHogan.compile($(extraSection.template.empty).html()).render(hit);
+                            }
+
+                            return '';
+                        },
+                        header: function (hit) {
+                            if (typeof window.algoliaHogan !== 'undefined') {
+                                return window.algoliaHogan.compile($(extraSection.template.header).html()).render(hit);
+                            }
+
+                            return '';
+                        },
+                        suggestion: function (hit) {
+                            if (typeof hit._highlightResult.title.value !== 'undefined') {
+                                // Remove any highlighting tags.
+                                hit._highlightResult.title.value = $('<p>' + hit._highlightResult.title.value + '</p>').text();
+                            }
+
+                            if (typeof hit._highlightResult.thumbnail.value !== 'undefined') {
+                                // Remove any highlighting tags.
+                                hit._highlightResult.thumbnail.value = $('<p>' + hit._highlightResult.thumbnail.value + '</p>').text();
+                            }
+
+                            if (typeof hit._highlightResult.categoryNames.value !== 'undefined') {
+                                // Remove any highlighting tags.
+                                hit._highlightResult.categoryNames.value = $('<p>' + hit._highlightResult.categoryNames.value + '</p>').text();
+                            }
+
+                            if (typeof window.algoliaHogan !== 'undefined') {
+                                return window.algoliaHogan.compile($(extraSection.template.suggestion).html()).render(hit);
+                            }
+
+                            return '';
+                        },
+                        footer: function (hit) {
+                            if (typeof window.algoliaHogan !== 'undefined') {
+                                return window.algoliaHogan.compile($(extraSection.template.footer).html()).render(hit);
+                            }
+
+                            return '';
+                        }
+                    }
+                });
+            });
+        }
+
+        return [sources, options];
+    }
+});

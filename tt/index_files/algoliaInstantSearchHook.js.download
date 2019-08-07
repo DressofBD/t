@@ -1,0 +1,178 @@
+define([
+    'uiComponent'
+], function (uiComponent) {
+    'use strict';
+
+    window.algoliaHookAfterInstantsearchStart = function (search) {
+        search.on('render', function () {
+            require(
+                [
+                    'jquery',
+                    'ko',
+                    'Aheadworks_OnSale/js/ui/components/label',
+                    'Aheadworks_OnSale/js/widget/label-renderer',
+                    'mage/apply/main',
+                    'domReady!',
+                    'uiLayout',
+                    'uiRegistry',
+                    'uiElement'
+                ]);
+
+            showAmountItemsBottom();
+
+            hidePagingLabel();
+
+            appendCategoryDescription();
+
+            if (jQuery(window).width() < 768) {
+
+                checkPaginationShow();
+
+                jQuery('.algolia-instant-selector-results').click(function (e) {
+                    if (jQuery(e.target).hasClass('ais-pagination--link')) {
+                        checkPaginationShow();
+                    }
+                });
+            }
+
+            bettaShowAll();
+            goToCategoryLevel();
+
+        });
+
+        function appendCategoryDescription() {
+
+            if (jQuery('#algolia-right-container').length) {
+                jQuery('.category-secondary-description').appendTo('#algolia-right-container');
+            }
+
+            if (jQuery('#algolia-right-container').length) {
+                jQuery('.category-description').appendTo('#algolia-right-container');
+            }
+        }
+
+        function checkPaginationShow() {
+            if (jQuery('.ais-pagination .ais-pagination--item__active').length) {
+                setTimeout(function () {
+
+                    jQuery('.ais-pagination .ais-pagination--item').removeClass('show-on-mobile');
+                    var $indexA = jQuery('.ais-pagination .ais-pagination--item__active').index();
+
+                    if ($indexA >= 4) {
+                        var $tmp = jQuery(".ais-pagination > li").length - $indexA;
+                        if ($tmp > 2) {
+                            $indexA = $indexA + 1;
+                        }
+
+                        var $c = 0;
+                        if ($tmp == 2) {
+                            $c = -1;
+                        }
+
+                        for (var $i = $indexA; $i > 0; $i--) {
+                            if ($c < 4) {
+                                jQuery(".ais-pagination > li:eq(" + $i + ")").addClass('show-on-mobile');
+                            } else {
+                                break;
+                            }
+                            $c++;
+                        }
+                    } else {
+                        if ($indexA == 1) {
+                            jQuery(".ais-pagination > li:nth-child(-n+6)").addClass('show-on-mobile');
+                        } else {
+                            jQuery(".ais-pagination > li:nth-child(-n+5)").addClass('show-on-mobile');
+                        }
+                    }
+
+                }, 200);
+            } else {
+                setTimeout(function () {
+                    checkPaginationShow();
+                }, 100);
+            }
+        }
+
+        function bettaShowAll() {
+            if (jQuery('.ais-refinement-list--body').length > 0) {
+                bettaShowDefault();
+                jQuery('.betta-show-all').on('click', function () {
+                    var bettaShowAll = this;
+                    if (jQuery(bettaShowAll).hasClass('active')) {
+                        jQuery(bettaShowAll).removeClass('active');
+                        bettaShowDefault();
+                    } else {
+                        var classAttributeParent = jQuery(bettaShowAll).attr('data-attribute');
+                        if (classAttributeParent != undefined) {
+                            if (classAttributeParent.indexOf('is-widget-container-') >= 0) {
+                                jQuery('.' + classAttributeParent).find('.ais-refinement-list--item').each(function () {
+                                    if (jQuery(this).hasClass('betta-hide-attribute')) {
+                                        jQuery(this).removeClass('betta-hide-attribute');
+                                    }
+                                });
+                            }
+                        }
+                        jQuery(bettaShowAll).addClass('active');
+                    }
+                });
+            }
+        }
+
+        function bettaShowDefault() {
+            if (jQuery('.ais-refinement-list--body').length > 0) {
+                jQuery('.ais-refinement-list--body').each(function () {
+                    var bettaBodyThis = this;
+                    var classAttribute = jQuery(bettaBodyThis).parent().parent().parent().attr('class');
+                    if (classAttribute != undefined) {
+                        if (classAttribute.indexOf('is-widget-container-') >= 0) {
+                            var bettaItems = jQuery(bettaBodyThis).find('.ais-refinement-list--item');
+                            if (bettaItems.length > 6) {
+                                bettaItems.each(function () {
+                                    if (jQuery(this).index() > 5) {
+                                        jQuery(this).addClass('betta-hide-attribute');
+                                    }
+                                });
+                                if (jQuery(bettaBodyThis).find('.betta-show-all').length == 0) {
+                                    jQuery('<div class="betta-show-all" data-attribute="' + classAttribute + '"><span class="show-all">Show All</span><span class="show-less">Show Less</span></div>').insertAfter('.' + classAttribute + ' .ais-refinement-list--list');
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function showAmountItemsBottom() {
+            var content = '';
+            var result = jQuery('span[itemprop="numberOfItems"]').html();
+
+            if (result == 1) {
+                content = '<div class="res-bottom">1 item found</div>';
+            } else {
+                result = result ? result : 0;
+                content = '<div class="res-bottom">' + result + ' items found' + '</div>';
+            }
+            jQuery('#algolia-stats-bottom').html(content);
+        }
+
+        function hidePagingLabel() {
+            if (jQuery('#instant-search-pagination-container > div').attr('style')) {
+                jQuery("#paging-label").css({"display": "none"});
+            } else {
+                jQuery("#paging-label").css({"display": ""});
+            }
+        }
+        function goToCategoryLevel() {
+            jQuery('.is-widget-container-categories .ais-hierarchical-menu--list__lvl0 > .ais-hierarchical-menu--item__active > div > .ais-hierearchical-link-wrapper > .ais-hierarchical-menu--link').click(function (e) {
+                if (jQuery('.breadcrumbs ul.items li.item a') !== undefined && jQuery('.breadcrumbs ul.items li.item a')[1] !== undefined
+                    && jQuery('.breadcrumbs ul.items li.item a')[1].href !== undefined) {
+                    window.location.href = jQuery('.breadcrumbs ul.items li.item a')[1].href;
+                }
+            });
+        }
+
+        return search;
+    };
+
+    return uiComponent;
+});

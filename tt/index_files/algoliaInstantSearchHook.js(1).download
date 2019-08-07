@@ -1,0 +1,49 @@
+define([
+    'uiComponent'
+], function (uiComponent) {
+    'use strict';
+    window.algoliaHookAfterInstantsearchStart = function (search) {
+        search.on('render', function () {
+            require(
+                [
+                    'jquery',
+                    'ko',
+                    'Aheadworks_OnSale/js/ui/components/label',
+                    'Aheadworks_OnSale/js/widget/label-renderer',
+                    'mage/apply/main',
+                    'domReady!',
+                    'uiLayout',
+                    'uiRegistry',
+                    'uiElement'
+                ],
+                function ($, ko, awLabelRenderer, awLabel, mage) {
+                    var mageApplyFlag = false;
+                    var options = {
+                        'labelAreaWrap' : '.aw-onsale__label-area-wrap',
+                        'labelElement' : '.label-block',
+                        'labelWrap' : '.label-wrap',
+                        'widgetAlias' : 'awOnSaleLabelRenderer'
+                    };
+                    $.each($(options['labelAreaWrap']), function (key, value) {
+                        var labelElement = $(value).find(options['labelElement']);
+                        var widgetConfiguration = $(value).data('configuration');
+                        if ($.fn.applyBindings != undefined) {
+                            if ($(labelElement).find(options['labelWrap']).length == 0) {
+                                $(labelElement).applyBindings();
+                                $(value).mage(options['widgetAlias'], widgetConfiguration);
+                                mageApplyFlag = true;
+                            }
+                        }
+                    });
+                    if (mageApplyFlag) {
+                        mage.apply();
+                    }
+                }
+            );
+        });
+
+        return search;
+    };
+
+    return uiComponent;
+});
