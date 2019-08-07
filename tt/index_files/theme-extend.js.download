@@ -1,0 +1,85 @@
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+define([
+    'jquery',
+    'matchMedia',
+    'mage/smart-keyboard-handler',
+    'mage/mage',
+    'mage/translate',
+    'slick',
+    'mage/ie-class-fixer',
+    'domReady!',
+    'mage/url',
+    'punch',
+    'shorten',
+    'mage/validation'
+], function ($, mediaCheck, keyboardHandler, url, __) {
+    'use strict';
+
+    var $catalogList = $('#catalog-product-listing-block');
+    if ($catalogList.hasClass('slick-initialized')) {
+        $catalogList.slick('unslick');
+    }
+
+    $catalogList.slick({
+        infinite: false,
+        slidesToShow: 3.5,
+        slidesToScroll: 1,
+        arrows: true,
+        dots: true,
+        prevArrow: '<span class="slick-prev"></span>',
+        nextArrow: '<span class="slick-next"></span>',
+        appendArrows: $('.wrap-category-item  .betta-slider-nav'),
+        responsive: [
+            {
+                breakpoint: 1280,
+                settings: {
+                    slidesToShow: 2.5
+                }
+            },
+            {
+                breakpoint: 640,
+                settings: {
+                    slidesToShow: 2
+                }
+            },
+            {
+                breakpoint: 480,
+                settings: {
+                    slidesToShow: 1
+                }
+            }
+        ]
+    });
+
+    function destroyShorten() {
+        var $desc = $(".category-main-description .allcontent").html();
+        $(".category-main-description").html($desc);
+    }
+
+    mediaCheck({
+        media: '(max-width: 767px)',
+        entry: function () {
+            destroyShorten();
+            $('.category-main-description').shorten({
+                showChars: 100,
+                ellipsesText: '',
+                moreText: "More",
+                lessText: "Less",
+                force: true
+            });
+        },
+        exit: function () {
+            destroyShorten();
+            $('.category-main-description').shorten({
+                showChars: 280,
+                ellipsesText: '',
+                moreText: __('More'),
+                lessText: __('Less'),
+                force: true
+            });
+        }
+    });
+});
