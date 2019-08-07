@@ -1,0 +1,3771 @@
+
+
+
+var ekopts=''
+var requiredValues='' ;
+var foundpapmatch=0;
+;(function(  ){
+    //replace this with jq.cookie that Flix always uses.
+    var cookie = function(){return{read: ( name )=>{try{const nameEQ=name + "="; const ca=document.cookie.split(';'); for(let i=0;i < ca.length;i++){let c=ca[i]; while (c.charAt(0)==' ') c=c.substring(1,c.length); if (c.indexOf(nameEQ)==0) return c.substring(nameEQ.length,c.length);}return null;}catch(e){this.error("read error:", e.message);}}, erase: ( name )=>{try{createCookie(name,"",-1);}catch(e){this.error("erase error:", e.message)}}, create: (name, value, days, path)=>{try{if ( days ){const date=new Date(); date.setTime(date.getTime()+(days*24*60*60*1000)); var expires="; expires="+date.toGMTString();}else var expires=""; document.cookie=name+"="+value+expires+"; path=/";}catch(e){this.error("create error:", e.message)}}, error: ( err )=>{console.log( err );}}};
+
+
+    //log3 is this a global method - should this be moved to a sub global such as flixJsCallbacks etc.
+    if( window.top.location.href.search( 'flix-pqa' ) != -1 ){
+        window.log3=function(){
+            log3.history=log3.history||[];
+            log3.history.push(arguments)
+            if(this.console){
+                window.top.console.log(Array.prototype.slice.call(arguments));
+            }
+        }
+    }
+    else {
+        window.log3=function(){};
+    }
+
+    log3( "pointandplace.js V2.2");
+
+    //default js - perhaps this is the intended subglobal to use for globals.
+    window.ekCallbacks={};
+
+    /**
+     * SAMI:
+     * ------------------------------------------------------------------------
+     * 1. Refactor findRequiredValues to just find the parameters required for
+     *    the call to lambda: distributor_id && /mpn/ean/sku || product_id.
+     * 2. What is this? home/saminoz/Sites/checkout/production/public/static/pap/json/retailers.json
+     *    need to know if and how this used, cannot find the production code reference.
+     */
+
+    getProductId = function(){
+        var product_id = null;
+        //NOTE. this is where we get a product_id.
+        if( typeof window.flixJsCallbacks!='undefined' && window.flixJsCallbacks.pid ) {
+            product_id = window.flixJsCallbacks.pid
+        }
+        if(FlixjQ('[id^=inpage-data]').length) {
+            product_id = FlixjQ('[id^=inpage-data]').attr('id').replace('inpage-data-','');
+        }
+        if(FlixjQ('.main_mot_product_wrapper').length) {
+            product_id = FlixjQ('.main_mot_product_wrapper').attr('alt');
+        }
+        if(FlixjQ('.main_mot_product_wrapper').length) {
+            product_id = FlixjQ('.main_mot_product_wrapper').attr('alt');
+        }
+
+        log3('product_id-'+product_id)
+        return product_id;
+    }
+
+    findRequiredValues = function( opts ){
+        
+        var
+            requiredValues = {
+                mpn: null, //overrides S3.
+                ean: null, //overrides S3.
+                sku: null, //overrides S3.
+                language: null,
+                buttoninsert: null, //overrides S3.
+                buttoninsertmob: null,
+                papcss: null, //overrides S3.
+                papbutton: null, //overrides S3.
+                papbutton_mob:null,
+                ekdistid: null,
+                data_fallbacklanguage: null,
+                ekfallback: 0,
+                data_pap2: "",
+                header_already_added: null,
+                data_distributor: null,
+                data_pap: null,
+                header_already_added2: null,
+                papprepend: null,
+                product_id: null,
+                loaderscript: null,
+                ios12_skus : ["300001"],
+                iOS12 : false,
+                flixDomain: "//d2m3ikv8mpgiy8.cloudfront.net/",
+                arid: null,
+                arurl:null,
+                uuid:null,
+                ekab: cookie().read("ekab")
+            }
+        ;
+
+        if (location.href.search('flix-local') != -1 ) {
+            requiredValues.flixdomain = "//localhost/delivery_flix360/trunk/public/static/pap/json/";
+        }
+        else if( location.href.search('live=0')!== -1 || location.href.search('paplive=0') !== -1 ) {
+            requiredValues.flixdomain = "https://eyekandy-syndication.s3.eu-west-2.amazonaws.com/dev/json/";
+        }
+       
+        
+        else{
+            requiredValues.flixdomain ='https://media.pointandplace.com/lambda/matches/json/'
+            //requiredValues.flixdomain = "https://d1av0cntmbzu38.cloudfront.net/lambda/matches/json/";
+        }
+        requiredValues.iOS12 = parseFloat(('' + (/CPU.*OS ([0-9_]{1,5})|(CPU like).*AppleWebKit.*Mobile/i.exec(navigator.userAgent) || [0,''])[1]).replace('undefined', '3_2').replace('_', '.').replace('_', '')) || false;
+
+        if( document.querySelector('script[data-eky-distributor]')){
+            log3('custom EK pap')
+            requiredValues.loaderscript = document.querySelector('script[data-eky-distributor]');
+            //NOTE. overrides S3 values
+            if( !! requiredValues.loaderscript )  {
+                requiredValues.data_pap=requiredValues.loaderscript.getAttribute('data-eky-pap');
+                if(requiredValues.loaderscript.getAttribute('data-eky-papcss')) {
+                    requiredValues.papcss = requiredValues.loaderscript.getAttribute('data-eky-papcss');
+                }
+                if(requiredValues.loaderscript.getAttribute('data-eky-papbutton')) {
+                    requiredValues.papbutton = requiredValues.loaderscript.getAttribute('data-eky-papbutton');
+                }
+
+                if(localStorage.kxdixons_kuid) {
+                    //SAMI to decide if S3 helpful.
+                    var uuid=(localStorage.kxdixons_kuid) ? localStorage.kxdixons_kuid : "";
+                }
+
+                requiredValues.data_distributor = requiredValues.loaderscript.getAttribute('data-eky-distributor');
+                requiredValues.ekdistid = requiredValues.loaderscript.getAttribute('data-eky-distributor');
+                requiredValues.hash=requiredValues.data_distributor
+
+                if(requiredValues.loaderscript.getAttribute('data-eky-mpn')) {
+                    requiredValues.mpn = requiredValues.loaderscript.getAttribute('data-eky-mpn');
+                }
+                if(requiredValues.loaderscript.getAttribute('data-eky-ean')) {
+                    requiredValues.ean = requiredValues.loaderscript.getAttribute('data-eky-ean');
+                }
+                if(requiredValues.loaderscript.getAttribute('data-eky-sku')) {
+                    requiredValues.sku = requiredValues.loaderscript.getAttribute('data-eky-sku');
+                }
+                if(requiredValues.loaderscript.getAttribute('data-eky-language')) {
+                    requiredValues.language = requiredValues.loaderscript.getAttribute('data-eky-language');
+                }
+                if(requiredValues.loaderscript.getAttribute('data-eky-insert')) {
+                    requiredValues.buttoninsert = requiredValues.loaderscript.getAttribute('data-eky-insert');
+                }
+                if(requiredValues.loaderscript.getAttribute('data-eky-mobinsert')) {
+                    requiredValues.buttoninsertmob = requiredValues.loaderscript.getAttribute('data-eky-mobinsert');
+                }
+            }
+
+        }
+        //NOTE. second kind of init. In this case a papuuid has been retrieved from /static/distributor/* and added to the global environment.
+        //NOTE. this case the S3 bucket is storing the model info. under mpn/ean/skus.
+        else if( typeof window.papuuid !== 'undefined' && window.papuuid.length ){
+            log3('papuuid custom pap')
+            //NOTE. we will still need this.
+            requiredValues.data_distributor = window.papuuid;
+            requiredValues.ekdistid = window.papuuid;
+            requiredValues.hash=requiredValues.data_distributor
+            //NOTE. We should be able to replace this by S3 as we will be distributor specific.
+            if(FlixjQ(top.document).find('*[itemprop="sku"]') && FlixjQ(top.document).find('*[itemprop="sku"]').attr('content') && FlixjQ(top.document).find('*[itemprop="sku"]').attr('content').length>0){
+                requiredValues.sku=FlixjQ(top.document).find('*[itemprop="sku"]').attr('content')
+                requiredValues.sku=requiredValues.sku.replace(/\D/g,'')
+            }
+
+
+            //NOTE. We should be able to replace this by S3 as we will be distributor specific.
+            if( FlixjQ.fn && FlixjQ.fn.inPage) {
+                requiredValues.language=FlixjQ.fn.inPage.data.language;
+            }
+            //NOTE: in this second type of init. we look for the regular inpage script tags.
+            if(document.querySelector('script[data-flix-distributor]')){
+                requiredValues.loaderscript = document.querySelector('script[data-flix-distributor]');
+                //NOTE. overrides S3 values
+                if( !! requiredValues.loaderscript ) {
+                    requiredValues.mpn = requiredValues.loaderscript.getAttribute('data-flix-mpn');
+                    requiredValues.ean = requiredValues.loaderscript.getAttribute('data-flix-ean');
+                    if(requiredValues.loaderscript.getAttribute('data-flix-sku') && requiredValues.loaderscript.getAttribute('data-flix-sku').length > 0) {
+                        requiredValues.sku = requiredValues.loaderscript.getAttribute('data-flix-sku');
+                    }
+                    if(requiredValues.loaderscript.getAttribute('data-flix-language') && requiredValues.loaderscript.getAttribute('data-flix-language').length > 0) {
+                        requiredValues.language = requiredValues.loaderscript.getAttribute('data-flix-language');
+                    }
+                    if(requiredValues.loaderscript.getAttribute('data-flix-fallback-language') && requiredValues.loaderscript.getAttribute('data-flix-fallback-language').length>0) {
+                        requiredValues.data_fallbacklanguage=requiredValues.loaderscript.getAttribute('data-flix-fallback-language');
+                    }
+                    if( !! requiredValues.sku ) {
+                        requiredValues.sku = requiredValues.mpn;
+                    }
+
+                    log3('In data-flix-inpage' + requireValues.sku)
+                    requiredValues.data_pap2 = requiredValues.loaderscript.getAttribute('data-flix-inpage')
+                }
+            }
+
+
+            //walmart iframe - collect data
+            if(typeof papiframesid!='undefined'){
+                log3('---papiframesid')
+                var flixiframe=FlixjQ("#"+papiframesid)[0].contentWindow
+
+                requiredValues.language=flixiframe.FlixjQ.fn.inPage.data.language
+            }
+        }
+        //NOTE: in this third type of init we look for the inpage/minisite/hotspot script tags and we get a product_id by which the models are referenced.
+        else if(document.querySelector('script[data-flix-distributor]')){
+            log3('default pap')
+            requiredValues.loaderscript = document.querySelector('script[data-flix-distributor]')
+            if( !! requiredValues.loaderscript ) {
+                //requiredValues.data_distributor = 'retailers'
+                requiredValues.ekdistid = requiredValues.loaderscript.getAttribute('data-flix-distributor');
+                requiredValues.data_distributor = requiredValues.loaderscript.getAttribute('data-flix-distributor');
+                requiredValues.hash='longtail'
+
+                requiredValues.language = requiredValues.loaderscript.getAttribute('data-flix-language');
+                requiredValues.data_fallbacklanguage = requiredValues.loaderscript.getAttribute('data-flix-fallback-language');
+                //NOTE. don't think this could happen at this point? SAMI to check.
+                if( requiredValues.ekfallback === 1 ) {
+                    requiredValues.language = requiredValues.data_fallbacklanguage;
+                }
+
+                requiredValues.product_id = getProductId();
+
+                //NOTE. didn't we already do this in the previous part?
+                if( !! window.papuuid ){
+                    log3('window.papuuid:' + window.papuuid)
+                    requiredValues.data_distributor = window.papuuid
+                    log3('default retailers pap')
+                    requiredValues.mpn = requiredValues.loaderscript.getAttribute('data-flix-mpn');
+                    requiredValues.ean = requiredValues.loaderscript.getAttribute('data-flix-ean');
+                    requiredValues.sku = requiredValues.loaderscript.getAttribute('data-flix-sku');
+                    requiredValues.language = requiredValues.loaderscript.getAttribute('data-flix-language');
+                }
+                //TODO: what does data_pap2 do?
+                requiredValues.data_pap2 = requiredValues.loaderscript.getAttribute('data-flix-inpage');
+            }
+
+        }
+        //NOTE. in this fourth init case we are looking for info. from the call for the inpage. May account for manual? or another variation.
+        else {
+            log3('default pap - inpage js')
+            var
+                x = document.getElementsByTagName("script")
+                ,   x2
+                ,   jsurl
+                ,   jsurl2
+                ,   jsurl3
+                ,   json4
+                ,   jsurlb
+                ,   json5
+                ,   json6
+            ;
+
+
+            requiredValues.header_already_added = false;
+            for (var i=0; i< x.length; i++){
+                if (x[i].src.search("/delivery/js/inpage/") != -1 ){
+                    jsurl=x[i].src
+                    requiredValues.header_already_added = true;
+                }
+            }
+
+            if(typeof jsurl!='undefined' &&  jsurl.search('/inpage/')!=-1){
+                jsurl2 = jsurl.split('/inpage/')
+                jsurl3 = jsurl2[1].split('/')
+                requiredValues.ekdistid = jsurl3[0];
+                requiredValues.data_distributor=jsurl3[0]
+                requiredValues.language=jsurl3[1]
+
+            }
+            //log3(FlixjQ)
+            if(typeof FlixjQ!='undefined' && typeof FlixjQ.fn.inPage!='undefined') {
+                requiredValues.language=FlixjQ.fn.inPage.data.language;
+            }
+
+
+            if(FlixjQ('#iframe-AboutThisItem-marketingContent') && FlixjQ('#iframe-AboutThisItem-marketingContent').length){
+                requiredValues.language=FlixjQ('#iframe-AboutThisItem-marketingContent')[0].contentWindow.FlixjQ.fn.inPage.data.language;
+                requiredValues.data_distributor='135'
+                requiredValues.sku=FlixjQ('*[itemprop="sku"]').attr('content')
+                requiredValues.sku=requiredValues.sku.replace(/\D/g,'');
+
+            }
+
+            //requiredValues.data_distributor='retailers'
+            requiredValues.hash='longtail'
+
+            if(typeof jsurl2!='undefined' &&  jsurl2[1].search('&fl')!=-1){
+                json4=jsurl2[1].split('&fl=')
+                requiredValues.data_fallbacklanguage=json4[1].substr(0, 2)
+                if(requiredValues.ekfallback === 1 ) {
+                    requiredValues.language=requiredValues.data_fallbacklanguage;
+                }
+            }
+
+            x2 = document.getElementsByTagName("script");
+            requiredValues.header_already_added2 = false;
+            for (var i=0; i< x2.length; i++){
+                if (x2[i].src.search("media.flixfacts.com/js/loader.js")!=-1){
+                    jsurlb=x2[i].src
+                    requiredValues.header_already_added2 = true;
+                }
+            }
+
+            if(typeof jsurlb!='undefined' && jsurlb.search('&data-flix-inpage=')!=-1){
+                json5=jsurlb.split('&data-flix-inpage=')
+                json6=json5[1].split('&')
+                if(json6.length>0) {
+                    requiredValues.data_pap2=json6[0];
+                }
+            }
+
+            if(FlixjQ('#flix-mbl-page').length>0){
+                requiredValues.language = FlixjQ('#flix-mbl-page').attr('data-flix-lang')
+                log3('lang- '+language)
+            }
+
+            requiredValues.product_id = getProductId();
+        }
+        return requiredValues;
+    }
+
+    initPNP = function () {
+
+        
+        if(requiredValues=='')
+            requiredValues = findRequiredValues();
+        //using FlixjQ prototype.
+        FlixjQ.fn.ek={};
+        //NOTE. so here we create all our methods and events on the FlixjQ prototype chain.
+        createEK();
+        //move these items to either S3 or requiredValues.
+        log3(requiredValues.flixdomain)
+        log3('initPNP - distributor: '+requiredValues.data_distributor)
+
+        if( !! requiredValues.language ) {
+
+            var isocode = requiredValues.language.toLowerCase();
+        }
+
+        var url;
+        //move these items to either S3 or requiredValues.
+        if(document.querySelector('script[data-eky-distributor]') || (typeof window.papuuid !== 'undefined' )){
+            url = requiredValues.flixdomain+''+requiredValues.data_distributor+'-'+requiredValues.language+'.json';
+        }
+        else {
+            //url=flixdomain+'json/eyekandynew.json';
+            url = requiredValues.flixdomain+'longtail-'+ isocode +'.json';
+        }
+
+        log3("window.papuuid:", window.papuuid);
+
+        //NOTE: hardcoded value for a moment.
+        //requiredValues.data_distributor = 13131;
+
+
+
+        function getString ( objParams ) {
+            let params = [];
+            for(let p in objParams) params.push(p + "=" + objParams[p]);
+            return "?" + params.join("&");
+        }
+        var makeQueryString = getString({
+            distributor: requiredValues.data_distributor,
+            //distributor: "37d9b78c-846d-47e2-baec-633093086142",
+            lang: requiredValues.language.toLowerCase(),
+            product_id: requiredValues.product_id,
+            mpn: requiredValues.mpn,
+            //mpn: "KD65A1BU",
+            ean: requiredValues.ean,
+            sku: requiredValues.sku,
+            page: encodeURIComponent(window.location.href),
+            hash: requiredValues.hash,
+            ekab: requiredValues.ekab
+        });
+
+        //come back to this is we think we are going to need it.
+        if(location.href.search('paplive=0')!=-1){
+            FlixjQ.ajax({
+                type: 'GET',
+                url: url,
+                async: true,
+                jsonpCallback: 'jsonCallback',
+                contentType: "application/json",
+                dataType:'jsonp',
+                success: function(data) {
+                        if( typeof data === "string") data = JSON.parse(data);
+                        if( !! data.ekab ) {
+                          cookie().create("ekab", data.ekab, 365, "/");
+                          requiredValues.tag = data.tag;
+                          requiredValues.ekab = data.ekab;
+                        }
+                        pageActions(data);
+                },
+                error:function (err){
+                    console.log("FlixjQ:error: ", err);
+                }
+            });
+        }else{
+
+            FlixjQ.ajax({
+                    type: 'GET',
+                    url:url + makeQueryString,
+                    async: true,
+                    crossDomain: true,
+                    contentType: "application/json; charset=utf-8",                
+                    beforeSend: function(xhr){
+                       xhr.withCredentials = true;
+                    },
+                    success: function(data) {
+                        if( typeof data === "string") data = JSON.parse(data);
+                        if( !! data.ekab ) {
+                          cookie().create("ekab", data.ekab, 365, "/");
+                          requiredValues.tag = data.tag;
+                          requiredValues.ekab = data.ekab;
+                        }
+                        pageActions(data);
+                },
+                error:function (err){
+                    console.log("FlixjQ:error: ", err);
+                }
+            });
+        }
+
+        //arror func is not supported on IE11
+        function pageActions(distributor_content){
+
+            log3('init PnP-data')
+            log3("JSON data: ", distributor_content );
+            var
+                buttonlogo = ''
+                ,   maincss=''
+                ,   papcontent=''
+                ,   headertext = ''
+                ,   maintext = ''
+                ,   buttonposition = ''
+                ,   buttonpositionmob=''
+                ,   buttoninsert = ''
+                ,   buttoninsertmob = ''
+                ,   arurl
+                ,   bannerimg_desktop
+                ,   buttonlogohover
+                ,   gltf=''
+            ;
+
+            //TODO: replace all three?
+
+            buttonlogo = distributor_content.buttonlogo;
+
+
+            //buttonlogo = distributor_content.pplogohover;
+            requiredValues.arurl = distributor_content.arurl;
+
+
+            requiredValues.papbutton = distributor_content.papbutton;
+            requiredValues.papbutton_mob = distributor_content.papbutton_mob;
+
+            requiredValues.status = distributor_content.status;
+
+            //stop P&P exacution. Its This is deactivated
+            if(requiredValues.status && requiredValues.status==0)
+                return false;
+
+            if(requiredValues.status && requiredValues.status==2 && location.href.search('flix-pap')==-1)
+                return false;
+
+            log3('requiredValues.papbutton', requiredValues.papbutton)
+            if(requiredValues.papbutton ==true || requiredValues.papbutton ==1 ){
+
+                buttonposition = distributor_content.buttonposition;
+                if(location.href.search('flixpreview')!=-1 || location.href.search('plain-clamp')!=-1){
+                    buttonposition='.flix-pp-button'
+                }
+            }
+            if(requiredValues.papbutton_mob ==true|| requiredValues.papbutton_mob ==1){
+                buttonpositionmob = distributor_content.buttonposition_mob;
+                if(location.href.search('flixpreview')!=-1 || location.href.search('plain-clamp')!=-1){
+                    buttonpositionmob='.flix-pp-mobbutton'
+                }
+            }
+
+            if( typeof data_pap!='undefined' && data_pap.length ) {
+                buttonposition = data_pap;
+            }
+
+
+            buttoninsert = distributor_content.buttoninsert;
+            if(requiredValues.buttoninsert==null)
+                requiredValues.buttoninsert=buttoninsert
+
+            buttoninsertmob = distributor_content.buttoninsert_mob;
+            if(requiredValues.buttoninsertmob==null)
+                requiredValues.buttoninsertmob=buttoninsertmob
+
+            papcontent = distributor_content.papcontent;
+
+            distributorcss = distributor_content.distributorcss;
+            maincss = distributor_content.maincss
+            maincss=maincss+distributorcss;
+
+            papbanner= distributor_content.papbanner;
+            requiredValues.papbanner=papbanner
+            papscript= distributor_content.script
+
+            bannerimg_desktop=distributor_content.bannerimg_desktop;
+
+            //webar values
+            requiredValues.webaricon=distributor_content.webaricon;
+            requiredValues.webarcontent=distributor_content.webarcontent;
+
+            log3('product_level', distributor_content['product_level'] )
+            log3('requiredValues.product_id', requiredValues.product_id)
+            //load with productid
+            if(requiredValues.product_id!=null && distributor_content['product_level'] && distributor_content['product_level'].arid){
+
+                log3('load with productid: '+requiredValues.product_id)
+                requiredValues.arid=distributor_content['product_level'].arid
+                paploader( distributor_content );
+
+                
+            }else if(requiredValues.product_id!=null && requiredValues.ekfallback==0){
+                requiredValues.ekfallback=1
+                //fallback lan                 requiredValues.data_fallbacklanguage
+                console.log('NO P&P MAIN LANGUAGE MATCH ')
+                if(requiredValues.data_fallbacklanguage && requiredValues.data_fallbacklanguage.length){
+                    requiredValues.language = requiredValues.data_fallbacklanguage;
+                    initPNP();
+                }
+            }else if(requiredValues.product_id!=null && requiredValues.ekfallback==1){
+                console.log('NO P&P FALLBACK MATCH ');
+            }else if (requiredValues.product_id!=null){
+                console.log('NO PRODUCT MATCH ');
+            }
+
+            //load with mpn/ean/sku
+
+
+            if(distributor_content['product_level'] && distributor_content['product_level'].arid && (requiredValues.mpn!=null || requiredValues.ean!=null || requiredValues.sku!=null) ){
+                log3('load with mpn/ean/sku: '+requiredValues)
+
+                FlixjQ(distributor_content['product_level']).each(function(index, element){
+
+                    //if((requiredValues.mpn && requiredValues.mpn==element.mpn) || (requiredValues.ean && requiredValues.ean==element.ean) || (requiredValues.sku && requiredValues.sku==element.sku)){
+
+                    log3('PAP retailers-'+ requiredValues.mpn+'-'+element.mpn+'-'+ requiredValues.ean+'-'+element.ean+'-'+ requiredValues.sku+'-'+element.sku)
+                    log3(element.arid )
+
+                    requiredValues.arid=distributor_content['product_level'].arid
+
+                    //webar values
+                    if(distributor_content['product_level'].webarpos_y){
+                        requiredValues.webarpos_x=distributor_content['product_level'].webarpos_x
+                        requiredValues.webarpos_y=distributor_content['product_level'].webarpos_y
+                    }
+
+                    paploader( distributor_content );
+                    return false
+                    //}
+                })
+                //paploader( distributor_content );
+            }
+
+
+            function paploader( distributor_content ){
+
+                log3('paploader');
+
+                //log3(distributor_content.products);
+
+                var
+                    proto = encodeURIComponent(window.location.protocol+'//')
+                    ,   host = encodeURIComponent(window.location.hostname)
+                    ,   path = encodeURIComponent(window.location.pathname.substr(1))
+                    ,   para = encodeURIComponent(window.location.href.split('?')[1])
+                    ,   paplogo
+                    ,   retailerid
+                    ,   lan
+                    ,   referrer
+                ;
+
+                //eklan = distributor_content.products.language;
+
+                if(location.href.search('flix-pap') !== -1  ) {
+                    referrer = proto + host + '/' + path + '%3F' + para;
+                }
+                else {
+                    referrer = proto + host + '/' + path + '%3F'//+para;
+                }
+
+                //var retailerid='%26retailer='+ekdistid
+                retailerid='&retailer='+requiredValues.ekdistid;
+                lan='&lan='+requiredValues.language;
+
+                //NOTE: dont change the & encoding below
+
+                requiredValues.arurl = requiredValues.arurl + requiredValues.arid+'&product_page=' + referrer + retailerid + lan;
+
+                log3('arurl='+requiredValues.arurl);
+
+                //add arurl into href
+                buttonlogo=buttonlogo.replace('data-href=""', 'data-href="'+requiredValues.arurl+'"')
+
+                papcontent=papcontent.replace(/href=\"\"/g, 'href="'+requiredValues.arurl+'"')
+
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = maincss;
+                document.getElementsByTagName('head')[0].appendChild(style);
+
+                
+                log3('insert PAP into: '+ buttonposition + ' -buttoninsert: '+requiredValues.buttoninsert+ ' -buttoninsertmob: '+buttonpositionmob +" __ "+requiredValues.buttoninsertmob)
+
+
+                //to do move papbutton into own function
+
+                if(FlixjQ(buttonposition).parent().find('#flix_pnpcontainer').length==0) {
+                    //if(papbutton !=false){
+                    log3('buttonlogo: '+buttonlogo)
+                    if(buttoninsert === 'prepend'){
+                        log3('prepend')
+
+                        FlixjQ(buttonposition).prepend(buttonlogo);
+                    }
+                    else if( buttoninsert === 'before'){
+                        log3('before')
+                        FlixjQ(buttonposition).before(buttonlogo);
+
+                    }
+                    else if(buttoninsert === 'after'){
+                        log3('after')
+                        FlixjQ(buttonposition).after(buttonlogo);
+                    }
+                    else {
+                        log3('append')
+                        FlixjQ(buttonposition).append(buttonlogo);
+                    }
+                    //}
+                    FlixjQ(buttonposition).parent().find('#flix_pnpcontainer').addClass('flix-pap-button')
+                }
+
+                
+
+                if(FlixjQ(buttonpositionmob).parent().find('#flix_pnpcontainer').length==0) {
+                    log3('add mobile button')
+                    //if(papbutton_mob !=false){
+                    if(buttoninsertmob === 'prepend'){
+                        log3('prepend-mob: ')
+                        FlixjQ(buttonpositionmob).prepend(buttonlogo);
+                    }
+                    else if( buttoninsertmob === 'before'){
+                        log3('before-mob: ')
+                        FlixjQ(buttonpositionmob).before(buttonlogo);
+                    }
+                    else if(buttoninsertmob === 'after'){
+                        log3('after-mob: ')
+                        FlixjQ(buttonpositionmob).after(buttonlogo);
+                    }
+                    else {
+                        log3('append-mob: ' +buttonpositionmob +"--"+ FlixjQ(buttonpositionmob).length)
+                        log3()
+                        FlixjQ(buttonpositionmob).append(buttonlogo);
+                    }
+                    //}
+                    FlixjQ(buttonpositionmob).parent().find('#flix_pnpcontainer').addClass('flix-pap-button').addClass('flix-pap-mobbutton')
+                }
+                //FlixjQ(buttonpositionmob).parent().find('#flix_pnpcontainer').addClass('flix-pap-mobbutton')
+
+                if( requiredValues.papbanner == 1 && FlixjQ('#flix-ekbanner').length == 0 ) {
+                    log3('start bannerload')
+                    flixLoadBanner(distributor_content);
+                }
+
+                //add popup into body
+                var ppcontent = document.createElement("div");
+                ppcontent.innerHTML = papcontent;
+                document.body.appendChild(ppcontent);
+                if(FlixjQ(buttonposition).length>0 || !! papbanner ) {
+                    setTimeout(function(){
+                        log3('GO to flixLoadPAPaction')
+                        flixLoadPAPaction();
+                    }, 500);
+                }
+
+
+                //init hotspots for currys
+                if(requiredValues.data_distributor && requiredValues.data_distributor=='a8934900-3812-11e8-b467-0ed5f89f718b' || requiredValues.data_distributor=='1e0c13f9-f51b-4990-a2c4-9f81cfc1a0ba'){
+                    log3('flixCheckARcompatibility', flixCheckARcompatibility())
+                    if(flixCheckARcompatibility()==true){
+                        
+                        if(flixisMobile.any() ){    
+                            /*if(typeof flixABno!='undefined' && location.href.search('flix-paplive=0')==-1){
+                                
+                                paphotspot(flixABno);
+                            }else{*/
+                                
+                                webARHotspot();
+                            //}
+                        }
+                    }else{
+                        log3('flixCheckARcompatibility: false')
+                    }
+                }
+
+                //init hotspots for heatcotes only
+                if(requiredValues.data_distributor && requiredValues.data_distributor=='b503a5f1-34d3-4eaf-8f1a-1d2a046dbff2'){
+
+                    paphotspot();
+
+                }
+
+                foundpapmatch=1;
+
+                //run json script  - how to do without eval
+                //document.body.innerHTML+=eval(papscript);
+                //document.body.innerHTML+='papscript';
+
+
+                return false;
+            }
+
+
+        } //end firstAbstraction.
+    } //end initPNP.
+
+
+    //DONE. no data values from S3.
+    var flixLoadPAPaction= function () {
+        FlixjQ.fn.ek.logginEKstart();
+        log3('flixLoadPAPaction')
+        var
+            hoverTimeout
+            ,   papbutton
+            ,   flixpapcontent
+            ,   papurl
+            ,   winwidth
+            ,   winheight
+            ,   pnppos
+            ,   pnpposleft
+            ,   pnppostop
+            ,   flixdocument
+            ,   papbutton2
+            ,   hoverTimeout
+        ;
+
+        if( typeof FlixjQ.fn.on === 'undefined' ) {
+            FlixjQ.fn.on=FlixjQ.fn.live;
+        }
+
+
+        papbutton=FlixjQ('.flix-pap');
+        flixpapcontent=FlixjQ('.flix-pap-content');
+
+
+
+        papbutton.on('click', function(){
+            //if(typeof flixABno !== 'undefined' && [2,3].indexOf(flixABno) !== -1) return;
+            if(FlixjQ(this).attr('data-href') && FlixjQ(this).attr('data-href').length)
+                papurl=FlixjQ(this).attr('data-href');
+            else if(FlixjQ(this).find('a') && FlixjQ(this).find('a').attr('data-href').length)
+                papurl=FlixjQ(this).find('a').attr('data-href');
+
+            log3('New window: ' + papurl)
+            winwidth = 700
+            winheight = 650
+            if(requiredValues.papiniframe135 === false && flixisMobile.any() !== null){
+                if(window.top.innerWidth < winwidth) {
+                    winwidth=window.top.innerWidth;
+                }
+                if(window.top.innerHeight<winheight) {
+                    winheight=window.top.innerHeight;
+                }
+            }
+            window.open( papurl, 'Point and Place App', 'width=' + winwidth + ', height=' + winheight );
+
+        });
+
+        if( flixisMobile.any() === null ){
+            log3('papbutton',papbutton)
+            papbutton.on("mouseover touchstart", function(e) {
+                log3('flix-pap hover');
+                clearTimeout(hoverTimeout);
+
+                if( !! FlixjQ('.pap-button') && !! FlixjQ('.pap-button').length ){
+
+                }
+                else {
+                    FlixjQ(this).css('opacity', '0.5');
+                }
+
+                if(flixisMobile.Android()!=null || flixisMobile.iOS()!=null){
+                    //flixCheckApp();
+                }else{
+                    pnppos = FlixjQ(this).closest('#flix_pnpcontainer').offset();
+                    pnpposleft = pnppos.left+FlixjQ(this).closest('#flix_pnpcontainer').width()+10;
+                    pnppostop = (pnppos.top - 20);
+                    //fix for euronics.es, can be used for others after tested
+                    log3('ekdistid-----------'+requiredValues.ekdistid)
+                    if(typeof $=='function' && $('#flix_pnpcontainer') && pnppos.top<$('#flix_pnpcontainer').offset().top){
+                        pnppostop=$('#flix_pnpcontainer').offset().top-20;
+                        log3('ekdistid inside- ----------'+requiredValues.ekdistid)
+                        if(FlixjQ(this).closest('#flix-ekbanner').length!=0){
+                            log3('ekdistid inside-2 ----------'+requiredValues.ekdistid)
+                            pnppostop=$('#flix-ekbanner #flix_pnpcontainer').offset().top-20;
+                        }
+                    }
+
+                    winwidth=window.innerWidth;
+
+                    flixpapcontent.removeClass('flix-poptop').removeClass('flix-popright').removeClass('flix-popleft')
+                    //265 is the popup width, adjust if width changes
+                    if( winwidth < (pnpposleft + 265) && requiredValues.iOS12 === false ){
+                        pnpposleft = (pnppos.left - flixpapcontent.width() - 10);
+
+                        //move popup below
+                        if(pnppos.left < 265){
+                            log3('position bottom')
+                            pnpposleft = 20;
+                            pnppostop = pnppostop + 120;
+                            flixpapcontent.addClass('flix-poptop')
+                        }
+                        else {
+                            log3('position left')
+                            flixpapcontent.addClass('flix-popright')
+                        }
+                    }else{
+                        flixpapcontent.addClass('flix-popleft')
+                    }
+
+                    flixpapcontent.css('left', pnpposleft).css('top', pnppostop)
+                    flixpapcontent.show();
+                }
+                e.stopPropagation();
+            })
+
+            //close popup on outside click
+            flixdocument=FlixjQ(document)
+            flixdocument.on("click touchstart", function(e){
+                log3('click body')
+                if(FlixjQ(e.target).closest('.flix-pap-content').length==0){
+                    flixpapcontent.hide();
+                    FlixjQ('.flix-pap').css('opacity', '1');
+                }
+            });
+
+            //close popup after 2 sec
+            papbutton2=FlixjQ('.flix-pap')
+            papbutton2.on("mouseout touchend", function(e) {
+                log3('mouseout')
+                hoverTimeout = setTimeout(function() {
+                    flixpapcontent.hide();
+                }, 500);
+                if(FlixjQ('.pap-button') && FlixjQ('.pap-button').length){
+
+                }
+                else {
+                    FlixjQ('.flix-pap').css('opacity', '1');
+                }
+            });
+
+            //keep popup open
+            FlixjQ('.flix-pap-content').on("mouseover", function(e) {
+                log3('.flix-pap-content mouseover')
+                clearTimeout(hoverTimeout);
+            });
+            FlixjQ(".flix-pap-content").on("click touchstart", function(e){
+                e.stopPropagation();
+            });
+        }
+
+        //ios click bug fix
+        if(flixIOS()==true){
+            log3('iOS')
+            FlixjQ('body').css('cursor', 'pointer')
+        }
+    }
+
+    function flixLoadBanner( distributor_content ){
+        log3('flixLoadBanner', distributor_content)
+        var
+            flixtype='flix_desktop'
+            ,   appstore= distributor_content.appstore || null
+            ,   playstore= distributor_content.playstore || null
+            ,   playstore= distributor_content.playstore || null
+            ,   bannercontent = distributor_content.bannercontent || null
+            ,   bannervideo = distributor_content.bannervideo || null
+            ,   bannerposition = distributor_content.bannerposition || '#flix-inpage'
+            ,   bannerposition_mob = distributor_content.bannerposition_mob || ''
+            ,   bannerinsert = distributor_content.bannerinsert || null
+        ;
+
+
+        if(location.href.search('flixpreview')!=-1 || location.href.search('plain-clamp')!=-1){
+            bannerposition='#flix-inpage'
+            bannerposition_mob=''
+        }
+
+
+        //AB TEST CONTENT
+        if(distributor_content.ab){
+            if(distributor_content.ab[0].abcontent.a.bannercontent)
+                bannercontent = distributor_content.ab[0].abcontent.a.bannercontent;
+        }
+
+        if( bannercontent===null )
+            return false;
+
+        //add arurl into href
+        bannercontent=bannercontent.replace('data-href=""', 'data-href="'+requiredValues.arurl+'"')
+
+
+        if(typeof FlixjQ.fn.on=='undefined') {
+            FlixjQ.fn.on=FlixjQ.fn.live;
+        }
+
+        if(FlixjQ(top.document.body).find(bannerposition).width() < 500 && FlixjQ(top.document.body).find(bannerposition).width() > 10 ) {
+            flixtype = 'flix_mobile';
+        }
+
+        if(requiredValues.iOS12>=12){
+            flixtype = 'flix_mobile flix-ios12'
+        }
+
+
+
+        if( FlixjQ('#flix-ekbanner').length === 0 ){
+            log3('bannerposition: '+bannerposition)
+            log3(bannercontent)
+
+
+            log3('bannerinsert',bannerinsert)
+            if(typeof bannerinsert!='undefined' && bannerinsert=='prepend'){
+                FlixjQ(bannerposition).prepend(bannercontent);
+            }
+            else if(typeof bannerinsert!='undefined' && bannerinsert=='after'){
+                FlixjQ(bannerposition).after(bannercontent);
+            }
+            else if(typeof bannerinsert!='undefined' && bannerinsert=='append'){
+                FlixjQ(bannerposition).append(bannercontent);
+            }
+            else if(typeof bannerinsert!='undefined' && bannerinsert=='before'){
+                FlixjQ(bannerposition).before(bannercontent);
+            }
+            else {
+                FlixjQ(bannerposition).prepend(bannercontent);
+            }
+
+            //add button html
+            FlixjQ('#flix-ekbanner').append('<a id="flix-ekiphone" data-eklink="link_appstore" href="'+appstore+'" target="_blank" title=""></a><a id="flix-ekandroid" data-eklink="link_googleplay" href="'+playstore+'" target="_blank" title=""></a>')
+            FlixjQ('#flix-ekbanner').append('<div id="flix-ekvideo" class="flix-ekvideo" title="" data-jw-width="700" data-jw="//content.jwplatform.com/videos/'+bannervideo+'.mp4" data-jwid="'+bannervideo+'" data-ekvideo="bannervideo"></div>')
+
+
+            setTimeout(function(){
+                FlixjQ('.flix-ekvideo').on('click', function(){
+                    log3('flix-ekvideo click')
+                    flixLoadbannerpopup(this, distributor_content);
+                });
+            }, 500);
+        }
+
+
+
+
+
+        function loadJWScript(e,t){if(-1!=e.search(".js")&&0===FlixjQ("script[src='"+e+"']").length){var c=document.createElement("script");c.type="text/javascript",c.src=e,c.onload=t,document.head.appendChild(c)}if(-1!=e.search(".css")&&0===FlixjQ("link[href='"+e+"']").length){var n=document.createElement("link");n.rel="stylesheet",n.href=e,n.type="text/css",n.onload=t,document.head.appendChild(n)}}
+
+        if( typeof FlixjQ.fn.video === 'undefined' ){
+            if (location.href.search('flix-local') != -1) {
+                loadJWScript("//localhost/delivery_flix360/trunk/public/static/jwplayer/js/video.js");
+            }
+            else if (location.href.search('flix-dev') != -1 || location.href.search('dev-delivery.flix360.com') != -1) {
+                loadJWScript("//dev-delivery.flix360.com/static/jwplayer/js/video.js");
+            }
+            else {
+                loadJWScript("//media.flixcar.com/delivery/static/jwplayer/js/video.js");
+            }
+        }
+
+
+        function flixCheckBanner(){
+            if(FlixjQ('#flix-ekbanner').is(":visible")==true){
+                log3('resize banner2 -'+ FlixjQ(bannerposition).width())
+                if(FlixjQ(bannerposition).width() < 500 && FlixjQ(bannerposition).width() > 10 ){
+                    FlixjQ('#flix-ekbanner').addClass('flix_mobile');
+                }else{
+                    FlixjQ('#flix-ekbanner').removeClass('flix_mobile');
+                }
+            }
+            else {
+                log3('ekbanner hidden 0');
+                hidden0=1;
+                if(FlixjQ('#flix-ekbanner').length>0){
+                    setTimeout(function(){flixCheckBanner()},1000);
+                }
+            }
+        }
+        //change paptype on resizes
+        FlixjQ( window ).resize(function() {
+            flixCheckBanner();
+        });
+
+        flixCheckBanner();
+
+    } //end of load banner
+
+
+    //TODO: move to S3 - what will we need as parameters?
+    function flixLoadbannerpopup(but, distributor_content){
+        log3('flixLoadbannerpopup')
+
+
+        log3('bannervideo', bannervideo)
+        var winwidth=700;
+        var minheight=''
+        var aspectratio='';
+        var bannervideo=distributor_content.bannervideo
+        if(bannervideo == '0nlpJ69P' || bannervideo == 'cqEElLDZ' ){
+            log3('aspectratio: 6:19 ')
+            window.jwaspectratio='177.77%';
+            var h = FlixjQ(window.top).height();
+            winwidth=h*0.8*0.5625;
+            aspectratio=',&quot;aspectratio&quot;:&quot;6:19&quot;'
+
+            if(winwidth > 700)
+                winwidth = 700;
+            minheight='min-height:80%;'
+
+        }
+
+        var video ='<div id="flixinpage-lightbox" class="ekbannerlightbox" style="position:fixed;top:50%;left:50%!important;width: '+winwidth+'px!important; height:auto;max-width: 100%!important; '+minheight+' -webkit-transform: translateXtranslate(-50%, -50%);-ms-transform: translate(-50%, -50%);transform: translate(-50%, -50%);z-index:11112!important;margin: 0"><input class="flix-lightjw"  value="{&quot;playlist&quot;:[{&quot;file&quot;:&quot;//content.jwplatform.com/videos/'+bannervideo+'.mp4&quot;,&quot;mediaid&quot;:&quot;'+bannervideo+'&quot;}]'+aspectratio+'}" type="hidden"><a id="btn_close" title="Close" style="position: absolute;right: -40px;top: -30px;cursor: pointer;"><img src="//media.flixcar.com/delivery/static/images/close.png" alt="Close" border="0" style="display: block;margin: 0 auto;max-width: 100%;height: auto;"></a></div>';
+
+        var popup='<div id="flixinpage-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000; opacity:0.3; color: #fff;text-align:center;z-index:11111;"></div>';
+
+        if(window.self !== window.top){
+            log3('iframe')
+
+            FlixjQ('body', window.parent.document).append(popup+video);
+            FlixjQ.fn.video.createJWIframe( FlixjQ('body', window.parent.document).find('#flixinpage-lightbox .flix-lightjw'), 0);
+        }
+        else {
+            FlixjQ(but).closest('body').append(popup+video);
+            FlixjQ.fn.video.createJWIframe(FlixjQ('#flixinpage-lightbox .flix-lightjw'), 0);
+        }
+
+        if(window.self !== window.top){
+            FlixjQ('body', window.parent.document).find('#btn_close, #flixinpage-overlay').on('click', function(){
+                log3('close')
+                FlixjQ(this).closest('body').find('#flixinpage-lightbox, #flixinpage-overlay').remove();
+            });
+        }
+        else {
+            FlixjQ('#btn_close, #flixinpage-overlay:not(#flixinpage-lightbox)').on('click', function(){
+                FlixjQ('#flixinpage-lightbox, #flixinpage-overlay').remove();
+            });
+        }
+    }
+
+
+
+    //detect IOS
+    var flixIOS= function () {
+        var iDevices = [
+            'iPad Simulator',
+            'iPhone Simulator',
+            'iPod Simulator',
+            'iPad',
+            'iPhone',
+            'iPod'
+        ];
+        if (!!navigator.platform) {
+            while (iDevices.length) {
+                if (navigator.platform === iDevices.pop()){
+                    log3('Apple detected')
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    var flixisMobile = {
+        Android: function() { return navigator.userAgent.match(/Android/i); },
+        BlackBerry: function() { return navigator.userAgent.match(/BlackBerry/i); },
+        iOS: function() { return navigator.userAgent.match(/iPhone|iPad|iPod/i); },
+        Opera: function() { return navigator.userAgent.match(/Opera Mini/i); },
+        Windows: function() { return navigator.userAgent.match(/IEMobile/i); },
+        any: function() { return (flixisMobile.Android() || flixisMobile.BlackBerry() || flixisMobile.iOS() || flixisMobile.Opera() || flixisMobile.Windows()); } };
+
+    var flixiOS12 = parseFloat(
+        ('' + (/CPU.*OS ([0-9_]{1,5})|(CPU like).*AppleWebKit.*Mobile/i.exec(navigator.userAgent) || [0,''])[1])
+            .replace('undefined', '3_2').replace('_', '.').replace('_', '')
+    ) || false;
+
+    var flixAndroidOS=function(){
+        var ua = navigator.userAgent;
+        if( ua.indexOf("Android") >= 0 ){
+            var androidversion = parseFloat(ua.slice(ua.indexOf("Android")+8));
+            if (androidversion < 2.3){
+                //...
+            }
+            return androidversion;
+        }else {
+            return null
+        }
+    }
+
+
+    /*var flixGetOS= function () {
+      var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+          // Windows Phone must come first because its UA also contains "Android"
+        if (/windows phone/i.test(userAgent)) {
+            return "Windows Phone";
+        }
+
+        if (/android/i.test(userAgent)) {
+            return "Android";
+        }
+
+        // iOS detection from: http://stackoverflow.com/a/9039885/177710
+        if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+            return "iOS";
+        }
+        return "unknown";
+    }*/
+
+
+
+
+    //get URL parameters
+    var flixGetUrlParameter = function (sParam) {
+        var
+            url=window.location.search.substring(1).replace(/\%/g, '|per')
+            ,   sPageURL=decodeURIComponent(url)
+            ,   sURLVariables=sPageURL.split('&')
+            ,   sParameterName
+            ,   i
+        ;
+
+        for (i=0; i < sURLVariables.length; i++) {
+            sParameterName=sURLVariables[i].split('=');
+            if (sParameterName[0]===sParam) {
+                return sParameterName[1]===undefined ? true : sParameterName[1];
+            }
+        }
+    };
+
+    //init pap
+    if( window.FlixjQ ){
+        checkFlixjQ()
+    }
+    else {
+        setTimeout(function(){
+            checkFlixjQ();
+        }, 1000);
+    }
+
+    var checkFlixjQcc=0;
+    function checkFlixjQ(){
+        if ( window.location !== window.parent.location ) {
+            log3( 'The page is in an iframe' +requiredValues.data_distributor +"__"+window.papuuid)
+        } else {
+            log3('The page is not in an iframe')
+        }
+
+        if ( window.location !== window.parent.location && (requiredValues.data_distributor=='135' || window.papuuid=='135')) {
+            if( typeof window.papuuid !== 'undefined' && window.papuuid.length ){
+                top.window.papuuid=window.papuuid;
+
+                var iframes = parent.document.getElementsByTagName("iframe");
+
+                for (var i=0, len=iframes.length; i < len; ++i) {
+                    if (document == iframes[i].contentDocument ||
+                        self == iframes[i].contentWindow) {
+                        log3('window.papiframesid',iframes[i].id)
+                        top.window.papiframesid=iframes[i].id;
+                    }
+                }
+            }
+            //walmart  iframe
+            log3('135 iframe!!! load on parent-')
+            var script = document.createElement('script');
+            top.document.head.appendChild(script);
+            script.type = 'text/javascript';
+            //script.src = "https://media.pointandplace.com/v2_1/js/pointandplace.js";
+            script.src = "https://media.pointandplace.com/js/pointandplace.js";
+        }else if ( location.href.search('flix-paplive=0')!=-1 && checkFlixjQcc<5) {
+            checkFlixjQcc=5;
+            log3('Load DEV P&P js');
+            var script = document.createElement('script');
+            top.document.head.appendChild(script);
+            script.type = 'text/javascript';
+            script.src = "https://media.pointandplace.com/dev/js/pointandplace.js?"+new Date().getTime();
+        }else if ( location.href.search('oldpap')!=-1 ) {
+            log3('Load old P&P js');
+            var script = document.createElement('script');
+            top.document.head.appendChild(script);
+            script.type = 'text/javascript';
+            script.src = "https://media.pointandplace.com/v2_1/js/pointandplace.js";
+        }else if ( location.href.search('flix-papdev')!=-1 ) {
+            log3('Load old P&P js');
+            var script = document.createElement('script');
+            top.document.head.appendChild(script);
+            script.type = 'text/javascript';
+            script.src = "https://media.pointandplace.com/js/pointandplace-legacy.js";
+        }else if(location.href.search('/minisite/')!=-1){
+            //keep this!!! - stops  jquery from loading
+            log3('dont load - inside minisite');
+        }
+        else if(window.FlixjQ){
+            log3('Found FlixjQ')
+            if(typeof FlixjQ.fn.on =="undefined" )
+                FlixjQ.fn.on=FlixjQ.fn.live
+            initPNP();
+        }else if(document.querySelectorAll("[data-flix-distributor]").length>0 && checkFlixjQcc<5){
+            setTimeout(function(){
+                log3('Wait for flix js to load')
+                if (typeof(flixJsCallbacks)==="object"){
+                    checkFlixjQcc=5;
+                }
+                checkFlixjQcc++;
+                checkFlixjQ();
+            }, 10);
+        }else {
+            log3('Load FlixjQ js')
+            //load jquery is FlixjQ does not exist
+            var script = document.createElement('script');
+            document.head.appendChild(script);
+            script.type = 'text/javascript';
+            script.src = "https://media.pointandplace.com/js/jquery.min.js";
+            script.onload = initPNP;
+        }
+    }
+
+    function flixCheckIso(language_to_search){
+        var languages = {
+            'ar': ['ar','a1','ae',],
+            'de': ['de','at','l1','s4'],
+            'dk': ['dk'],
+            'en': ['en','ap','au','c1','b1','d7','b5','e9','c5','e8','c6','d9','eg','t5','eu','d4','d5','gh','d1','d8','c7','e1','in','e2','ie','e3','c8','j1','ke','e4','k1','t1','l3','b3','m1','nz','c9','ng','o1','pk','p1','e5','f9','q1','d3','d2','b7','za','s7','b8','b9','e6','t4','u1','us','d6','e7','bg', 'cz', 'lv', 'lt', 'id', 'kw', 'lb'],
+            'es': ['f4','bo','cl','f5','ec','f8','gu','hn','jm','t2','mx','ni','pa','py','pe','f7','tt','uy','f6', 'cr'],
+            'fi': ['fi'],
+            'fr': ['fr','b4','c4','l2','ma','s5'],
+            'hu': ['hu'],
+            'it': ['it','s6'],
+            'nl': ['nl','be'],
+            'no': ['no'],
+            'pt': ['pt','br'],
+            'pl': ['pl'],
+            'ro': ['ro'],
+            'rs': ['rs'],
+            'ru': ['ru'],
+            'sk': ['sk'],
+            'sv': ['sv'],
+            'tr': ['tr'],
+            'zh': ['zh','hk','tw',]
+        };
+
+        var found_iso_code = '';
+        for (var iso_code in languages) {
+            if(iso_code === language_to_search || languages[iso_code].indexOf(language_to_search) > -1) {
+                found_iso_code = iso_code;
+                //will never be called - have to use for/of! or just for loop.
+                break;
+            }
+        }
+        log3(found_iso_code);
+        return found_iso_code
+    }
+
+    /*
+    Tracking
+    //http://dev-delivery.flix360.com/inpage/log.gif?m=y
+    &p=347267
+    &d=6
+    &l=en
+    &et=time
+    &sid=BF0436DA-BD2F-60AF-A52E-B3715050D4FE
+    &vtime=4
+    &gvid=flix5b2cc1a3c7ccd9.54902100
+    &ut=1530532846601
+    &ed=
+    */
+    function createEK(){
+        var flixcount=0;
+
+         //jQuery guid.js
+        FlixjQ.extend({Guid:{Set:function(t){var e;return 1==arguments.length&&(e=this.IsValid(t)?t:this.Empty()),FlixjQ(this).data("value",e),e},Empty:function(){return"00000000-0000-0000-0000-000000000000"},IsEmpty:function(t){return t==this.Empty()||void 0===t||null==t||""==t},IsValid:function(t){return rGx=new RegExp("\\b(?:[A-F0-9]{8})(?:-[A-F0-9]{4}){3}-(?:[A-F0-9]{12})\\b"),null!=rGx.exec(t)},New:function(){if(1==arguments.length&&this.IsValid(arguments[0]))return FlixjQ(this).data("value",arguments[0]),value=arguments[0],value;for(var t,e=[],i=new RegExp("[2345]"),u=0;u<8;u++)t=(65536*(1+Math.random())|0).toString(16).substring(1),null!=i.exec(u.toString())&&(3==u&&(t="6"+t.substr(1,3)),e.push("-")),e.push(t.toUpperCase());return value=e.join(""),FlixjQ(this).data("value",value),value},Value:function(){if(FlixjQ(this).data("value"))return FlixjQ(this).data("value");var t=this.New();return FlixjQ(this).data("value",t),t}}})();
+        //jQuery cookie.js
+        FlixjQ.cookie=function(e,i,o){if(void 0===e)return!1;if(void 0===i){var n=null;if(document.cookie&&""!=document.cookie)for(var r=document.cookie.split(";"),t=0;t<r.length;t++){var p=FlixjQ.trim(r[t]);if(p.substring(0,e.length+1)==e+"="){n=decodeURIComponent(p.substring(e.length+1));break}}return n}o=o||{},null===i&&(i="",o.expires=-1);var s,u="";o.expires&&("number"==typeof o.expires||o.expires.toUTCString)&&("number"==typeof o.expires?(s=new Date).setTime(s.getTime()+24*o.expires*60*60*1e3):s=o.expires,u="; expires="+s.toUTCString());var c=o.path?"; path="+o.path:"",m=o.domain?"; domain="+o.domain:"",a=o.secure?"; secure":"";document.cookie=[e,"=",encodeURIComponent(i),u,c,m,a].join("")};
+
+
+        FlixjQ.fn.ek.logginEKstart= function() {
+            log3('logginEKstart')
+            FlixjQ.fn.ek.setGvid()
+            var ticks = 3;
+            if(typeof FlixjQ.fn.logging =='undefined' || typeof FlixjQ.fn.logging.noTracking =='undefined' || ( typeof FlixjQ.fn.logging.noTracking!='undefined' && FlixjQ.fn.logging.noTracking==false) ){
+
+
+                if( window.ekCallbacks && typeof window.ekCallbacks.gvid == 'undefined' && ticks && flixcount<50) {
+                    //log3('create gvid')
+
+                    setTimeout(function(){
+                        log3('----tick')
+                        ticks--;
+                        FlixjQ.fn.ek.logginEKstart();
+                        flixcount++
+                    },500)
+                }else{
+
+                    (function($) {
+                        //FlixjQ('.flix-pap-logo a').attr('href', arurl)
+                        FlixjQ("[data-eklink]").on("click", function(event) {
+                            //event.preventDefault();
+                            log3('data-eklink: link click')
+                            FlixjQ.fn.ek.link(FlixjQ(this), ekopts);
+                        });
+                        FlixjQ("[data-ekvideo]").on("click", function(event) {
+                            var video=$(this).attr('data-jwid');
+                            log3('data-ekvideo click: ' + video);
+                            FlixjQ.fn.ek.logvideo(video, ekopts);
+                        });
+
+                        $.getScript = function(url, callback){
+                            $.ajax({
+                                type: "GET",
+                                url: url,
+                                success: callback,
+                                dataType: "script",
+                                cache: true
+                            });
+                        };
+
+                        log3('Setting log')
+                        log3('gvid: '+ window.ekCallbacks.gvid)
+
+                        
+                       
+
+
+                        //NOTE. these can be minified and bundled with pointandplace.js - two expensive calls for nothing.
+                        var urlMain='//media.flixcar.com/delivery/'
+                        // $.getScript(urlMain + 'js/minify?url=/static/delivery/jquery.guid.js', function() {
+                        //     $.getScript(urlMain + 'js/minify?url=/static/delivery/jquery.cookie.js', function() {
+                        log3('jquery.cookie.js')
+
+                        // Merge passed options with defaults
+                        ekopts = FlixjQ.extend({});
+                        ekopts.language = requiredValues.language;
+
+                        ekopts.page_name = FlixjQ.fn.ek.getURL();
+                        ekopts.event_type = "page";
+                        ekopts.event_detail = "";
+
+                        ekopts.product=requiredValues.product_id;
+                        ekopts.mpn=requiredValues.mpn;
+                        ekopts.ean=requiredValues.ean;
+                        ekopts.sku=requiredValues.ean;
+
+                        var
+                            gcookie = FlixjQ.fn.ek._getCookieName(ekopts, 'inpsession')
+                            ,   tcookie = FlixjQ.fn.ek._getCookieName(ekopts, 'inptime')
+                            ,   guid = FlixjQ.cookie(gcookie)
+                            ,   vtime = FlixjQ.cookie(tcookie)
+                        ;
+                        if (!guid || FlixjQ.Guid.IsEmpty(guid)) {
+                            if ( typeof(FlixjQ.Guid)!=="undefined" ){
+                                guid = FlixjQ.Guid.New();
+                                FlixjQ.cookie(gcookie, guid);
+                            }
+                        }
+                        if ( ! vtime) FlixjQ.cookie(tcookie, 0);
+                        ekopts.session_id = guid;
+                        if(flixGetUrlParameter('tracking_tag2')) {
+                            ekopts.session_id =flixGetUrlParameter('tracking_tag2')
+                        }
+
+                        FlixjQ('.flix-pap').each(function(){
+
+                            var href=FlixjQ(this).find('a').attr('data-href')|| FlixjQ(this).attr('data-href');
+                            if(href.search(requiredValues.arid)==-1)
+                                href=href+requiredValues.arid
+
+                            log3('tracking_tag___'+href.search('&tracking_tag='))
+                            
+                            if(href.search('&tracking_tag=')==-1){
+                                log3('add tracking_tag')
+                                href=href+"&tracking_tag="+window.ekCallbacks['gvid']
+                                if(FlixjQ(this).attr('data-href'))
+                                    FlixjQ(this).attr('data-href', href);
+                                if(FlixjQ(this).find('a').attr('data-href'))
+                                    FlixjQ(this).find('a').attr('data-href', href);
+                            }
+                            
+                            if(href.search('&tracking_tag2=')==-1){
+                                log3('add tracking_tag2')
+                                href=href+"&tracking_tag2="+ekopts.session_id
+                                if(FlixjQ(this).attr('data-href'))
+                                    FlixjQ(this).attr('data-href', href);
+                                if(FlixjQ(this).find('a').attr('data-href'))
+                                    FlixjQ(this).find('a').attr('data-href', href);
+                            }
+                        });
+
+                        ekopts.product_id = ekopts.product;
+
+                        var FlixLogInt = [4, 8, 16, 30, 60, 90, 120, 180, 240, 300];
+
+                        if(foundpapmatch==0){
+                            log3('Matchmiss')
+                            ekopts.event_type='matchmissPAP'
+                        }
+                        else {
+                            for (var i = 0, len = FlixLogInt.length; i < len; i++) {
+                                setTimeout((function(t, tm, $) {
+                                    return function() {
+                                        try {
+                                            //FlixjQ.fn.ek.logTime(t, tm);
+                                        } catch (e) {}
+                                    };
+                                })(ekopts, FlixLogInt[i], $), FlixLogInt[i] * 1000);
+                            }
+                        }
+                        FlixjQ.fn.ek.log(ekopts);
+                    })(FlixjQ);
+                }
+            }
+            else {
+                log3('NO TRACKING - FlixjQ.fn.logging.noTracking: '+FlixjQ.fn.logging.noTracking)
+            }
+        }
+        FlixjQ.fn.ek.link = function (ref,ekdata) {
+            original = ref;
+            if(ref.attr("data-eklink"))
+                var eklink = ref.attr("data-eklink");
+            else
+                var eklink =''
+
+            FlixjQ.fn.ek.logMedia(ekdata,eklink);
+
+            return true;
+        };
+
+        FlixjQ.fn.ek.logvideo=function( ref,ekdata) {
+            FlixjQ.fn.ek.logMedia(ekdata,ref);
+        };
+        FlixjQ.fn.ek.logMedia=function( ekdata, media) {
+            var page =FlixjQ.fn.ek.getURL();
+            ekdata.page_name = page;
+            ekdata.event_type = "media";
+            ekdata.event_detail = media;
+            ekdata.view_time = 0;
+            FlixjQ.fn.ek.log(ekdata);
+        };
+
+        FlixjQ.fn.ek.logCartclick=function( ekdata, media) {
+            var page =FlixjQ.fn.ek.getURL();
+            ekdata.page_name = page;
+            ekdata.event_type = "cart_click";
+            ekdata.event_detail = media;
+            ekdata.view_time = 0;
+            FlixjQ.fn.ek.log(ekdata);
+        };
+
+        FlixjQ.fn.ek.logTime= function(ekdata,newtime) {
+            log3('logtime')
+            var page = FlixjQ.fn.ek.getURL();
+
+            var tcookie = FlixjQ.fn.ek._getCookieName(ekdata,'inptime');
+
+            if (newtime==undefined)
+            {
+                newtime = parseInt($.cookie(tcookie)) +FlixjQ.fn.ek.defaults.update;
+            }
+            ekdata.page_name = page;
+            ekdata.event_type = "time";
+            ekdata.event_detail = "";
+            ekdata.view_time = newtime;
+            log3(newtime>300)
+            if( newtime>300) return;
+
+            FlixjQ.cookie(tcookie,newtime);
+            FlixjQ.fn.ek.log(ekdata);
+
+        };
+        FlixjQ.fn.ek._getCookieName = function(ekdata,cookie_type) {
+
+            if (!cookie_type) cookie_type='inpsession';
+            var product = ekdata.product > 0 ? ekdata.product : ekdata.product_id;
+
+            if (product>0)
+            {
+                return cookie_type+"_"+requiredValues.ekdistid+"_"+ekdata.language;
+            }
+            else if(ekdata.legacy!=''){
+                return cookie_type+"_"+requiredValues.ekdistid+"_"+ekdata.language;
+            }
+            else if (ekdata.mpn != ""){
+                return cookie_type+"_"+requiredValues.ekdistid+"_"+ekdata.language;
+            }
+            else if (ekdata.ean!=""){
+                return cookie_type+"_"+requiredValues.ekdistid+"_"+ekdata.language;
+            }
+            else if(ekdata.sku!=""){
+                return cookie_type+"_"+requiredValues.ekdistid+"_"+ekdata.language;
+            }
+        };
+
+        FlixjQ.fn.ek.setGvid=function(){
+
+            log3('setGvid')
+
+            //currys id
+            if(document.cookie.indexOf('AMCV_0DC638B35278395A0A490D4C%40AdobeOrg')!=-1){
+                log3('currys cookie')
+
+                var re = new RegExp("AMCV_0DC638B35278395A0A490D4C%40AdobeOrg=([^;]+)");
+                var value = re.exec(document.cookie);
+                var cooval= (value != null) ? unescape(value[1]) : null;
+                cooval=cooval.split('|MCMID|')
+                var cooval2=cooval[1].split('|')
+                //log3('currys cookie', cooval2[0])
+                window.ekCallbacks['gvid']=cooval2[0]
+
+            }
+
+            else if(typeof window.flixJsCallbacks!='undefined' && window.flixJsCallbacks.gvid)
+                window.ekCallbacks['gvid']=window.flixJsCallbacks.gvid
+            else{
+                if ( document.getElementById('data-flix-t-script') ) return;
+
+                window['flixgvid'] = function(obj){
+                    try{
+                        delete window['flixgvid'];
+                        window.ekCallbacks['gvid'] = obj['gvid'];
+                    }catch(e){}
+                };
+
+                FlixjQ.fn.ek._s("//t.flix360.com/?f=flixgvid",document.getElementsByTagName('head')[0],{"id":"data-flix-t-script"});
+            }
+
+
+
+
+        }
+
+        FlixjQ.fn.ek.getURL=function() {
+            return window.location.href;
+        };
+
+        FlixjQ.fn.ek._s=function(url,append_dom,options){
+            var _fscript = document.createElement('script');
+            _fscript.setAttribute("type","text/javascript");
+            _fscript.setAttribute("src", url);
+            _fscript.async = "true";
+            for (var i in options) {i=="id" ? _fscript.id=options[i] : _fscript.setAttribute(i,options[i]);}
+            append_dom.appendChild(_fscript);
+            return _fscript;
+        }
+
+        var ekCallbacks = {}
+        FlixjQ.fn.ek.log= function(ekdata) {
+            log3('FlixjQ.fn.ek.log')
+            FlixjQ(document).ready(function(){
+                    ekdata.gvid = (window.ekCallbacks && window.ekCallbacks.gvid) ?  window.ekCallbacks.gvid : '';
+                    
+                    var 
+                            d = new Date ()
+                        ,   _base = '//d2m3ikv8mpgiy8.cloudfront.net/log/log.gif'
+                        ,   url = []
+                        ,   checkEventType
+                        ,   checkRequiredValues
+                        ,   track
+                        ,   urlpara
+                        ,   logurl
+                    ;
+
+                    window.ekJsCallbacks.pageView = window.ekJsCallbacks.pageView || {log: false, beat: false};
+                    d.setMinutes( d.getTimezoneOffset());
+
+                    var logTemplate = {
+                        m: "y",
+                        p: ekdata.product_id,
+                        d: requiredValues.ekdistid,
+                        l: requiredValues.language,
+                        et: ekdata.event_type,
+                        sid: ekdata.session_id,
+                        vtime: ekdata.view_time,
+                        gvid:ekdata.gvid,
+                        ut: (d.getTime())
+                    };
+
+                    //check if mobile
+                    if( window.flixmobilecheck() ) {
+                        log3('MOT')
+                        logTemplate.mot = 1;
+                    }
+
+                    //ARID
+                    if( !! requiredValues.arid) {
+                        logTemplate.id = requiredValues.arid;
+                    }
+                    checkEventType = ['mediatime', 'mediatime'];
+                    if (( checkEventType.indexOf(ekdata.event_type) >= 0 ) && ekdata.event_detail !== 'virtural_advisor_video') { 
+                        logTemplate.ed = ekdata.video_name; 
+                    }
+                    else {
+                        logTemplate.ed = encodeURIComponent(ekdata.event_detail);
+                    }   
+                    checkEventType = ['cart_click', 'alert', 'matchmissPAP'];  
+                    if ( checkEventType.indexOf(ekdata.event_type) >= 0) { 
+                        logTemplate.pn = ekdata.page_name;
+                    }
+                    checkEventType = ['media', 'mediaload', 'page']; 
+                    if ( checkEventType.indexOf(ekdata.event_type) >= 0 && ! logTemplate.pn ) { 
+                        logTemplate.pn = encodeURIComponent(ekdata.page_name);
+                    }
+
+                    checkRequiredValues = ["mpn", "ean", "sku", "tag", "ekab"];
+                    for( var p in requiredValues ) {
+                        if( checkRequiredValues.indexOf(p) >= 0 ) {
+                            logTemplate[p] = requiredValues[p];
+                        }
+                    }
+
+                    if( typeof window.ekCallbacks.imgCache === 'undefined' ) { 
+                        window.ekCallbacks.imgCache = {};
+                    }
+                    track = 'img_' + (new Date()).getTime();
+                    window.ekCallbacks.imgCache[track] = new Image();
+
+                    if( ! window.ekJsCallbacks.pageView.log )  {
+                        logTemplate.pv = 1;
+                        window.ekJsCallbacks.pageView.log = true;
+                    }
+
+                    for( var l in logTemplate ) {
+                        url.push((l + "=" + logTemplate[l] ));
+                    }
+                    url = url.join("&");
+
+                    log3('Log.gif url')
+                    log3(_base + '?' + url)
+
+                    if(location.href && location.href.search('flix-log') !==  -1) {
+                        console.log(_base + '?' + url)
+                    }
+                    urlpara = FlixjQ.fn.ek.crypt('encrypt', encodeURIComponent(url), 'u')
+
+                    logurl = _base + '?' + urlpara
+                    window.ekCallbacks.imgCache[track].src = logurl;
+                    window.ekCallbacks.imgCache[track].event_type = ekdata.event_type;
+            });
+        };
+
+        FlixjQ.fn.ek.crypt = function(e,m,p){
+        var CryptoJS=CryptoJS||function(q,k){var e={},l=e.lib={},p=function(){},c=l.Base={extend:function(a){p.prototype=this;var b=new p;a&&b.mixIn(a);b.hasOwnProperty("init")||(b.init=function(){b.$super.init.apply(this,arguments)});b.init.prototype=b;b.$super=this;return b},create:function(){var a=this.extend();a.init.apply(a,arguments);return a},init:function(){},mixIn:function(a){for(var b in a)a.hasOwnProperty(b)&&(this[b]=a[b]);a.hasOwnProperty("toString")&&(this.toString=a.toString)},clone:function(){return this.init.prototype.extend(this)}},
+        s=l.WordArray=c.extend({init:function(a,b){a=this.words=a||[];this.sigBytes=b!=k?b:4*a.length},toString:function(a){return(a||d).stringify(this)},concat:function(a){var b=this.words,m=a.words,n=this.sigBytes;a=a.sigBytes;this.clamp();if(n%4)for(var r=0;r<a;r++)b[n+r>>>2]|=(m[r>>>2]>>>24-8*(r%4)&255)<<24-8*((n+r)%4);else if(65535<m.length)for(r=0;r<a;r+=4)b[n+r>>>2]=m[r>>>2];else b.push.apply(b,m);this.sigBytes+=a;return this},clamp:function(){var a=this.words,b=this.sigBytes;a[b>>>2]&=4294967295<<
+        32-8*(b%4);a.length=q.ceil(b/4)},clone:function(){var a=c.clone.call(this);a.words=this.words.slice(0);return a},random:function(a){for(var b=[],m=0;m<a;m+=4)b.push(4294967296*q.random()|0);return new s.init(b,a)}}),b=e.enc={},d=b.Hex={stringify:function(a){var b=a.words;a=a.sigBytes;for(var m=[],n=0;n<a;n++){var r=b[n>>>2]>>>24-8*(n%4)&255;m.push((r>>>4).toString(16));m.push((r&15).toString(16))}return m.join("")},parse:function(a){for(var b=a.length,m=[],n=0;n<b;n+=2)m[n>>>3]|=parseInt(a.substr(n,
+        2),16)<<24-4*(n%8);return new s.init(m,b/2)}},a=b.Latin1={stringify:function(a){var b=a.words;a=a.sigBytes;for(var m=[],n=0;n<a;n++)m.push(String.fromCharCode(b[n>>>2]>>>24-8*(n%4)&255));return m.join("")},parse:function(a){for(var b=a.length,m=[],n=0;n<b;n++)m[n>>>2]|=(a.charCodeAt(n)&255)<<24-8*(n%4);return new s.init(m,b)}},u=b.Utf8={stringify:function(b){try{return decodeURIComponent(escape(a.stringify(b)))}catch(c){throw Error("Malformed UTF-8 data");}},parse:function(b){return a.parse(unescape(encodeURIComponent(b)))}},
+        t=l.BufferedBlockAlgorithm=c.extend({reset:function(){this._data=new s.init;this._nDataBytes=0},_append:function(a){"string"==typeof a&&(a=u.parse(a));this._data.concat(a);this._nDataBytes+=a.sigBytes},_process:function(a){var b=this._data,m=b.words,n=b.sigBytes,r=this.blockSize,c=n/(4*r),c=a?q.ceil(c):q.max((c|0)-this._minBufferSize,0);a=c*r;n=q.min(4*a,n);if(a){for(var t=0;t<a;t+=r)this._doProcessBlock(m,t);t=m.splice(0,a);b.sigBytes-=n}return new s.init(t,n)},clone:function(){var a=c.clone.call(this);
+        a._data=this._data.clone();return a},_minBufferSize:0});l.Hasher=t.extend({cfg:c.extend(),init:function(a){this.cfg=this.cfg.extend(a);this.reset()},reset:function(){t.reset.call(this);this._doReset()},update:function(a){this._append(a);this._process();return this},finalize:function(a){a&&this._append(a);return this._doFinalize()},blockSize:16,_createHelper:function(a){return function(b,m){return(new a.init(m)).finalize(b)}},_createHmacHelper:function(a){return function(b,m){return(new w.HMAC.init(a,
+        m)).finalize(b)}}});var w=e.algo={};return e}(Math);
+        (function(){var q=CryptoJS,k=q.lib.WordArray;q.enc.Base64={stringify:function(e){var l=e.words,p=e.sigBytes,c=this._map;e.clamp();e=[];for(var k=0;k<p;k+=3)for(var b=(l[k>>>2]>>>24-8*(k%4)&255)<<16|(l[k+1>>>2]>>>24-8*((k+1)%4)&255)<<8|l[k+2>>>2]>>>24-8*((k+2)%4)&255,d=0;4>d&&k+0.75*d<p;d++)e.push(c.charAt(b>>>6*(3-d)&63));if(l=c.charAt(64))for(;e.length%4;)e.push(l);return e.join("")},parse:function(e){var l=e.length,p=this._map,c=p.charAt(64);c&&(c=e.indexOf(c),-1!=c&&(l=c));for(var c=[],s=0,b=0;b<
+        l;b++)if(b%4){var d=p.indexOf(e.charAt(b-1))<<2*(b%4),a=p.indexOf(e.charAt(b))>>>6-2*(b%4);c[s>>>2]|=(d|a)<<24-8*(s%4);s++}return k.create(c,s)},_map:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="}})();
+        (function(q){function k(a,b,c,d,m,n,r){a=a+(b&c|~b&d)+m+r;return(a<<n|a>>>32-n)+b}function e(a,b,c,d,m,n,r){a=a+(b&d|c&~d)+m+r;return(a<<n|a>>>32-n)+b}function l(a,b,c,d,m,n,r){a=a+(b^c^d)+m+r;return(a<<n|a>>>32-n)+b}function p(a,b,c,d,m,n,r){a=a+(c^(b|~d))+m+r;return(a<<n|a>>>32-n)+b}for(var c=CryptoJS,s=c.lib,b=s.WordArray,d=s.Hasher,s=c.algo,a=[],u=0;64>u;u++)a[u]=4294967296*q.abs(q.sin(u+1))|0;s=s.MD5=d.extend({_doReset:function(){this._hash=new b.init([1732584193,4023233417,2562383102,271733878])},
+        _doProcessBlock:function(b,c){for(var d=0;16>d;d++){var s=c+d,m=b[s];b[s]=(m<<8|m>>>24)&16711935|(m<<24|m>>>8)&4278255360}var d=this._hash.words,s=b[c+0],m=b[c+1],n=b[c+2],r=b[c+3],x=b[c+4],u=b[c+5],q=b[c+6],y=b[c+7],z=b[c+8],A=b[c+9],B=b[c+10],C=b[c+11],D=b[c+12],E=b[c+13],F=b[c+14],G=b[c+15],f=d[0],g=d[1],h=d[2],j=d[3],f=k(f,g,h,j,s,7,a[0]),j=k(j,f,g,h,m,12,a[1]),h=k(h,j,f,g,n,17,a[2]),g=k(g,h,j,f,r,22,a[3]),f=k(f,g,h,j,x,7,a[4]),j=k(j,f,g,h,u,12,a[5]),h=k(h,j,f,g,q,17,a[6]),g=k(g,h,j,f,y,22,a[7]),
+        f=k(f,g,h,j,z,7,a[8]),j=k(j,f,g,h,A,12,a[9]),h=k(h,j,f,g,B,17,a[10]),g=k(g,h,j,f,C,22,a[11]),f=k(f,g,h,j,D,7,a[12]),j=k(j,f,g,h,E,12,a[13]),h=k(h,j,f,g,F,17,a[14]),g=k(g,h,j,f,G,22,a[15]),f=e(f,g,h,j,m,5,a[16]),j=e(j,f,g,h,q,9,a[17]),h=e(h,j,f,g,C,14,a[18]),g=e(g,h,j,f,s,20,a[19]),f=e(f,g,h,j,u,5,a[20]),j=e(j,f,g,h,B,9,a[21]),h=e(h,j,f,g,G,14,a[22]),g=e(g,h,j,f,x,20,a[23]),f=e(f,g,h,j,A,5,a[24]),j=e(j,f,g,h,F,9,a[25]),h=e(h,j,f,g,r,14,a[26]),g=e(g,h,j,f,z,20,a[27]),f=e(f,g,h,j,E,5,a[28]),j=e(j,f,
+        g,h,n,9,a[29]),h=e(h,j,f,g,y,14,a[30]),g=e(g,h,j,f,D,20,a[31]),f=l(f,g,h,j,u,4,a[32]),j=l(j,f,g,h,z,11,a[33]),h=l(h,j,f,g,C,16,a[34]),g=l(g,h,j,f,F,23,a[35]),f=l(f,g,h,j,m,4,a[36]),j=l(j,f,g,h,x,11,a[37]),h=l(h,j,f,g,y,16,a[38]),g=l(g,h,j,f,B,23,a[39]),f=l(f,g,h,j,E,4,a[40]),j=l(j,f,g,h,s,11,a[41]),h=l(h,j,f,g,r,16,a[42]),g=l(g,h,j,f,q,23,a[43]),f=l(f,g,h,j,A,4,a[44]),j=l(j,f,g,h,D,11,a[45]),h=l(h,j,f,g,G,16,a[46]),g=l(g,h,j,f,n,23,a[47]),f=p(f,g,h,j,s,6,a[48]),j=p(j,f,g,h,y,10,a[49]),h=p(h,j,f,g,
+        F,15,a[50]),g=p(g,h,j,f,u,21,a[51]),f=p(f,g,h,j,D,6,a[52]),j=p(j,f,g,h,r,10,a[53]),h=p(h,j,f,g,B,15,a[54]),g=p(g,h,j,f,m,21,a[55]),f=p(f,g,h,j,z,6,a[56]),j=p(j,f,g,h,G,10,a[57]),h=p(h,j,f,g,q,15,a[58]),g=p(g,h,j,f,E,21,a[59]),f=p(f,g,h,j,x,6,a[60]),j=p(j,f,g,h,C,10,a[61]),h=p(h,j,f,g,n,15,a[62]),g=p(g,h,j,f,A,21,a[63]);d[0]=d[0]+f|0;d[1]=d[1]+g|0;d[2]=d[2]+h|0;d[3]=d[3]+j|0},_doFinalize:function(){var a=this._data,b=a.words,c=8*this._nDataBytes,d=8*a.sigBytes;b[d>>>5]|=128<<24-d%32;var m=q.floor(c/
+        4294967296);b[(d+64>>>9<<4)+15]=(m<<8|m>>>24)&16711935|(m<<24|m>>>8)&4278255360;b[(d+64>>>9<<4)+14]=(c<<8|c>>>24)&16711935|(c<<24|c>>>8)&4278255360;a.sigBytes=4*(b.length+1);this._process();a=this._hash;b=a.words;for(c=0;4>c;c++)d=b[c],b[c]=(d<<8|d>>>24)&16711935|(d<<24|d>>>8)&4278255360;return a},clone:function(){var a=d.clone.call(this);a._hash=this._hash.clone();return a}});c.MD5=d._createHelper(s);c.HmacMD5=d._createHmacHelper(s)})(Math);
+        (function(){var q=CryptoJS,k=q.lib,e=k.Base,l=k.WordArray,k=q.algo,p=k.EvpKDF=e.extend({cfg:e.extend({keySize:4,hasher:k.MD5,iterations:1}),init:function(c){this.cfg=this.cfg.extend(c)},compute:function(c,e){for(var b=this.cfg,d=b.hasher.create(),a=l.create(),k=a.words,p=b.keySize,b=b.iterations;k.length<p;){q&&d.update(q);var q=d.update(c).finalize(e);d.reset();for(var v=1;v<b;v++)q=d.finalize(q),d.reset();a.concat(q)}a.sigBytes=4*p;return a}});q.EvpKDF=function(c,e,b){return p.create(b).compute(c,
+        e)}})();
+        CryptoJS.lib.Cipher||function(q){var k=CryptoJS,e=k.lib,l=e.Base,p=e.WordArray,c=e.BufferedBlockAlgorithm,s=k.enc.Base64,b=k.algo.EvpKDF,d=e.Cipher=c.extend({cfg:l.extend(),createEncryptor:function(a,b){return this.create(this._ENC_XFORM_MODE,a,b)},createDecryptor:function(a,b){return this.create(this._DEC_XFORM_MODE,a,b)},init:function(a,b,c){this.cfg=this.cfg.extend(c);this._xformMode=a;this._key=b;this.reset()},reset:function(){c.reset.call(this);this._doReset()},process:function(a){this._append(a);return this._process()},
+        finalize:function(a){a&&this._append(a);return this._doFinalize()},keySize:4,ivSize:4,_ENC_XFORM_MODE:1,_DEC_XFORM_MODE:2,_createHelper:function(a){return{encrypt:function(b,c,d){return("string"==typeof c?H:v).encrypt(a,b,c,d)},decrypt:function(b,c,d){return("string"==typeof c?H:v).decrypt(a,b,c,d)}}}});e.StreamCipher=d.extend({_doFinalize:function(){return this._process(!0)},blockSize:1});var a=k.mode={},u=function(a,b,c){var d=this._iv;d?this._iv=q:d=this._prevBlock;for(var e=0;e<c;e++)a[b+e]^=
+        d[e]},t=(e.BlockCipherMode=l.extend({createEncryptor:function(a,b){return this.Encryptor.create(a,b)},createDecryptor:function(a,b){return this.Decryptor.create(a,b)},init:function(a,b){this._cipher=a;this._iv=b}})).extend();t.Encryptor=t.extend({processBlock:function(a,b){var c=this._cipher,d=c.blockSize;u.call(this,a,b,d);c.encryptBlock(a,b);this._prevBlock=a.slice(b,b+d)}});t.Decryptor=t.extend({processBlock:function(a,b){var c=this._cipher,d=c.blockSize,e=a.slice(b,b+d);c.decryptBlock(a,b);u.call(this,
+        a,b,d);this._prevBlock=e}});a=a.CBC=t;t=(k.pad={}).Pkcs7={pad:function(a,b){for(var c=4*b,c=c-a.sigBytes%c,d=c<<24|c<<16|c<<8|c,e=[],k=0;k<c;k+=4)e.push(d);c=p.create(e,c);a.concat(c)},unpad:function(a){a.sigBytes-=a.words[a.sigBytes-1>>>2]&255}};e.BlockCipher=d.extend({cfg:d.cfg.extend({mode:a,padding:t}),reset:function(){d.reset.call(this);var a=this.cfg,b=a.iv,a=a.mode;if(this._xformMode==this._ENC_XFORM_MODE)var c=a.createEncryptor;else c=a.createDecryptor,this._minBufferSize=1;this._mode=c.call(a,
+        this,b&&b.words)},_doProcessBlock:function(a,b){this._mode.processBlock(a,b)},_doFinalize:function(){var a=this.cfg.padding;if(this._xformMode==this._ENC_XFORM_MODE){a.pad(this._data,this.blockSize);var b=this._process(!0)}else b=this._process(!0),a.unpad(b);return b},blockSize:4});var w=e.CipherParams=l.extend({init:function(a){this.mixIn(a)},toString:function(a){return(a||this.formatter).stringify(this)}}),a=(k.format={}).OpenSSL={stringify:function(a){var b=a.ciphertext;a=a.salt;return(a?p.create([1398893684,
+        1701076831]).concat(a).concat(b):b).toString(s)},parse:function(a){a=s.parse(a);var b=a.words;if(1398893684==b[0]&&1701076831==b[1]){var c=p.create(b.slice(2,4));b.splice(0,4);a.sigBytes-=16}return w.create({ciphertext:a,salt:c})}},v=e.SerializableCipher=l.extend({cfg:l.extend({format:a}),encrypt:function(a,b,c,d){d=this.cfg.extend(d);var e=a.createEncryptor(c,d);b=e.finalize(b);e=e.cfg;return w.create({ciphertext:b,key:c,iv:e.iv,algorithm:a,mode:e.mode,padding:e.padding,blockSize:a.blockSize,formatter:d.format})},
+        decrypt:function(a,b,c,d){d=this.cfg.extend(d);b=this._parse(b,d.format);return a.createDecryptor(c,d).finalize(b.ciphertext)},_parse:function(a,b){return"string"==typeof a?b.parse(a,this):a}}),k=(k.kdf={}).OpenSSL={execute:function(a,c,d,e){e||(e=p.random(8));a=b.create({keySize:c+d}).compute(a,e);d=p.create(a.words.slice(c),4*d);a.sigBytes=4*c;return w.create({key:a,iv:d,salt:e})}},H=e.PasswordBasedCipher=v.extend({cfg:v.cfg.extend({kdf:k}),encrypt:function(a,b,c,d){d=this.cfg.extend(d);c=d.kdf.execute(c,
+        a.keySize,a.ivSize);d.iv=c.iv;a=v.encrypt.call(this,a,b,c.key,d);a.mixIn(c);return a},decrypt:function(a,b,c,d){d=this.cfg.extend(d);b=this._parse(b,d.format);c=d.kdf.execute(c,a.keySize,a.ivSize,b.salt);d.iv=c.iv;return v.decrypt.call(this,a,b,c.key,d)}})}();
+        (function(){function q(){for(var b=this._X,d=this._C,a=0;8>a;a++)p[a]=d[a];d[0]=d[0]+1295307597+this._b|0;d[1]=d[1]+3545052371+(d[0]>>>0<p[0]>>>0?1:0)|0;d[2]=d[2]+886263092+(d[1]>>>0<p[1]>>>0?1:0)|0;d[3]=d[3]+1295307597+(d[2]>>>0<p[2]>>>0?1:0)|0;d[4]=d[4]+3545052371+(d[3]>>>0<p[3]>>>0?1:0)|0;d[5]=d[5]+886263092+(d[4]>>>0<p[4]>>>0?1:0)|0;d[6]=d[6]+1295307597+(d[5]>>>0<p[5]>>>0?1:0)|0;d[7]=d[7]+3545052371+(d[6]>>>0<p[6]>>>0?1:0)|0;this._b=d[7]>>>0<p[7]>>>0?1:0;for(a=0;8>a;a++){var e=b[a]+d[a],k=e&65535,
+        l=e>>>16;c[a]=((k*k>>>17)+k*l>>>15)+l*l^((e&4294901760)*e|0)+((e&65535)*e|0)}b[0]=c[0]+(c[7]<<16|c[7]>>>16)+(c[6]<<16|c[6]>>>16)|0;b[1]=c[1]+(c[0]<<8|c[0]>>>24)+c[7]|0;b[2]=c[2]+(c[1]<<16|c[1]>>>16)+(c[0]<<16|c[0]>>>16)|0;b[3]=c[3]+(c[2]<<8|c[2]>>>24)+c[1]|0;b[4]=c[4]+(c[3]<<16|c[3]>>>16)+(c[2]<<16|c[2]>>>16)|0;b[5]=c[5]+(c[4]<<8|c[4]>>>24)+c[3]|0;b[6]=c[6]+(c[5]<<16|c[5]>>>16)+(c[4]<<16|c[4]>>>16)|0;b[7]=c[7]+(c[6]<<8|c[6]>>>24)+c[5]|0}var k=CryptoJS,e=k.lib.StreamCipher,l=[],p=[],c=[],s=k.algo.Rabbit=
+        e.extend({_doReset:function(){for(var b=this._key.words,c=this.cfg.iv,a=0;4>a;a++)b[a]=(b[a]<<8|b[a]>>>24)&16711935|(b[a]<<24|b[a]>>>8)&4278255360;for(var e=this._X=[b[0],b[3]<<16|b[2]>>>16,b[1],b[0]<<16|b[3]>>>16,b[2],b[1]<<16|b[0]>>>16,b[3],b[2]<<16|b[1]>>>16],b=this._C=[b[2]<<16|b[2]>>>16,b[0]&4294901760|b[1]&65535,b[3]<<16|b[3]>>>16,b[1]&4294901760|b[2]&65535,b[0]<<16|b[0]>>>16,b[2]&4294901760|b[3]&65535,b[1]<<16|b[1]>>>16,b[3]&4294901760|b[0]&65535],a=this._b=0;4>a;a++)q.call(this);for(a=0;8>
+        a;a++)b[a]^=e[a+4&7];if(c){var a=c.words,c=a[0],a=a[1],c=(c<<8|c>>>24)&16711935|(c<<24|c>>>8)&4278255360,a=(a<<8|a>>>24)&16711935|(a<<24|a>>>8)&4278255360,e=c>>>16|a&4294901760,k=a<<16|c&65535;b[0]^=c;b[1]^=e;b[2]^=a;b[3]^=k;b[4]^=c;b[5]^=e;b[6]^=a;b[7]^=k;for(a=0;4>a;a++)q.call(this)}},_doProcessBlock:function(b,c){var a=this._X;q.call(this);l[0]=a[0]^a[5]>>>16^a[3]<<16;l[1]=a[2]^a[7]>>>16^a[5]<<16;l[2]=a[4]^a[1]>>>16^a[7]<<16;l[3]=a[6]^a[3]>>>16^a[1]<<16;for(a=0;4>a;a++)l[a]=(l[a]<<8|l[a]>>>24)&
+        16711935|(l[a]<<24|l[a]>>>8)&4278255360,b[c+a]^=l[a]},blockSize:4,ivSize:2});k.Rabbit=e._createHelper(s)})();
+        if( e === 'encrypt') return CryptoJS.Rabbit.encrypt(m,p).toString();
+        if( e === 'decrypt') return CryptoJS.Rabbit.decrypt(m,p).toString(CryptoJS.enc.Utf8);
+        };
+    }
+
+
+    var paphotspot = function(currysflixABno){
+        log3('in paphotspot - distid'+requiredValues.data_distributor)
+        //document.addEventListener('DOMContentLoaded', (event) => {
+        var a = document.createElement('div');
+        var href='';
+        var eklink='';
+        if(flixisMobile.iOS()){
+            //href='https://curryspnp.app.link'
+            eklink='hotspot_appstore';
+        }
+        else if(flixisMobile.Android()){
+            //href='https://curryspnp.app.link'
+            eklink='hotspot_googleplay';
+        }else{
+            eklink='hotspot_default';
+        }
+        if(typeof currysflixABno!='undefined'){
+            flixABno=currysflixABno.toString()
+        }
+
+        //currys AB test - variant 3
+        if((typeof flixABno!='undefined' && flixABno==3) ){
+            log3('flixABno 3', overlayhref)
+
+            var oldurl=FlixjQ('.flix-pap:eq(0) a').attr('data-href') || FlixjQ('.flix-pap:eq(0)').attr('data-href');
+            //open blank page which redirects
+            //var overlayhref=oldurl.replace('\/display', '\/display-redir')
+            var overlayhref=oldurl
+            a.setAttribute('data-href', overlayhref);
+
+        }
+        if(requiredValues.data_distributor=='b503a5f1-34d3-4eaf-8f1a-1d2a046dbff2'){
+            var oldurl=FlixjQ('.flix-pap:eq(0) a').attr('data-href') || FlixjQ('.flix-pap:eq(0)').attr('data-href');
+
+            a.setAttribute('data-href', oldurl);
+        }
+        log3('flixABno', flixABno)
+        var hottop=0;
+
+        var img = document.createElement("img");
+        var flixabtrack=''
+        if(requiredValues.data_distributor=='a8934900-3812-11e8-b467-0ed5f89f718b' || requiredValues.data_distributor=='1e0c13f9-f51b-4990-a2c4-9f81cfc1a0ba'){
+            img.src = "https://media.pointandplace.com/hotspot/images/currys_web_button.gif";
+            //additional sticker , move right
+            hottop=5;
+            FlixjQ('.swiper-slide .sticker').each(function(){
+                var t=FlixjQ(this).height();
+                hottop+=t;                
+            });
+
+            var src = document.querySelector('.swiper-slide');
+
+            if(flixisMobile.any()){
+                if(!document.querySelector('.flix-paphotspot'))
+                    src.appendChild(a);
+            };
+
+            a.setAttribute("style", "position: fixed; left: 0px; top: "+hottop+"px; z-index: 1; cursor:pointer");
+
+            flixabtrack='_'+flixABno
+        }else{
+            flixabtrack=''
+            var flixABno=''
+            img.src = "https://media.pointandplace.com/hotspot/images/pp_animated.gif";
+            var src = document.querySelector('.image-container');
+
+            if(!document.querySelector('.flix-paphotspot'))
+                src.appendChild(a);
+
+            a.setAttribute("style", "position: absolute; left: 28px; top: 20px; z-index: 1; cursor:pointer");
+        }
+
+        a.appendChild(img);
+
+
+        a.classList.add("flix-paphotspot");
+        a.setAttribute('data-eklink', eklink+flixabtrack);
+
+        FlixjQ('.flix-paphotspot').on('click', function(){
+            log3('flix-paphotspot click')
+            //popup overlay
+
+            log3('paphotspot')
+            if(typeof flixABno!='undefined' && flixABno==2){
+                log3('flixABno==2')
+                var oldurlv2=FlixjQ('.flix-pap:eq(0) a').attr('data-href')|| FlixjQ('.flix-pap:eq(0)').attr('data-href')
+                var overlayhrefv2=oldurlv2.replace('\/display', '\/display-v1a')
+                papoverlay(overlayhrefv2);
+            }
+            else if(typeof flixABno!='undefined' && flixABno==3){
+
+                log3('flixABno==3--'+FlixjQ(this).attr('data-href'))
+                //window.open(FlixjQ(this).attr('data-href'));
+                location.href=FlixjQ(this).attr('data-href');
+            }else{
+                log3('P&Photspot clicked: '+FlixjQ(this).attr('data-href'))
+                //window.open(FlixjQ(this).attr('data-href'));
+                location.href=FlixjQ(this).attr('data-href');
+            }
+
+        });
+
+        if(flixABno && flixABno==3){
+            log3('flixABno=3')
+            //FlixjQ('.flix-pap a').attr('data-href', overlayhref)
+            FlixjQ('.flix-pap, .flix-pap a').off('click').on('click', function(){
+                var oldurlv3=FlixjQ('.flix-pap:eq(0) a').attr('data-href')|| FlixjQ('.flix-pap:eq(0)').attr('data-href')
+                //var redir_url=oldurlv3.replace('\/display', '\/display-redir')
+                var redir_url=oldurlv3
+                window.location.href=redir_url;
+            });
+
+        }
+
+
+        if(flixABno && flixABno==2){
+            log3('flixABno=2')
+            FlixjQ('.flix-pap, .flix-pap a').off('click').on('click', function(e){
+                log3('flixABno=2')
+                var oldurlv2=FlixjQ('.flix-pap:eq(0) a').attr('data-href')|| FlixjQ('.flix-pap:eq(0)').attr('data-href')
+                var overlayhrefv2=oldurlv2.replace('\/display', '\/display-v1a')
+                papoverlay(overlayhrefv2);
+
+            });
+        }
+
+    }
+
+    var webARHotspot= function(){
+        log3('WEBARhotspot')
+        
+       
+           
+        var hotimg=''        
+        var hotspotx='0'
+        var hotspoty=5
+        FlixjQ('.swiper-slide .sticker').each(function(){
+            var t=FlixjQ(this).height();''
+            hotspoty=hotspoty+t;
+        });
+        hotspoty+='px';
+
+        if(requiredValues.webarpos_y){
+            hotspoty=requiredValues.webarpos_y
+            hotspotx=requiredValues.webarpos_x
+        }
+
+
+        hotimg=requiredValues.webaricon
+        //hotimg='https://media.pointandplace.com/hotspot/images/currys_web_button_90x90.gif'
+        
+        FlixjQ('.swiper-container:eq(0)').append('<div id="flix_hotspots" class="flix-aa" style="position: absolute!important; z-index: 2; left: '+hotspotx+'!important; top: '+hotspoty+'!important; cursor: pointer; width:60px; height: 60px;"></div>')
+
+            
+
+        if (flixisMobile.iOS() != null) {
+            log3('WEBARhotspot  - ios')
+            //100692
+            var newhh='<a rel="ar" class="ek-aricon ek-ios flix-'+requiredValues.ekdistid+'" data-eklink="hotspot_webar" href="https://d15mv1adrb1s6e.cloudfront.net/product_bundles/USDZ/'+requiredValues.arid+'.usdz" style=" max-height: 60px; max-width: 60px; background: rgba(0, 0, 0, 0) no-repeat scroll -9999px -9999px;"><img class="flix-iosarimg" src="https://media.pointandplace.com/hotspot/images/pnpar.gif" style="opacity:0!important;position: absolute;"><div><img src="'+hotimg+'" style="width:60px"></div></a>'  
+        }
+        else if (flixisMobile.Android() != null) {
+            log3('WEBARhotspot  - Android')
+            var newhh='<a class="ek-aricon ek-android" data-eklink="hotspot_webar" href="intent://d15mv1adrb1s6e.cloudfront.net/product_bundles/GLB/'+requiredValues.arid+'.glb?link=%2F%2Fmedia.flixfacts.com%2Fstaging%2Fek%2F3d%2Fquickview%2Fv1%2F%3Fflix-debug%261&title=#Intent;scheme=https;package=com.google.ar.core;action=android.intent.action.VIEW;S.browser_fallback_url=%2F%2Fmedia.flixfacts.com%2Fstaging%2Fek%2F3d%2Fquickview%2Fv1%2F%3Fflix-debug%261%23model-viewer-no-ar-fallback;end;"  style="position: absolute; z-index: 2; left: '+hotspotx+'!important; top: '+hotspoty+'!important; cursor: pointer; max-height: 60px; max-width: 60px; background: rgba(0, 0, 0, 0) no-repeat scroll -9999px -9999px;"><img id="flix_key_features2" src="'+hotimg+'" class="flix_hs2" title="View 3D" style="width:60px" /></a>'
+        }
+
+        
+        FlixjQ('#flix_hotspots').append(newhh)
+
+        if(!requiredValues.webarpos_y){
+            setTimeout(function(){
+                var hotspoty=5
+                FlixjQ('.swiper-slide .sticker').each(function(){
+                    var t=FlixjQ(this).height();''
+                    hotspoty=hotspoty+t;
+                });
+                hotspoty+='px';
+
+                var origStyleContent = FlixjQ('#flix_hotspots').attr('style');
+                FlixjQ('#flix_hotspots').attr('style', origStyleContent + ';top:'+hotspoty+' !important');
+            }, 1000)
+        }
+        
+
+        if(!sessionStorage.getItem('flixwebar')){
+            FlixjQ('#flix_hotspots').on('click', function(){
+                log3('Show flix_hotspots popup')
+
+                //sessionStorage.removeItem('flixwebar');
+                setTimeout(function(){
+                    if(!sessionStorage.getItem('flixwebar')){
+                        FlixjQ('#flix-webar-overlay').show();
+                        FlixjQ('#flix-webar-main').show();
+                    }
+                    /*var wWidth = FlixjQ(window).width();
+                    var wHeight = FlixjQ(window).height();
+                    var popupWidth = FlixjQ('#flix-webar-main').width();
+                    var popupHeight = FlixjQ('#flix-webar-main').height();
+                    var popupTop = (wHeight/2) //- (popupHeight/2);
+
+                    var popupLeft = (wWidth/2) - (popupWidth/2);*/
+                   
+                    //FlixjQ('#flix-webar-main').css({'left': popupLeft, 'top': popupTop});
+
+                    FlixjQ('#flix-webar-webarlogo')
+                    .attr('data-href', FlixjQ('[data-eklink=papbutton]:eq(0)').attr('data-href'))
+                    .on('click', function(){ 
+                        log3('P&Photspot clicked: '+FlixjQ(this).attr('data-href'))
+                        //window.open(FlixjQ(this).attr('data-href'));
+                        location.href=FlixjQ(this).attr('data-href');
+                    });
+                    //close popup
+                     FlixjQ('#flix-webar-close, #flix-webar-overlay').on('click', function(){
+                        FlixjQ('#flix-webar-overlay').hide();
+                        FlixjQ('#flix-webar-main').hide();
+                     });
+
+                     FlixjQ('#flix-webar-notinterested').on('click', function(){
+                        FlixjQ('#flix-webar-overlay').hide();
+                        FlixjQ('#flix-webar-main').hide();
+                        
+                        // Put the object into storage
+                        sessionStorage.setItem('flixwebar', JSON.stringify(1));                       
+                     });
+
+
+                }, 1000)
+            })
+                
+            //var webarcontent=requiredValues.webarcontent
+
+            /*var webarcontent='<div id="flix-webar-overlay" data-eklink="hotspot_webar_closeoverlay"></div><div id="flix-webar-main"  > <div id="flix-webar-bannerbg"> <div id="flix-webar-close" data-eklink="hotspot_webar_close"> <img src="https://media.pointandplace.com/images/webar/images/x.svg" alt="" style="max-width: 100%"></div><div id="flix-webar-curryslogo"> <img src="https://media.pointandplace.com/images/webar/images/currys-pnp-icon1.png" alt="" style="max-width: 100%"> </div><div id="flix-webar-header">Enjoying AR?</div></div><div id="flix-webar-content"> <div>Bring more products to life with our Augmented Reality app. See them from all angles, get dimensions or try on that pair of headphones you fancy. </div><div id="flix-webar-webarlogo" data-eklink="hotspot_webar_papbutton"><img src="https://media.pointandplace.com/images/webar/images/trypnp-2.svg" alt="" style="max-width: 100%"></div><div id="flix-webar-notinterested" data-eklink="hotspot_webar_notinterested">Not interested</div></div></div>'*/
+
+            var webarcontent=requiredValues.webarcontent;
+
+            FlixjQ('body').append(webarcontent);
+            FlixjQ('#flix-webar-main').addClass('flix-'+requiredValues.ekdistid)
+            
+        }
+    }
+
+    var papoverlay = function(overlayhref){
+        log3('papoverlay' +overlayhref);
+
+        if(FlixjQ('body').find('#hotspot-overlay-popup').length === 0) {
+            var overlayhtml='<div id="hotspot-overlay-popup" class="flix-ppoverlay" style="position:fixed;top:0;left:0;width:100%;height:100%; z-index:1030;"><a id="btn_closeoverlay" title="Close" style="position: absolute;right: 20px;top: 10px;cursor: pointer;z-index: 1;"><img src="https://currys-pointandplace.s3-eu-west-1.amazonaws.com/app/products/assets/images/x3.png" alt="Close" border="0" style="display: block;margin: 0 auto;max-width: 100%;height: auto;width: 50px;"></a><iframe src="'+overlayhref+'" frameborder="0" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe></div>'
+            FlixjQ('body').append(overlayhtml);
+
+            FlixjQ('#btn_closeoverlay').on('click', function(){
+                FlixjQ('.flix-ppoverlay').remove();
+            });
+        }
+
+
+
+
+
+    }
+
+    if(!String.prototype.trim) {
+        String.prototype.trim = function () {
+            return this.replace(/^\s+|\s+$/g,'');
+        };
+    }
+
+    if ( ! Array.prototype.forEach ) {
+        Array.prototype.forEach = function (fn, scope) {
+            'use strict';
+            var i, len;
+            for (i = 0, len = this.length; i < len; ++i) {
+                if (i in this) {
+                    fn.call(scope, this[i], i, this);
+                }
+            }
+        };
+    }
+
+    window.ekJsCallbacks = window.ekJsCallbacks || {};
+    window.ekJsCallbacks.ekCartClick = function (identifier, dist_id, language) {
+        log3('Cart click')
+        try {
+            if( identifier === 'skip' ) return false;
+
+            if( identifier !== 'alert') {
+                var NodeList = document.querySelectorAll(identifier);
+                var ArrayList = Array.prototype.slice.call(NodeList, 0);
+            }
+
+            for( var n = 0, l = ArrayList.length; n < l; n++ ) {
+                ArrayList[n].onmousedown = function(e) {
+                    log3('Add to cart click')
+                    e = e || window.event;
+                    ekopts.event_type = "cart_click";
+                    ekopts.event_detail = 1;
+                    FlixjQ.fn.ek.log(ekopts);
+                };
+            }
+
+        }catch(ignore){}
+    };
+
+    //Note. what is the rationale behind some methods being on the FlixjQ prototype chain, some methods being global (window ) and some methods being global (not enclosed - although enclosed here by me);
+    window.flixmobilecheck = function() {
+        var check = false;
+        (function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))) check = true;})(navigator.userAgent||navigator.vendor||window.opera);
+        return check;
+    };
+
+
+
+
+
+    /*GLTF player */
+    /* ------------ Start 3D module ------------------ */
+
+    var gltfvalues=[];
+    gltfvalues.position_selector = '.fl1xcarousel-wrapper:first';
+    gltfvalues.position_selector_mobile = '.flix_selector_feature:first';
+    var flixInitGLTFcc=0;
+    function flixInitGLTF( arid ) {
+        log3('flixInitGLTF')
+        if(FlixjQ('#inpage_container').length && !! FlixjQ('#inpage_container').is(":visible")){
+            //lg only
+            if(FlixjQ('#flix-lg-inpage').length || FlixjQ('.inpage_brand_57').length){
+                log3('flixInitGLTF found')
+                flixLoadGLTF( arid );
+            }
+        }
+        else {
+            setTimeout(function(){
+                if(flixInitGLTFcc <= 10 ) {
+                    flixInitGLTF( arid );
+                }
+                flixInitGLTFcc++;
+            }, 2000);
+        }
+    }
+
+    function flixLoadGLTF(arid){
+        log3('flixLoadGLTF')
+        if (flixDetectWebGLContext()) {
+            //TODO: Move this to S3.
+            var html = '<div class="flix_selector_3d" id="flix_selector_3d"><div id="flix-GLTFcontainer"><iframe id="flix-GLTFiframe" src="//media.flixfacts.com/3d/gltf/?arid=' + arid + '" scrolling="no"></iframe></div></div></div>';
+            if(FlixjQ(gltfvalues.position_selector).length > 0) {
+                FlixjQ(gltfvalues.position_selector).after(html);
+            }
+            if(FlixjQ(gltfvalues.position_selector_mobile).length > 0) {
+                log3('mobilepos')
+                FlixjQ(gltfvalues.position_selector_mobile).before(html);
+            }
+        }
+        else {
+            log3('NO WEBGL');
+        }
+    }
+
+    function flixDetectWebGLContext() {
+        // Create canvas element. The canvas is not added to the
+        // document itself, so it is never displayed in the
+        // browser window.
+        var canvas = document.createElement("canvas");
+        // Get WebGLRenderingContext from canvas element.
+        var gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+        // Report the result.
+        if (gl && gl instanceof WebGLRenderingContext) {
+            log3("Your browser supports WebGL.")
+            return true
+        }
+        else {
+            log3("Failed to get WebGL context. Your browser or device may not support WebGL.")
+            return false
+        }
+    }
+    /* ------------ End 3D module ------------------ */;
+    /*GLTF player ends */
+
+
+
+    /*!
+     * flixUAParser.js v0.7.18
+     * Lightweight JavaScript-based User-Agent string parser
+     * https://github.com/faisalman/ua-parser-js
+     *
+     * Copyright © 2012-2016 Faisal Salman <fyzlman@gmail.com>
+     * Dual licensed under GPLv2 or MIT
+     */
+    (function(window, undefined) {
+        "use strict";
+        var LIBVERSION = "0.7.18",
+            EMPTY = "",
+            UNKNOWN = "?",
+            FUNC_TYPE = "function",
+            UNDEF_TYPE = "undefined",
+            OBJ_TYPE = "object",
+            STR_TYPE = "string",
+            MAJOR = "major",
+            MODEL = "model",
+            NAME = "name",
+            TYPE = "type",
+            VENDOR = "vendor",
+            VERSION = "version",
+            ARCHITECTURE = "architecture",
+            CONSOLE = "console",
+            MOBILE = "mobile",
+            TABLET = "tablet",
+            SMARTTV = "smarttv",
+            WEARABLE = "wearable",
+            EMBEDDED = "embedded";
+        var util = {
+            extend: function(regexes, extensions) {
+                var margedRegexes = {};
+                for (var i in regexes) {
+                    if (extensions[i] && extensions[i].length % 2 === 0) {
+                        margedRegexes[i] = extensions[i].concat(regexes[i])
+                    } else {
+                        margedRegexes[i] = regexes[i]
+                    }
+                }
+                return margedRegexes
+            },
+            has: function(str1, str2) {
+                if (typeof str1 === "string") {
+                    return str2.toLowerCase().indexOf(str1.toLowerCase()) !== -1
+                } else {
+                    return false
+                }
+            },
+            lowerize: function(str) {
+                return str.toLowerCase()
+            },
+            major: function(version) {
+                return typeof version === STR_TYPE ? version.replace(/[^\d\.]/g, "").split(".")[0] : undefined
+            },
+            trim: function(str) {
+                return str.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, "")
+            }
+        };
+        var mapper = {
+            rgx: function(ua, arrays) {
+                var i = 0,
+                    j, k, p, q, matches, match;
+                while (i < arrays.length && !matches) {
+                    var regex = arrays[i],
+                        props = arrays[i + 1];
+                    j = k = 0;
+                    while (j < regex.length && !matches) {
+                        matches = regex[j++].exec(ua);
+                        if (!!matches) {
+                            for (p = 0; p < props.length; p++) {
+                                match = matches[++k];
+                                q = props[p];
+                                if (typeof q === OBJ_TYPE && q.length > 0) {
+                                    if (q.length == 2) {
+                                        if (typeof q[1] == FUNC_TYPE) {
+                                            this[q[0]] = q[1].call(this, match)
+                                        } else {
+                                            this[q[0]] = q[1]
+                                        }
+                                    } else if (q.length == 3) {
+                                        if (typeof q[1] === FUNC_TYPE && !(q[1].exec && q[1].test)) {
+                                            this[q[0]] = match ? q[1].call(this, match, q[2]) : undefined
+                                        } else {
+                                            this[q[0]] = match ? match.replace(q[1], q[2]) : undefined
+                                        }
+                                    } else if (q.length == 4) {
+                                        this[q[0]] = match ? q[3].call(this, match.replace(q[1], q[2])) : undefined
+                                    }
+                                } else {
+                                    this[q] = match ? match : undefined
+                                }
+                            }
+                        }
+                    }
+                    i += 2
+                }
+            },
+            str: function(str, map) {
+                for (var i in map) {
+                    if (typeof map[i] === OBJ_TYPE && map[i].length > 0) {
+                        for (var j = 0; j < map[i].length; j++) {
+                            if (util.has(map[i][j], str)) {
+                                return i === UNKNOWN ? undefined : i
+                            }
+                        }
+                    } else if (util.has(map[i], str)) {
+                        return i === UNKNOWN ? undefined : i
+                    }
+                }
+                return str
+            }
+        };
+        var maps = {
+            browser: {
+                oldsafari: {
+                    version: {
+                        "1.0": "/8",
+                        1.2: "/1",
+                        1.3: "/3",
+                        "2.0": "/412",
+                        "2.0.2": "/416",
+                        "2.0.3": "/417",
+                        "2.0.4": "/419",
+                        "?": "/"
+                    }
+                }
+            },
+            device: {
+                amazon: {
+                    model: {
+                        "Fire Phone": ["SD", "KF"]
+                    }
+                },
+                sprint: {
+                    model: {
+                        "Evo Shift 4G": "7373KT"
+                    },
+                    vendor: {
+                        HTC: "APA",
+                        Sprint: "Sprint"
+                    }
+                }
+            },
+            os: {
+                windows: {
+                    version: {
+                        ME: "4.90",
+                        "NT 3.11": "NT3.51",
+                        "NT 4.0": "NT4.0",
+                        2000: "NT 5.0",
+                        XP: ["NT 5.1", "NT 5.2"],
+                        Vista: "NT 6.0",
+                        7: "NT 6.1",
+                        8: "NT 6.2",
+                        8.1: "NT 6.3",
+                        10: ["NT 6.4", "NT 10.0"],
+                        RT: "ARM"
+                    }
+                }
+            }
+        };
+        var regexes = {
+            browser: [
+                [/(opera\smini)\/([\w\.-]+)/i, /(opera\s[mobiletab]+).+version\/([\w\.-]+)/i, /(opera).+version\/([\w\.]+)/i, /(opera)[\/\s]+([\w\.]+)/i],
+                [NAME, VERSION],
+                [/(opios)[\/\s]+([\w\.]+)/i],
+                [
+                    [NAME, "Opera Mini"], VERSION
+                ],
+                [/\s(opr)\/([\w\.]+)/i],
+                [
+                    [NAME, "Opera"], VERSION
+                ],
+                [/(kindle)\/([\w\.]+)/i, /(lunascape|maxthon|netfront|jasmine|blazer)[\/\s]?([\w\.]*)/i, /(avant\s|iemobile|slim|baidu)(?:browser)?[\/\s]?([\w\.]*)/i, /(?:ms|\()(ie)\s([\w\.]+)/i, /(rekonq)\/([\w\.]*)/i, /(chromium|flock|rockmelt|midori|epiphany|silk|skyfire|ovibrowser|bolt|iron|vivaldi|iridium|phantomjs|bowser|quark)\/([\w\.-]+)/i],
+                [NAME, VERSION],
+                [/(trident).+rv[:\s]([\w\.]+).+like\sgecko/i],
+                [
+                    [NAME, "IE"], VERSION
+                ],
+                [/(edge|edgios|edgea)\/((\d+)?[\w\.]+)/i],
+                [
+                    [NAME, "Edge"], VERSION
+                ],
+                [/(yabrowser)\/([\w\.]+)/i],
+                [
+                    [NAME, "Yandex"], VERSION
+                ],
+                [/(puffin)\/([\w\.]+)/i],
+                [
+                    [NAME, "Puffin"], VERSION
+                ],
+                [/((?:[\s\/])uc?\s?browser|(?:juc.+)ucweb)[\/\s]?([\w\.]+)/i],
+                [
+                    [NAME, "UCBrowser"], VERSION
+                ],
+                [/(comodo_dragon)\/([\w\.]+)/i],
+                [
+                    [NAME, /_/g, " "], VERSION
+                ],
+                [/(micromessenger)\/([\w\.]+)/i],
+                [
+                    [NAME, "WeChat"], VERSION
+                ],
+                [/(qqbrowserlite)\/([\w\.]+)/i],
+                [NAME, VERSION],
+                [/(QQ)\/([\d\.]+)/i],
+                [NAME, VERSION],
+                [/m?(qqbrowser)[\/\s]?([\w\.]+)/i],
+                [NAME, VERSION],
+                [/(BIDUBrowser)[\/\s]?([\w\.]+)/i],
+                [NAME, VERSION],
+                [/(2345Explorer)[\/\s]?([\w\.]+)/i],
+                [NAME, VERSION],
+                [/(MetaSr)[\/\s]?([\w\.]+)/i],
+                [NAME],
+                [/(LBBROWSER)/i],
+                [NAME],
+                [/xiaomi\/miuibrowser\/([\w\.]+)/i],
+                [VERSION, [NAME, "MIUI Browser"]],
+                [/;fbav\/([\w\.]+);/i],
+                [VERSION, [NAME, "Facebook"]],
+                [/headlesschrome(?:\/([\w\.]+)|\s)/i],
+                [VERSION, [NAME, "Chrome Headless"]],
+                [/\swv\).+(chrome)\/([\w\.]+)/i],
+                [
+                    [NAME, /(.+)/, "$1 WebView"], VERSION
+                ],
+                [/((?:oculus|samsung)browser)\/([\w\.]+)/i],
+                [
+                    [NAME, /(.+(?:g|us))(.+)/, "$1 $2"], VERSION
+                ],
+                [/android.+version\/([\w\.]+)\s+(?:mobile\s?safari|safari)*/i],
+                [VERSION, [NAME, "Android Browser"]],
+                [/(chrome|omniweb|arora|[tizenoka]{5}\s?browser)\/v?([\w\.]+)/i],
+                [NAME, VERSION],
+                [/(dolfin)\/([\w\.]+)/i],
+                [
+                    [NAME, "Dolphin"], VERSION
+                ],
+                [/((?:android.+)crmo|crios)\/([\w\.]+)/i],
+                [
+                    [NAME, "Chrome"], VERSION
+                ],
+                [/(coast)\/([\w\.]+)/i],
+                [
+                    [NAME, "Opera Coast"], VERSION
+                ],
+                [/fxios\/([\w\.-]+)/i],
+                [VERSION, [NAME, "Firefox"]],
+                [/version\/([\w\.]+).+?mobile\/\w+\s(safari)/i],
+                [VERSION, [NAME, "Mobile Safari"]],
+                [/version\/([\w\.]+).+?(mobile\s?safari|safari)/i],
+                [VERSION, NAME],
+                [/webkit.+?(gsa)\/([\w\.]+).+?(mobile\s?safari|safari)(\/[\w\.]+)/i],
+                [
+                    [NAME, "GSA"], VERSION
+                ],
+                [/webkit.+?(mobile\s?safari|safari)(\/[\w\.]+)/i],
+                [NAME, [VERSION, mapper.str, maps.browser.oldsafari.version]],
+                [/(konqueror)\/([\w\.]+)/i, /(webkit|khtml)\/([\w\.]+)/i],
+                [NAME, VERSION],
+                [/(navigator|netscape)\/([\w\.-]+)/i],
+                [
+                    [NAME, "Netscape"], VERSION
+                ],
+                [/(swiftfox)/i, /(icedragon|iceweasel|camino|chimera|fennec|maemo\sbrowser|minimo|conkeror)[\/\s]?([\w\.\+]+)/i, /(firefox|seamonkey|k-meleon|icecat|iceape|firebird|phoenix|palemoon|basilisk|waterfox)\/([\w\.-]+)$/i, /(mozilla)\/([\w\.]+).+rv\:.+gecko\/\d+/i, /(polaris|lynx|dillo|icab|doris|amaya|w3m|netsurf|sleipnir)[\/\s]?([\w\.]+)/i, /(links)\s\(([\w\.]+)/i, /(gobrowser)\/?([\w\.]*)/i, /(ice\s?browser)\/v?([\w\._]+)/i, /(mosaic)[\/\s]([\w\.]+)/i],
+                [NAME, VERSION]
+            ],
+            cpu: [
+                [/(?:(amd|x(?:(?:86|64)[_-])?|wow|win)64)[;\)]/i],
+                [
+                    [ARCHITECTURE, "amd64"]
+                ],
+                [/(ia32(?=;))/i],
+                [
+                    [ARCHITECTURE, util.lowerize]
+                ],
+                [/((?:i[346]|x)86)[;\)]/i],
+                [
+                    [ARCHITECTURE, "ia32"]
+                ],
+                [/windows\s(ce|mobile);\sppc;/i],
+                [
+                    [ARCHITECTURE, "arm"]
+                ],
+                [/((?:ppc|powerpc)(?:64)?)(?:\smac|;|\))/i],
+                [
+                    [ARCHITECTURE, /ower/, "", util.lowerize]
+                ],
+                [/(sun4\w)[;\)]/i],
+                [
+                    [ARCHITECTURE, "sparc"]
+                ],
+                [/((?:avr32|ia64(?=;))|68k(?=\))|arm(?:64|(?=v\d+;))|(?=atmel\s)avr|(?:irix|mips|sparc)(?:64)?(?=;)|pa-risc)/i],
+                [
+                    [ARCHITECTURE, util.lowerize]
+                ]
+            ],
+            device: [
+                [/\((ipad|playbook);[\w\s\);-]+(rim|apple)/i],
+                [MODEL, VENDOR, [TYPE, TABLET]],
+                [/applecoremedia\/[\w\.]+ \((ipad)/],
+                [MODEL, [VENDOR, "Apple"],
+                    [TYPE, TABLET]
+                ],
+                [/(apple\s{0,1}tv)/i],
+                [
+                    [MODEL, "Apple TV"],
+                    [VENDOR, "Apple"]
+                ],
+                [/(archos)\s(gamepad2?)/i, /(hp).+(touchpad)/i, /(hp).+(tablet)/i, /(kindle)\/([\w\.]+)/i, /\s(nook)[\w\s]+build\/(\w+)/i, /(dell)\s(strea[kpr\s\d]*[\dko])/i],
+                [VENDOR, MODEL, [TYPE, TABLET]],
+                [/(kf[A-z]+)\sbuild\/.+silk\//i],
+                [MODEL, [VENDOR, "Amazon"],
+                    [TYPE, TABLET]
+                ],
+                [/(sd|kf)[0349hijorstuw]+\sbuild\/.+silk\//i],
+                [
+                    [MODEL, mapper.str, maps.device.amazon.model],
+                    [VENDOR, "Amazon"],
+                    [TYPE, MOBILE]
+                ],
+                [/\((ip[honed|\s\w*]+);.+(apple)/i],
+                [MODEL, VENDOR, [TYPE, MOBILE]],
+                [/\((ip[honed|\s\w*]+);/i],
+                [MODEL, [VENDOR, "Apple"],
+                    [TYPE, MOBILE]
+                ],
+                [/(blackberry)[\s-]?(\w+)/i, /(blackberry|benq|palm(?=\-)|sonyericsson|acer|asus|dell|meizu|motorola|polytron)[\s_-]?([\w-]*)/i, /(hp)\s([\w\s]+\w)/i, /(asus)-?(\w+)/i],
+                [VENDOR, MODEL, [TYPE, MOBILE]],
+                [/\(bb10;\s(\w+)/i],
+                [MODEL, [VENDOR, "BlackBerry"],
+                    [TYPE, MOBILE]
+                ],
+                [/android.+(transfo[prime\s]{4,10}\s\w+|eeepc|slider\s\w+|nexus 7|padfone)/i],
+                [MODEL, [VENDOR, "Asus"],
+                    [TYPE, TABLET]
+                ],
+                [/(sony)\s(tablet\s[ps])\sbuild\//i, /(sony)?(?:sgp.+)\sbuild\//i],
+                [
+                    [VENDOR, "Sony"],
+                    [MODEL, "Xperia Tablet"],
+                    [TYPE, TABLET]
+                ],
+                [/android.+\s([c-g]\d{4}|so[-l]\w+)\sbuild\//i],
+                [MODEL, [VENDOR, "Sony"],
+                    [TYPE, MOBILE]
+                ],
+                [/\s(ouya)\s/i, /(nintendo)\s([wids3u]+)/i],
+                [VENDOR, MODEL, [TYPE, CONSOLE]],
+                [/android.+;\s(shield)\sbuild/i],
+                [MODEL, [VENDOR, "Nvidia"],
+                    [TYPE, CONSOLE]
+                ],
+                [/(playstation\s[34portablevi]+)/i],
+                [MODEL, [VENDOR, "Sony"],
+                    [TYPE, CONSOLE]
+                ],
+                [/(sprint\s(\w+))/i],
+                [
+                    [VENDOR, mapper.str, maps.device.sprint.vendor],
+                    [MODEL, mapper.str, maps.device.sprint.model],
+                    [TYPE, MOBILE]
+                ],
+                [/(lenovo)\s?(S(?:5000|6000)+(?:[-][\w+]))/i],
+                [VENDOR, MODEL, [TYPE, TABLET]],
+                [/(htc)[;_\s-]+([\w\s]+(?=\))|\w+)*/i, /(zte)-(\w*)/i, /(alcatel|geeksphone|lenovo|nexian|panasonic|(?=;\s)sony)[_\s-]?([\w-]*)/i],
+                [VENDOR, [MODEL, /_/g, " "],
+                    [TYPE, MOBILE]
+                ],
+                [/(nexus\s9)/i],
+                [MODEL, [VENDOR, "HTC"],
+                    [TYPE, TABLET]
+                ],
+                [/d\/huawei([\w\s-]+)[;\)]/i, /(nexus\s6p)/i],
+                [MODEL, [VENDOR, "Huawei"],
+                    [TYPE, MOBILE]
+                ],
+                [/(microsoft);\s(lumia[\s\w]+)/i],
+                [VENDOR, MODEL, [TYPE, MOBILE]],
+                [/[\s\(;](xbox(?:\sone)?)[\s\);]/i],
+                [MODEL, [VENDOR, "Microsoft"],
+                    [TYPE, CONSOLE]
+                ],
+                [/(kin\.[onetw]{3})/i],
+                [
+                    [MODEL, /\./g, " "],
+                    [VENDOR, "Microsoft"],
+                    [TYPE, MOBILE]
+                ],
+                [/\s(milestone|droid(?:[2-4x]|\s(?:bionic|x2|pro|razr))?:?(\s4g)?)[\w\s]+build\//i, /mot[\s-]?(\w*)/i, /(XT\d{3,4}) build\//i, /(nexus\s6)/i],
+                [MODEL, [VENDOR, "Motorola"],
+                    [TYPE, MOBILE]
+                ],
+                [/android.+\s(mz60\d|xoom[\s2]{0,2})\sbuild\//i],
+                [MODEL, [VENDOR, "Motorola"],
+                    [TYPE, TABLET]
+                ],
+                [/hbbtv\/\d+\.\d+\.\d+\s+\([\w\s]*;\s*(\w[^;]*);([^;]*)/i],
+                [
+                    [VENDOR, util.trim],
+                    [MODEL, util.trim],
+                    [TYPE, SMARTTV]
+                ],
+                [/hbbtv.+maple;(\d+)/i],
+                [
+                    [MODEL, /^/, "SmartTV"],
+                    [VENDOR, "Samsung"],
+                    [TYPE, SMARTTV]
+                ],
+                [/\(dtv[\);].+(aquos)/i],
+                [MODEL, [VENDOR, "Sharp"],
+                    [TYPE, SMARTTV]
+                ],
+                [/android.+((sch-i[89]0\d|shw-m380s|gt-p\d{4}|gt-n\d+|sgh-t8[56]9|nexus 10))/i, /((SM-T\w+))/i],
+                [
+                    [VENDOR, "Samsung"], MODEL, [TYPE, TABLET]
+                ],
+                [/smart-tv.+(samsung)/i],
+                [VENDOR, [TYPE, SMARTTV], MODEL],
+                [/((s[cgp]h-\w+|gt-\w+|galaxy\snexus|sm-\w[\w\d]+))/i, /(sam[sung]*)[\s-]*(\w+-?[\w-]*)/i, /sec-((sgh\w+))/i],
+                [
+                    [VENDOR, "Samsung"], MODEL, [TYPE, MOBILE]
+                ],
+                [/sie-(\w*)/i],
+                [MODEL, [VENDOR, "Siemens"],
+                    [TYPE, MOBILE]
+                ],
+                [/(maemo|nokia).*(n900|lumia\s\d+)/i, /(nokia)[\s_-]?([\w-]*)/i],
+                [
+                    [VENDOR, "Nokia"], MODEL, [TYPE, MOBILE]
+                ],
+                [/android\s3\.[\s\w;-]{10}(a\d{3})/i],
+                [MODEL, [VENDOR, "Acer"],
+                    [TYPE, TABLET]
+                ],
+                [/android.+([vl]k\-?\d{3})\s+build/i],
+                [MODEL, [VENDOR, "LG"],
+                    [TYPE, TABLET]
+                ],
+                [/android\s3\.[\s\w;-]{10}(lg?)-([06cv9]{3,4})/i],
+                [
+                    [VENDOR, "LG"], MODEL, [TYPE, TABLET]
+                ],
+                [/(lg) netcast\.tv/i],
+                [VENDOR, MODEL, [TYPE, SMARTTV]],
+                [/(nexus\s[45])/i, /lg[e;\s\/-]+(\w*)/i, /android.+lg(\-?[\d\w]+)\s+build/i],
+                [MODEL, [VENDOR, "LG"],
+                    [TYPE, MOBILE]
+                ]
+
+                ,
+                [/android.+([vl]k\-?\d{3})\s+build/i],
+                [MODEL, [VENDOR, "LGM"],
+                    [TYPE, TABLET]
+                ],
+                [/android\s3\.[\s\w;-]{10}(lgm?)-([06cv9]{3,4})/i],
+                [
+                    [VENDOR, "LGM"], MODEL, [TYPE, TABLET]
+                ],
+                [/(lgm) netcast\.tv/i],
+                [VENDOR, MODEL, [TYPE, SMARTTV]],
+                [/(nexus\s[45])/i, /lgm[e;\s\/-]+(\w*)/i, /android.+lgmM(\-?[\d\w]+)\s+build/i],
+                [MODEL, [VENDOR, "LGM"],
+                    [TYPE, MOBILE]
+                ],
+
+
+                [/android.+(ideatab[a-z0-9\-\s]+)/i],
+                [MODEL, [VENDOR, "Lenovo"],
+                    [TYPE, TABLET]
+                ],
+                [/linux;.+((jolla));/i],
+                [VENDOR, MODEL, [TYPE, MOBILE]],
+                [/((pebble))app\/[\d\.]+\s/i],
+                [VENDOR, MODEL, [TYPE, WEARABLE]],
+                [/android.+;\s(oppo)\s?([\w\s]+)\sbuild/i],
+                [VENDOR, MODEL, [TYPE, MOBILE]],
+                [/crkey/i],
+                [
+                    [MODEL, "Chromecast"],
+                    [VENDOR, "Google"]
+                ],
+                [/android.+;\s(glass)\s\d/i],
+                [MODEL, [VENDOR, "Google"],
+                    [TYPE, WEARABLE]
+                ],
+                [/android.+;\s(pixel c)\s/i],
+                [MODEL, [VENDOR, "Google"],
+                    [TYPE, TABLET]
+                ],
+                [/android.+;\s(pixel xl|pixel)\s/i],
+                [MODEL, [VENDOR, "Google"],
+                    [TYPE, MOBILE]
+                ],
+                [/android.+;\s(\w+)\s+build\/hm\1/i, /android.+(hm[\s\-_]*note?[\s_]*(?:\d\w)?)\s+build/i, /android.+(mi[\s\-_]*(?:one|one[\s_]plus|note lte)?[\s_]*(?:\d?\w?)[\s_]*(?:plus)?)\s+build/i, /android.+(redmi[\s\-_]*(?:note)?(?:[\s_]*[\w\s]+))\s+build/i],
+                [
+                    [MODEL, /_/g, " "],
+                    [VENDOR, "Xiaomi"],
+                    [TYPE, MOBILE]
+                ],
+                [/android.+(mi[\s\-_]*(?:pad)(?:[\s_]*[\w\s]+))\s+build/i],
+                [
+                    [MODEL, /_/g, " "],
+                    [VENDOR, "Xiaomi"],
+                    [TYPE, TABLET]
+                ],
+                [/android.+;\s(m[1-5]\snote)\sbuild/i],
+                [MODEL, [VENDOR, "Meizu"],
+                    [TYPE, TABLET]
+                ],
+                [/android.+a000(1)\s+build/i, /android.+oneplus\s(a\d{4})\s+build/i],
+                [MODEL, [VENDOR, "OnePlus"],
+                    [TYPE, MOBILE]
+                ],
+                [/android.+[;\/]\s*(RCT[\d\w]+)\s+build/i],
+                [MODEL, [VENDOR, "RCA"],
+                    [TYPE, TABLET]
+                ],
+                [/android.+[;\/\s]+(Venue[\d\s]{2,7})\s+build/i],
+                [MODEL, [VENDOR, "Dell"],
+                    [TYPE, TABLET]
+                ],
+                [/android.+[;\/]\s*(Q[T|M][\d\w]+)\s+build/i],
+                [MODEL, [VENDOR, "Verizon"],
+                    [TYPE, TABLET]
+                ],
+                [/android.+[;\/]\s+(Barnes[&\s]+Noble\s+|BN[RT])(V?.*)\s+build/i],
+                [
+                    [VENDOR, "Barnes & Noble"], MODEL, [TYPE, TABLET]
+                ],
+                [/android.+[;\/]\s+(TM\d{3}.*\b)\s+build/i],
+                [MODEL, [VENDOR, "NuVision"],
+                    [TYPE, TABLET]
+                ],
+                [/android.+;\s(k88)\sbuild/i],
+                [MODEL, [VENDOR, "ZTE"],
+                    [TYPE, TABLET]
+                ],
+                [/android.+[;\/]\s*(gen\d{3})\s+build.*49h/i],
+                [MODEL, [VENDOR, "Swiss"],
+                    [TYPE, MOBILE]
+                ],
+                [/android.+[;\/]\s*(zur\d{3})\s+build/i],
+                [MODEL, [VENDOR, "Swiss"],
+                    [TYPE, TABLET]
+                ],
+                [/android.+[;\/]\s*((Zeki)?TB.*\b)\s+build/i],
+                [MODEL, [VENDOR, "Zeki"],
+                    [TYPE, TABLET]
+                ],
+                [/(android).+[;\/]\s+([YR]\d{2})\s+build/i, /android.+[;\/]\s+(Dragon[\-\s]+Touch\s+|DT)(\w{5})\sbuild/i],
+                [
+                    [VENDOR, "Dragon Touch"], MODEL, [TYPE, TABLET]
+                ],
+                [/android.+[;\/]\s*(NS-?\w{0,9})\sbuild/i],
+                [MODEL, [VENDOR, "Insignia"],
+                    [TYPE, TABLET]
+                ],
+                [/android.+[;\/]\s*((NX|Next)-?\w{0,9})\s+build/i],
+                [MODEL, [VENDOR, "NextBook"],
+                    [TYPE, TABLET]
+                ],
+                [/android.+[;\/]\s*(Xtreme\_)?(V(1[045]|2[015]|30|40|60|7[05]|90))\s+build/i],
+                [
+                    [VENDOR, "Voice"], MODEL, [TYPE, MOBILE]
+                ],
+                [/android.+[;\/]\s*(LVTEL\-)?(V1[12])\s+build/i],
+                [
+                    [VENDOR, "LvTel"], MODEL, [TYPE, MOBILE]
+                ],
+                [/android.+[;\/]\s*(V(100MD|700NA|7011|917G).*\b)\s+build/i],
+                [MODEL, [VENDOR, "Envizen"],
+                    [TYPE, TABLET]
+                ],
+                [/android.+[;\/]\s*(Le[\s\-]+Pan)[\s\-]+(\w{1,9})\s+build/i],
+                [VENDOR, MODEL, [TYPE, TABLET]],
+                [/android.+[;\/]\s*(Trio[\s\-]*.*)\s+build/i],
+                [MODEL, [VENDOR, "MachSpeed"],
+                    [TYPE, TABLET]
+                ],
+                [/android.+[;\/]\s*(Trinity)[\-\s]*(T\d{3})\s+build/i],
+                [VENDOR, MODEL, [TYPE, TABLET]],
+                [/android.+[;\/]\s*TU_(1491)\s+build/i],
+                [MODEL, [VENDOR, "Rotor"],
+                    [TYPE, TABLET]
+                ],
+                [/android.+(KS(.+))\s+build/i],
+                [MODEL, [VENDOR, "Amazon"],
+                    [TYPE, TABLET]
+                ],
+                [/android.+(Gigaset)[\s\-]+(Q\w{1,9})\s+build/i],
+                [VENDOR, MODEL, [TYPE, TABLET]],
+                [/\s(tablet|tab)[;\/]/i, /\s(mobile)(?:[;\/]|\ssafari)/i],
+                [
+                    [TYPE, util.lowerize], VENDOR, MODEL
+                ],
+                [/(android[\w\.\s\-]{0,9});.+build/i],
+                [MODEL, [VENDOR, "Generic"]]
+            ],
+            engine: [
+                [/windows.+\sedge\/([\w\.]+)/i],
+                [VERSION, [NAME, "EdgeHTML"]],
+                [/(presto)\/([\w\.]+)/i, /(webkit|trident|netfront|netsurf|amaya|lynx|w3m)\/([\w\.]+)/i, /(khtml|tasman|links)[\/\s]\(?([\w\.]+)/i, /(icab)[\/\s]([23]\.[\d\.]+)/i],
+                [NAME, VERSION],
+                [/rv\:([\w\.]{1,9}).+(gecko)/i],
+                [VERSION, NAME]
+            ],
+            os: [
+                [/microsoft\s(windows)\s(vista|xp)/i],
+                [NAME, VERSION],
+                [/(windows)\snt\s6\.2;\s(arm)/i, /(windows\sphone(?:\sos)*)[\s\/]?([\d\.\s\w]*)/i, /(windows\smobile|windows)[\s\/]?([ntce\d\.\s]+\w)/i],
+                [NAME, [VERSION, mapper.str, maps.os.windows.version]],
+                [/(win(?=3|9|n)|win\s9x\s)([nt\d\.]+)/i],
+                [
+                    [NAME, "Windows"],
+                    [VERSION, mapper.str, maps.os.windows.version]
+                ],
+                [/\((bb)(10);/i],
+                [
+                    [NAME, "BlackBerry"], VERSION
+                ],
+                [/(blackberry)\w*\/?([\w\.]*)/i, /(tizen)[\/\s]([\w\.]+)/i, /(android|webos|palm\sos|qnx|bada|rim\stablet\sos|meego|contiki)[\/\s-]?([\w\.]*)/i, /linux;.+(sailfish);/i],
+                [NAME, VERSION],
+                [/(symbian\s?os|symbos|s60(?=;))[\/\s-]?([\w\.]*)/i],
+                [
+                    [NAME, "Symbian"], VERSION
+                ],
+                [/\((series40);/i],
+                [NAME],
+                [/mozilla.+\(mobile;.+gecko.+firefox/i],
+                [
+                    [NAME, "Firefox OS"], VERSION
+                ],
+                [/(nintendo|playstation)\s([wids34portablevu]+)/i, /(mint)[\/\s\(]?(\w*)/i, /(mageia|vectorlinux)[;\s]/i, /(joli|[kxln]?ubuntu|debian|suse|opensuse|gentoo|(?=\s)arch|slackware|fedora|mandriva|centos|pclinuxos|redhat|zenwalk|linpus)[\/\s-]?(?!chrom)([\w\.-]*)/i, /(hurd|linux)\s?([\w\.]*)/i, /(gnu)\s?([\w\.]*)/i],
+                [NAME, VERSION],
+                [/(cros)\s[\w]+\s([\w\.]+\w)/i],
+                [
+                    [NAME, "Chromium OS"], VERSION
+                ],
+                [/(sunos)\s?([\w\.\d]*)/i],
+                [
+                    [NAME, "Solaris"], VERSION
+                ],
+                [/\s([frentopc-]{0,4}bsd|dragonfly)\s?([\w\.]*)/i],
+                [NAME, VERSION],
+                [/(haiku)\s(\w+)/i],
+                [NAME, VERSION],
+                [/cfnetwork\/.+darwin/i, /ip[honead]{2,4}(?:.*os\s([\w]+)\slike\smac|;\sopera)/i],
+                [
+                    [VERSION, /_/g, "."],
+                    [NAME, "iOS"]
+                ],
+                [/(mac\sos\sx)\s?([\w\s\.]*)/i, /(macintosh|mac(?=_powerpc)\s)/i],
+                [
+                    [NAME, "Mac OS"],
+                    [VERSION, /_/g, "."]
+                ],
+                [/((?:open)?solaris)[\/\s-]?([\w\.]*)/i, /(aix)\s((\d)(?=\.|\)|\s)[\w\.])*/i, /(plan\s9|minix|beos|os\/2|amigaos|morphos|risc\sos|openvms)/i, /(unix)\s?([\w\.]*)/i],
+                [NAME, VERSION]
+            ]
+        };
+        var flixUAParser = function(uastring, extensions) {
+            if (typeof uastring === "object") {
+                extensions = uastring;
+                uastring = undefined
+            }
+            if (!(this instanceof flixUAParser)) {
+                return new flixUAParser(uastring, extensions).getResult()
+            }
+            var ua = uastring || (window && window.navigator && window.navigator.userAgent ? window.navigator.userAgent : EMPTY);
+            var rgxmap = extensions ? util.extend(regexes, extensions) : regexes;
+            this.getBrowser = function() {
+                var browser = {
+                    name: undefined,
+                    version: undefined
+                };
+                mapper.rgx.call(browser, ua, rgxmap.browser);
+                browser.major = util.major(browser.version);
+                return browser
+            };
+            this.getCPU = function() {
+                var cpu = {
+                    architecture: undefined
+                };
+                mapper.rgx.call(cpu, ua, rgxmap.cpu);
+                return cpu
+            };
+            this.getDevice = function() {
+                var device = {
+                    vendor: undefined,
+                    model: undefined,
+                    type: undefined
+                };
+                mapper.rgx.call(device, ua, rgxmap.device);
+                return device
+            };
+            this.getEngine = function() {
+                var engine = {
+                    name: undefined,
+                    version: undefined
+                };
+                mapper.rgx.call(engine, ua, rgxmap.engine);
+                return engine
+            };
+            this.getOS = function() {
+                var os = {
+                    name: undefined,
+                    version: undefined
+                };
+                mapper.rgx.call(os, ua, rgxmap.os);
+                return os
+            };
+            this.getResult = function() {
+                return {
+                    ua: this.getUA(),
+                    browser: this.getBrowser(),
+                    engine: this.getEngine(),
+                    os: this.getOS(),
+                    device: this.getDevice(),
+                    cpu: this.getCPU()
+                }
+            };
+            this.getUA = function() {
+                return ua
+            };
+            this.setUA = function(uastring) {
+                ua = uastring;
+                return this
+            };
+            return this
+        };
+        flixUAParser.VERSION = LIBVERSION;
+        flixUAParser.BROWSER = {
+            NAME: NAME,
+            MAJOR: MAJOR,
+            VERSION: VERSION
+        };
+        flixUAParser.CPU = {
+            ARCHITECTURE: ARCHITECTURE
+        };
+        flixUAParser.DEVICE = {
+            MODEL: MODEL,
+            VENDOR: VENDOR,
+            TYPE: TYPE,
+            CONSOLE: CONSOLE,
+            MOBILE: MOBILE,
+            SMARTTV: SMARTTV,
+            TABLET: TABLET,
+            WEARABLE: WEARABLE,
+            EMBEDDED: EMBEDDED
+        };
+        flixUAParser.ENGINE = {
+            NAME: NAME,
+            VERSION: VERSION
+        };
+        flixUAParser.OS = {
+            NAME: NAME,
+            VERSION: VERSION
+        };
+        if (typeof exports !== UNDEF_TYPE) {
+            if (typeof module !== UNDEF_TYPE && module.exports) {
+                exports = module.exports = flixUAParser
+            }
+            exports.flixUAParser = flixUAParser
+        } else {
+
+            window.flixUAParser = flixUAParser
+
+        }
+        var $ = window && (window.jQuery || window.Zepto);
+        if (typeof $ !== UNDEF_TYPE) {
+            var parser = new flixUAParser;
+            $.ua = parser.getResult();
+            $.ua.get = function() {
+                return parser.getUA()
+            };
+            $.ua.set = function(uastring) {
+                parser.setUA(uastring);
+                var result = parser.getResult();
+                for (var prop in result) {
+                    $.ua[prop] = result[prop]
+                }
+            }
+        }
+    })(typeof window === "object" ? window : this);
+
+
+    var flixarparser = '';
+    if(document.querySelector('script[data-eky-distributor]')){
+        var loaderscript=document.querySelector('script[data-eky-distributor]');
+        data_distributor=loaderscript.getAttribute('data-eky-distributor');
+        //start device check --- FOR CURRYS ONLY!!! currys.co.uk and currys.ie
+        if(data_distributor=='a8934900-3812-11e8-b467-0ed5f89f718b' || data_distributor=='1e0c13f9-f51b-4990-a2c4-9f81cfc1a0ba'){
+            flixarparser = new flixUAParser();
+        }
+    }
+
+
+    var flixAllowedModel = {
+        "brand": {
+            "Acer": {
+
+            },
+            "Asus": {
+                "A002A": 7,
+                "A002": 7,
+                "T00F": 7,
+                "T00J": 7,
+                "T00Q": 7,
+                "Z007": 7,
+                "Z00AD": 7,
+                "Z01QD":7,
+                "ZS571KL":7,
+            },
+            "Google": {
+                "Nexus 5X": 7,
+                "Nexus 6P": 7,
+                "Pixel":    7,
+                "Pixel XL": 7,
+                "Pixel 2":  7,
+                "Pixel 2 XL":   7,
+                "Pixel 3":  7,
+                "Pixel 3 XL":   7,
+                "Pixel 3a": 7,
+                "Pixel 3a XL":  7
+            },
+            "Nokia": {
+                "TA-1033": 7,
+                "TA-1021": 7,
+                "TA-1003": 7,
+                "TA-1000": 7,
+                "Nokia 6.1": 7,
+                "TA-1041": 7,
+                "TA-1052": 7,
+                "TA-1012": 7,
+                "Nokia 8": 7,
+
+                "Nokia 6":7,
+                "Nokia 6.1":7,
+                "6.1 Plus":7,
+                "6.1 Plus":7,
+                "X6":7,
+                "NokiaX6-00":7,
+                "7 plus":7,
+                "Nokia 7 plus":7,
+                "7.1":7,
+                "Nokia 7.1":7,
+                "TA-1004":8,
+                "TA-1012":8,
+                "TA-1052":8,
+                "Nokia 8 Sirocco":7,
+                "8 Sirocco":7,
+                "X7-00":7,
+                "8.1":7,
+                "X7":7
+            },
+            "Huawei": {
+                "COL-L29": 7,
+                "PAR-LX1":7.0,
+                "PAR-LX1M":7.0,
+                "HWI-AL00":7.0,
+                "INE-LX2":7.0,
+                "EML-AL00":7.0,
+                "EML-L09":7.0,
+                "EML-L29":7.0,
+                "CLT-AL01":7.0,
+                "CLT-AL00":7.0,
+                "CLT-L04":7.0,
+                "CLT-L09":7.0,
+                "CLT-L29":7.0,
+                "NEO-L29":7.0,
+                "SNE-LX1":7.0,
+                "BLA-L29S": 8.0,
+
+                "JSN-L22":7,
+                "JSN-L21":7,
+                "COL-L29":7,
+                "COL-AL10":7,
+                "BKL-L04":7,
+                "PCT-AL10":7,
+                "PCT-TL10":7,
+                "PCT-L29":7,
+                "":7,
+                "":7,
+                "SNE-LX1":7,
+                "HMA-L29":7,
+                "HMA-L09":7,
+                "HMA-LX9":7,
+                "HMA-AL00":7,
+                "LYA-L09":7,
+                "LYA-L29":7,
+                "LYA-AL00":7,
+                "LYA-AL10":7,
+                "LYA-TL00":7,
+                "LYA-L0C":7,
+                "EVR-L29":7,
+                "EVR-AL00":7,
+                "EVR-TL00":7,
+                "PAR-LX9":7,
+                "PAR-LX1M":7,
+                "PAR-LX1":7,
+                "HWI-AL00":7,
+                "INE-LX2":7,
+                "VCE-AL00":7,
+                "VCE-TL00":7,
+                "VCE-L22":7,
+                "EML-AL00":7,
+                "EML-L09":7,
+                "EML-L29":7,
+                "CLT-AL01":7,
+                "CLT-AL00":7,
+                "CLT-L04":7,
+                "CLT-L09":7,
+                "CLT-L29":7,
+                "ELE-L29":7,
+                "ELE-L09":7,
+                "ELE-AL00":7,
+                "ELE-TL00":7,
+                "VOG-L29":7,
+                "VOG-L09":7,
+                "VOG-AL00":7,
+                "VOG-TL00":7,
+                "VOG-L04":7,
+                "Neo-L29":7,
+                "LYA-L29":7,
+                "LYA-AL00P":7,
+                "JKM-LX1":7,
+                "JKM-LX2":7,
+                "JKM-LX3":7,
+                "JKM-AL00":7,
+                "JKM-TL00":7,
+                "JKM-AL00a":7,
+
+            },
+            "LG": {
+                "LGM-G600K":8,
+                "LG-H870AR":8,
+                "LG-H872PR":8,
+                "LG-H870I":8,
+                "LGM-G600S":8,
+                "LG-M700":8,
+                "LGM-G600L":8,
+                "LG-H871":8,
+                "VS988":8,
+                "LG-H872":8,
+                "LGUS997":8,
+                "LG-H870":8,
+                "LG-H870K":8,
+                "LG-H870S":8,
+                "LG-H870V":8,
+                "LG-H870DS":8,
+                "LG-H873":8,
+                "LS993":8,
+                "G6+":8,
+                "LGM-G600L":8,
+                "LGM-G600S":8,
+                "LM-G710":7,
+                "LM-G710N":7,
+                "LM-G710VM":7,
+                "LM-G710N":7,
+                "LM-G710VM":7,
+                "LM-G710":7,
+                "":7,
+                "":7,
+                "LM-G820N":7,
+                "LMG820QM7":7,
+                "LM-G820UMB":7,
+                "LMG820UM0":7,
+                "LMG820UM1":7,
+                "LMG820UM2":7,
+                "US700 ":7,
+                "LGM-X600L ":7,
+                "LGM-X600K ":7,
+                "LGM-X600S ":7,
+                "M703 ":7,
+                "M700 ":7,
+                "H970":7,
+                "AS998":8,
+                "LGM-V300K":8,
+                "LGM-V300S":8,
+                "V300L":8,
+                "H933":8,
+                "VS996":8,
+                "H932":8,
+                "H930":8,
+                "US998":8,
+                "H970":8,
+                "L-01K":8,
+                "V35":8,
+                "LS998":8,
+                "":8,
+                "":8,
+                "":7,
+                "LM-V350":7,
+                "LM-V405":7,
+                "V405":7,
+                "LM-V500N":7
+            },
+            "Motorola": {
+                "XT1805": 7,
+                "g(6)": 7,
+                "g(6) plus": 7,
+                "x4": 8,
+                "Z (2)": 7,
+                "z3": 7,
+                "Z3 Play": 7,
+
+                "XT1804":7,
+                "XT1805":7,
+                "XT1925DL":7,
+                "moto g(6) plus":7,
+                "moto g(7)":7,
+                "moto g(7) plus":7,
+                "moto g(7) power":7,
+                "moto g(7) play":7,
+                "one":7,
+                "one power":7,
+                "XT1942":7,
+                "moto x4":8,
+                "Moto Z2 Force":7,
+                "moto z3":7,
+                "Moto Z3 Play":7,
+
+            },
+            "ONEPLUS": {
+                "A3010": 8,
+                "A5000": 7,
+                "A5010": 7,
+                "A6000": 7,
+                "A6010":7,
+            },
+            "Oppo": {
+                "CPH1877": 7,
+            },            
+
+            "Samsung": {
+                "SM-A320FDS":8,
+                "SM-A320YDS":8,
+                "SM-A320Y":8,
+                "SM-A320F":8,
+                "SM-A320FL":8,
+                "SM-A520K":7,
+                "SM-A520L":7,
+                "SM-A520S":7,
+                "SM-A600G":7,
+                "SM-A600FN":7,
+                "SM-A720S":7,
+                "SM-A720F":7,
+                "SM-A530F":7,
+                "SM-A800IZ":7,
+                "SCV32":7,
+                "SM-A800YZ":7,
+                "SM-A800I":7,
+                "SM-A800S":7,
+                "SM-A8000":7,
+                "SM-A800F":7,
+                "SM-A730F":7,
+                "SM-A305F":7,
+                "SM-A305FN":7,
+                "SM-A305G":7,
+                "SM-A305GN":7,
+                "SM-A505F":7,
+                "SM-A505FN":7,
+                "SM-A505GN":7,
+                "SM-A505G":7,
+                "SM-J530K":7,
+                "SM-J530S":7,
+                "SM-J530F":7,
+                "SM-J530FM":7,
+                "SM-J530Y":7,
+                "SM-J530GM":7,
+                "SM-J530YM":7,
+                "SM-J530G":7,
+                "SM-J730K":7,
+                "SM-J730FM":7,
+                "SM-J730F":7,
+                "SM-J730GM":7,
+                "SM-J730G":7,
+                "SM-J730F":7,
+                "SC-01K":7,
+                "SCV37":7,
+                "SM-N950X":7,
+                "SM-N9550":7,
+                "N5200":7,
+                "SM-N950U1":7,
+                "SM-N950N":7,
+                "SM-N950FZKD":7,
+                "SM-N950FZKA":7,
+                "SM-N950UZKAAIO":7,
+                "SM-N950UZSAATT":7,
+                "SM-N950UZVATMK":7,
+                "SM-N950UZVAATT":7,
+                "SM-N950UZKAATT":7,
+                "SM-N950UZKATMK":7,
+                "SM-N950UZSATMK":7,
+                "SM-N950UZKABST":7,
+                "SM-N950UZKAACG":7,
+                "SM-N950UZVASPR":7,
+                "SM-N950UZSASPR":7,
+                "SM-N950UZKASPR":7,
+                "SM-N950UZVATMB":7,
+                "SM-N950UZKATMB":7,
+                "SM-N950UZSATMB":7,
+                "SM-N950UZVAUSC":7,
+                "SM-N950UZSAUSC":7,
+                "SM-N950UZKAUSC":7,
+                "SM-N950UZVATFN":7,
+                "SM-N950UZSATFN":7,
+                "SM-N950UZKATFN":7,
+                "SM-N950UZVAVZW":7,
+                "SM-N950UZSAVZW":7,
+                "SM-N950UZKAVZW":7,
+                "SM-N950UZKAVMU":7,
+                "SM-N950UZKAXAA":7,
+                "SM-N950U":7,
+                "SM-N950":7,
+                "SM-N950W":7,
+                "SM-N9500":7,
+                "SM-N9508":7,
+                "SM-N950F":7,
+                "SM-N950S":7,
+                "SM-N950K":7,
+                "SM-N950L":7,
+                "SM-N950FD":7,
+                "SM-N9600":7,
+                "SM-N960N":7,
+                "SM-N960F":7,
+                "SM-N960U1":7,
+                "SM-N960W":7,
+                "SM-N960U":7,
+                "SM-G930":7,
+                "SM-G930VC":7,
+                "SM-G930K":7,
+                "SM-G930X":7,
+                "SM-G930W8":7,
+                "SM-G930F":7,
+                "SM-G930R4":7,
+                "SM-G930VL":7,
+                "SM-G930U":7,
+                "SM-G930R":7,
+                "SM-G930FD":7,
+                "SM-G9308":7,
+                "SM-G930P":7,
+                "SM-G930R7":7,
+                "SM-G930R6":7,
+                "SM-G930T1":7,
+                "SM-G930A":7,
+                "SM-G930AZ":7,
+                "SM-G930S":7,
+                "SM-G930L":7,
+                "SM-G9300":7,
+                "SM-G930T":7,
+                "SM-G935T":7,
+                "SM-G935VC":7,
+                "SCV33":7,
+                "SM-G935F":7,
+                "SM-G935K":7,
+                "SM-G935X":7,
+                "SM-G935R4":7,
+                "SM-G935U":7,
+                "SM-G935J":7,
+                "SM-G935FD":7,
+                "SM-G935D":7,
+                "SM-G9359":7,
+                "SM-G9358":7,
+                "SM-G935P":7,
+                "SM-G935R7":7,
+                "SM-G935R6":7,
+                "SM-G935T1":7,
+                "SM-G935A":7,
+                "SM-G935AZ":7,
+                "SM-G935S":7,
+                "SM-G935L":7,
+                "SM-G9350":7,
+                "SM-G935W8":7,
+                "SM-G980F":7,
+                "SCV36":7,
+                "SM-G950U1":7,
+                "SM-G950N":7,
+                "SM-G950":7,
+                "SM-G9508":7,
+                "SM-G9509":7,
+                "SM-G950FD":7,
+                "SM-G950K":7,
+                "SM-G950L":7,
+                "SM-G950P":7,
+                "SM-G950R4":7,
+                "SM-G950S":7,
+                "SM-G950T":7,
+                "SM-G950V":7,
+                "SM-G950W8":7,
+                "SM-G950W":7,
+                "SM-G950U":7,
+                "SM-G955F":7,
+                "SM-G950F":7,
+                "SM-G9500":7,
+                "SM-G950X":7,
+                "SM-G950A":7,
+                "SCV35":7,
+                "SM-G955U1":7,
+                "SM-G955N":7,
+                "SM-G9558":7,
+                "SM-G9559":7,
+                "SM-G955A":7,
+                "SM-G955L":7,
+                "SM-G955P":7,
+                "SM-G955R4":7,
+                "SM-G955S":7,
+                "SM-G955T":7,
+                "SM-G955V":7,
+                "SM-G955W8":7,
+                "SM-G955W":7,
+                "SM-G955U":7,
+                "SM-G955K":7,
+                "SM-G955FN":7,
+                "SM-G955FD":7,
+                "SM-G955":7,
+                "SM-G9550":7,
+                "SM-G955X":7,
+                "SC-02K":7,
+                "SCV38":7,
+                "SM-G960X":7,
+                "SM-G960FZBABTU":7,
+                "SM-G960FZVABTU":7,
+                "SM-G960XU":7,
+                "SM-G960U":7,
+                "SM-G960W":7,
+                "SM-G960UZPAUSC":7,
+                "SM-G960UZPAXAA":7,
+                "SM-G960UZVATFN":7,
+                "SM-G960UZVATMK":7,
+                "SM-G960UZSATMK":7,
+                "SM-G960UZPATMB":7,
+                "SM-G960UZSATFN":7,
+                "SM-G960UZPASPR":7,
+                "SM-G960UZPAVZW":7,
+                "SM-G960UZPAATT":7,
+                "SM-G960UZKAXAA":7,
+                "SM-G960UZKASPR":7,
+                "SM-G960UZKABST":7,
+                "SM-G960UZKAAIO":7,
+                "SM-G960UZKAATT":7,
+                "SM-G960UZBAXAA":7,
+                "SM-G960UZKAACG":7,
+                "SM-G960UZBAVZW":7,
+                "SM-G960UZBAUSC":7,
+                "SM-G960UZBATMB":7,
+                "SM-G960UZBAATT":7,
+                "SM-G960UZBASPR":7,
+                "SM-G960U1":7,
+                "SM-G960FZSABTU":7,
+                "SM-G960N":7,
+                "SM-G960FZKABTU":7,
+                "SM-G9608":7,
+                "SM-G960F":7,
+                "SM-G960FD":7,
+                "SM-G960":7,
+                "SM-G9600":7,
+                "SM-G960UZKATFN":7,
+                "SM-G960UZKATMB":7,
+                "SM-G960UZKATMK":7,
+                "SM-G960UZKAUSC":7,
+                "SM-G960UZKAVMU":7,
+                "SM-G960UZKAVZW":7,
+                "SC-03K":7,
+                "SM-G965X":7,
+                "SCV39":7,
+                "SM-G965U":7,
+                "SM-G965UZPAUSC":7,
+                "SM-G965XU":7,
+                "SM-G965UZVATFN":7,
+                "SM-G965UZVATMK":7,
+                "SM-G965UZSATMK":7,
+                "SM-G965UZPAXAA":7,
+                "SM-G965UZSATFN":7,
+                "SM-G965UZPAVZW":7,
+                "SM-G965UZPATMB":7,
+                "SM-G965UZPAATT":7,
+                "SM-G965UZPASPR":7,
+                "SM-G965UZKAVZW":7,
+                "SM-G965UZKAXAA":7,
+                "SM-G965UZKATFN":7,
+                "SM-G965UZKAVMU":7,
+                "SM-G965UZKATMK":7,
+                "SM-G965UZKAUSC":7,
+                "SM-G965UZKATMB":7,
+                "SM-G965UZKASPR":7,
+                "SM-G965UZKABST":7,
+                "SM-G965UZKAAIO":7,
+                "SM-G965UZKAATT":7,
+                "SM-G965UZBAXAA":7,
+                "SM-G965UZKAACG":7,
+                "SM-G965UZBATMB":7,
+                "SM-G965UZBAVZW":7,
+                "SM-G965UZBAUSC":7,
+                "SM-G965U1":7,
+                "SM-G965UZBAATT":7,
+                "SM-G965UZBASPR":7,
+                "SM-G965FZSABTU":7,
+                "SM-G9650":7,
+                "SM-G965F":7,
+                "SM-G9658":7,
+                "SM-G965FZBABTU":7,
+                "SM-G965FZKABTU":7,
+                "SM-G965FZKDXEU":7,
+                "SM-G965FZVABTU":7,
+                "SM-G965FZVDXEU":7,
+                "SM-G965N":7,
+                "SM-G965W":7,
+                "SM-G965FD":7,
+                "SM-G965":7,
+                "SM-G970F":7,
+                "SM-G970U":7,
+                "SM-G970W":7,
+                "SM-G9700":7,
+                "SM-G970U1":7,
+                "SAMSUNG-S10":7,
+                "Samsung_S10":7,
+                "samsungs10":7,
+                "GT-Samsung S10 ":7,
+                "Samsung s10":7,
+                "SM-G973F":7,
+                "SM-G973U":7,
+                "SM-G973W":7,
+                "SM-G973U1":7,
+                "SM-G975F":7,
+                "SM-G975U":7,
+                "SM-G975W":7,
+                "SM-G975U1":7,
+                "SM-G9750":7,
+                "SM-G977U":7,
+                "SM-G977N":7,
+                "SM-T825C":7,
+                "SM-T827R4":7,
+                "SM-T825":7,
+                "SM-T820":7,
+                "SM-T825N0":7,
+                "SM-T827V":7,
+                "SM-T825Y":7,
+                "SM-T835":7,
+                "SM-T830":7
+
+
+            },
+            "Sony": {  
+                "SO-04J":8,
+                "G8141":8,
+                "G8142":8,
+                "701SO":8,
+                "SOV36":8,
+                "G8343":8,
+                "G8341":8,
+                "G8342":8,
+                "SO-02K":8,
+                "G8441":8,
+                "702SO":8,
+                "H8276":8,
+                "SOV37":8,
+                "H8296":8,
+                "SO-03K":8,
+                "H8314":8,
+                "H8116":8,
+                "H9436":7
+            },
+            "Vivo": {
+                "NEX S":7,
+                "1805":7,
+            },
+            "Xiaomi": {
+                "MI 8": 7,
+                "MI 8 SE": 7,
+                "MIX 2S": 7,
+                "POCOPHONE F1": 7,
+                "Mi MIX 3":7,
+                
+            },
+            "Zepra": {
+                "TC52":7,
+                "TC57":7,
+                "TC72":7,
+                "TC77":7                
+            },
+            "Apple": {
+
+
+            }
+        }
+    }
+
+
+    function flixCheckARcompatibility(uastring){
+        log3('flixCheckARcompatibility')
+        if(uastring) flixarparser.setUA(uastring);
+        var browser = flixarparser.getBrowser();
+        var engine = flixarparser.getEngine();
+        var os = flixarparser.getOS();
+        var device = flixarparser.getDevice();
+        var osver=os.version.split('.');
+        var osversion=osver[0]*1;
+
+        log3(useragent);
+
+        if(os.name.search('Android')!=-1 && osversion<7){
+            log3('Android <7')
+            return false;
+        }
+        else if(os.name.search('Android')!=-1 && osversion>=9){
+            log3('Android >9')
+            return true;
+        }
+        else if(os.name.search('iOS')!=-1 && osversion<11){
+            log3('iOS<11')
+            return false;
+        }else if(os.name.search('iOS')!=-1 && osversion>=11){
+            log3('iPhone')
+
+            // Create a canvas element which can be used to retrieve information about the GPU.
+            var canvas = document.createElement("canvas");
+            if (canvas) {
+                var context = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+                if (context) {
+                    var info = context.getExtension("WEBGL_debug_renderer_info");
+                    if (info) {
+                        var renderer = context.getParameter(info.UNMASKED_RENDERER_WEBGL);
+                    }
+                }
+            }
+            log3(window.screen.height+"__"+window.screen.width+"__"+window.devicePixelRatio+"__"+renderer)
+
+            // iPhone XR, iPhone XS Max
+            var ratio = window.devicePixelRatio;
+
+            if (window.screen.height / window.screen.width == 896 / 414) {
+                log3('iPhone XR, iPhone XS Max')
+
+                switch (ratio) {
+                    default:
+                        return true;
+                    case 2:
+                        return true;
+                    case 3:
+                        return true;
+                }
+            }
+            // iPhone X
+            else if ((window.screen.height / window.screen.width == 812 / 375) && (window.devicePixelRatio == 3)) {
+                log3('iPhone X')
+                return true;
+                // iPhone 6+/6s+/7+ and 8+
+            }// iPhone Xs max
+            else if ((window.screen.height / window.screen.width == 896 / 414) && (window.devicePixelRatio == 3)) {
+                log3('iPhone Xs max')
+                return true;
+                // iPhone 6+/6s+/7+ and 8+
+            } else if ((window.screen.height / window.screen.width == 736 / 414) && (window.devicePixelRatio == 3)) {
+                log3('iPhone 6+/6s+/7+ and 8+')
+                switch (renderer) {
+                    default:
+                        return true;
+                    case "Apple A8 GPU":
+                        return false;
+                    case "Apple A9 GPU":
+                        return true;
+                    case "Apple A10 GPU":
+                        return true;
+                    case "Apple A11 GPU":
+                        return true;
+                    case "Apple A12 GPU":
+                        return true;
+
+                }
+                // iPhone 6+/6s+/7+ and 8+ in zoom mode
+            } else if ((window.screen.height / window.screen.width == 667 / 375) && (window.devicePixelRatio == 3)) {
+                log3('iPhone 6+/6s+/7+ and 8+ in zoom mode')
+                switch(renderer) {
+                    default:
+                        return true;
+                    case "Apple A8 GPU":
+                        return false;
+                    case "Apple A9 GPU":
+                        return true;
+                    case "Apple A10 GPU":
+                        return true;
+                    case "Apple A11 GPU":
+                        return true;
+                    case "Apple A12 GPU":
+                        return true;
+
+                }
+                // iPhone 6/6s/7 and 8
+            } else if ((window.screen.height / window.screen.width == 667 / 375) && (window.devicePixelRatio == 2)) {
+                log3('iPhone 6/6s/7 and 8')
+                switch(renderer) {
+                    default:
+                        return true;
+                    case "Apple A8 GPU":
+                        return false;
+                    case "Apple A9 GPU":
+                        return true;
+                    case "Apple A10 GPU":
+                        return true;
+                    case "Apple A11 GPU":
+                        return true;
+                    case "Apple A12 GPU":
+                        return true;
+
+                }
+                // iPhone 5/5C/5s/SE or 6/6s/7 and 8 in zoom mode
+            } else if ((window.screen.height / window.screen.width == 1.775) && (window.devicePixelRatio == 2)) {
+                log3('iPhone 5/5C/5s/SE or 6/6s/7 and 8 in zoom mode')
+                switch(renderer) {
+                    default:
+                        return true;
+                    case "PowerVR SGX 543":
+                        return false;
+                    case "Apple A7 GPU":
+                        return false;
+                    case "Apple A8 GPU":
+                        return false;
+                    case "Apple A9 GPU":
+                        return true;
+                    case "Apple A10 GPU":
+                        return true;
+                    case "Apple A11 GPU":
+                        return true;
+                    case "Apple A12 GPU":
+                        return true;
+
+
+                }
+                // iPhone 4/4s
+            } else if ((window.screen.height / window.screen.width == 1.5) && (window.devicePixelRatio == 2)) {
+                log3('iPhone 4/4s')
+                return false;
+                // iPhone 1/3G/3GS
+            } else if ((window.screen.height / window.screen.width == 1.5) && (window.devicePixelRatio == 1)) {
+                log3('iPhone 1/3G/3GS')
+                return false;
+            }
+
+            else if(window.screen.height / window.screen.width == 1024 / 768) {
+                // iPad, iPad 2, iPad Mini
+                if (window.devicePixelRatio == 1) {
+                    log3('iPad, iPad 2, iPad Mini')
+                    return false;
+                    // iPad 3, 4, 5, Mini 2, Mini 3, Mini 4, Air, Air 2
+                } else {
+                    log3('iPad 3, 4, 5, Mini 2, Mini 3, Mini 4, Air, Air 2-----')
+
+                    if(renderer.indexOf('PowerVR SGX 543')!=-1){
+                        log3(renderer)
+                        return false;
+                    }
+                    else if(renderer.indexOf('PowerVR SGX 554')!=-1){
+                        log3(renderer)
+                        return false;
+                    }
+                    else if(renderer.indexOf('Apple A7 GPU')!=-1){
+                        log3(renderer)
+                        return false;
+                    }
+                    else if(renderer.indexOf('Apple A8X GPU')!=-1){
+                        log3(renderer)
+                        return false;
+                    }
+                    else if(renderer.indexOf('Apple A8 GPU')!=-1){
+                        log3(renderer)
+                        return false;
+                    }
+                    else if(renderer.indexOf('Apple A9 GPU')!=-1){
+                        log3(renderer)
+                        return true;
+                    }
+                    else if(renderer.indexOf('Apple A9X GPU')!=-1){
+                        log3(renderer)
+                        return true;
+                    }
+                    else if(renderer.indexOf('Apple A10 GPU')!=-1){
+                        log3(renderer)
+                        return true;
+                    }
+                    else {
+                        return true;
+                    }
+
+                }
+                // iPad Pro 10.5
+            } else if (window.screen.height / window.screen.width == 1112 / 834) {
+                log3('iPad Pro 10.5')
+                return true;
+                // iPad Pro 12.9, Pro 12.9 (2nd Gen)
+            } else if (window.screen.height / window.screen.width == 1366/ 1024) {
+                log3('iPad Pro 12.9, Pro 12.9 (2nd Gen)')
+                return true;
+            } else if (window.screen.height / window.screen.width == 1194/ 834) {
+                log3('iPad Pro 11 2018')
+                return true;
+            }
+
+            else{
+                log3('iPhone/iPad old model  ')
+                return false;
+            }
+
+
+        }else if(os.name.search('iOS')==-1 && os.name.search('Android')==-1){
+            return true;
+        }else{
+            log3('Other no brand');
+
+            if(device.vendor=='LGM')
+                device.vendor='LG'
+            if(location.href.search('flix-2qa')!=-1){
+                log3(device.vendor +"__"+device.model +"__"+osversion);
+
+            }
+            var found=0;
+
+            //log3(flixAllowedModel.brand[device.vendor][device.model]);
+            if(typeof device.vendor=='undefined'){
+
+                var useragent=navigator.userAgent.split(';')
+                if(location.href.search('flix-2qa')!=-1){
+                    log3(useragent);
+
+                }
+                var model=useragent[2].split(' Build')
+                if(location.href.search('flix-2qa')!=-1){
+                    log3(model[0]);
+
+                }
+
+                FlixjQ.each(flixAllowedModel.brand, function(index, element) {
+
+                    FlixjQ.each(element, function(index2, element2) {
+
+                        if(model[0].toLowerCase().indexOf(index2.toLowerCase())!=-1 ){
+                            if(location.href.search('flix-2qa')!=-1){
+                                log3('Model in list' + index2)
+                            }
+                            found=1
+                            return true;
+                        }
+                    });
+                });
+
+
+            }else{
+
+                log3('Other - check mobile clist: ', device.model)
+                var isittrue=false
+                FlixjQ.each(flixAllowedModel.brand[device.vendor], function(index, element) {
+                    
+                    if(location.href.search('flix-2qa')!=-1){
+                        log3(osversion+"__"+element)
+                        log3(device.model.toLowerCase()+"__"+index.toLowerCase())
+                    }
+                    if(device.model.toLowerCase().search(index.toLowerCase())!=-1 ){
+                        if(location.href.search('flix-2qa')!=-1){
+                            log3('Model in list' + index )
+                        }
+                        if(osversion>=element){
+                            if(location.href.search('flix-2qa')!=-1){
+                                log3('Phone is AR compatible')
+                            }
+                            found=1
+                            
+                            isittrue=true;
+                            return true;
+                        }else{
+                            if(location.href.search('flix-2qa')!=-1){
+                                log3('Low OS: '+element + ' < '+osversion)
+                            }
+                            isittrue=false;
+                            
+                            return false;
+                        }
+                    }
+                });
+
+                if(isittrue==true)
+                    return true;
+
+            }
+
+            if(found==0){
+                log3('No phone model')
+                return false;
+            }
+
+            /*if(flixAllowedModel.brand[device.vendor][device.model]){
+                return true;
+            }else{
+                return false;
+            }*/
+            //data.retailers[productid]
+            //return [os.name , device.vendor , device.model , os.name+os.version]
+
+        }
+    }
+
+}(  ));
+

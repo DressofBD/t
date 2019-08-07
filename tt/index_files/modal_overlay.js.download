@@ -1,0 +1,30 @@
+define([
+    'uiComponent',
+    'jquery',
+    'Magento_Ui/js/modal/modal',
+    'Magento_Customer/js/customer-data'
+], function (Component, $, modal, storage) {
+    'use strict';
+    return Component.extend({
+
+        initialize: function () {
+
+            this._super();
+            var options = {
+                modalClass: 'webform-modal enquiry-modal',
+                type: 'popup',
+                responsive: false,
+                innerScroll: false,
+                title: 'Product Enquiry',
+                buttons: false
+            };
+            var popup = modal(options, $('#modal-overlay'));
+            $("#web-form-view").on("click",function(){
+                $('#modal-overlay').modal('openModal');
+                if ($('.webforms-fields-ipnmodelnumber1 input').length > 0 && $('.product .sku div.value').length > 0) {
+                    $('.webforms-fields-ipnmodelnumber1 input').val($('.product .sku div.value').html())
+                }
+            });
+        }
+    });
+});

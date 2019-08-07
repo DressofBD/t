@@ -1,0 +1,61 @@
+/**
+ * Betta Afptc.
+ *
+ * @category  Mage
+ *
+ * @author    Toan Nguyen <toan.nguyen@balanceinternet.com.au>
+ * @copyright 2019 Balance Internet Pty Ltd (https://www.balanceinternet.com.au)
+ */
+
+define([
+    'jquery'
+], function ($) {
+    'use strict';
+
+    return function (Modal) {
+        return Modal.extend({
+            defaults: {
+                options: {
+                    title: 'Gift products',
+                    innerScroll: false,
+                    opened: function () {
+                        $('.aw-afptc__main-popup h1.modal-title').text($('.aw-afptc__promo-products h2.header').text());
+                    }
+                },
+                template: 'Betta_Afptc/components/promo-products',
+                imports: {
+                    promoDescription: '${ $.provider }:data.promo_description'
+                },
+            },
+
+            /**
+             * Initializes observable properties
+             *
+             * @returns {exports.initObservable}
+             */
+            initObservable: function () {
+                this._super();
+                this.observe({
+                    promoDescription: ''
+                });
+
+                return this;
+            },
+
+            /**
+             * Product selection event
+             *
+             * @param {UiClass} component
+             */
+            productChecked: function (component) {
+                this.errorValidationMessage('');
+                this._toggleProductVisibility(component);
+                this._updateSelectedText();
+                this.disabledAddToCart(this._getSelectedProductsQty() === 0);
+                component.checked(true);
+                component.qty(1);
+                this.addToCart();
+            }
+        });
+    };
+});
