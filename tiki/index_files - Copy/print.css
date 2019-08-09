@@ -1,0 +1,116 @@
+﻿
+/* Reset quotes */
+q {quotes: none}
+q:before, q:after {content: ""}
+
+
+/* font sizes */
+body {
+	line-height: 1.5!important;
+	color: #000;
+}
+
+/* Some browsers like to show a border around images. Switch it off */
+img {border: 0; page-break-inside: avoid; }
+
+/* Display the URL of the site so that the user knows where the printout came from */
+/*.main-header:after {display: block; content: "aucklandmuseum.com"}*/
+
+h1 {margin-top:20px!important;margin-bottom:20px!important;}
+header {margin:0!important;}
+.main-header {height:auto!important;}
+.main-header {left: 0;margin: 0;height:inherit;}
+.header-wrap .logo img, .header-wrap .logo {width:57px!important;height:27px!important;}
+.main-header .byline, .article-wrapper {border:none;}
+.main-header .byline {margin-left:8px;margin-top:5px;}
+.main, .banner, .columns {margin-bottom:0!important;margin-top:0!important;padding-bottom:0!important;}
+.columns {margin-left:0!important;}
+.content {margin:0!important;width:auto!important; display:block; float:none;}
+.sections  {width:100%!important;border:none!important;}
+.article-wrapper, article {width:100%!important; margin:0!important;padding:0!important; }
+.container.main {margin:0!important;width:100%!important; }
+.banner-header {border-top:5px solid #000;height:0!important; background:none!important;}
+.banner-header .crumbs {margin-left:-10px!important;margin-bottom:10px!important;margin-top:10px!important;padding:0!important;margin-right:0!important;float:left!important; position:relative!important;background:none!important;}
+.banner-header .crumbs a {color:inherit!important;}
+
+/* homepage */
+.gmap.home .panel {
+	position: relative!important;
+}
+.iso .box {
+	position:relative!important;
+	float:left;
+	width:300px!important;
+	-webkit-transform: none!important;
+    -moz-transition: none!important;
+    -webkit-transition: none!important;
+    -o-transition: color 0 ease-in!important;
+    transition: none!important;
+}
+
+/* remove all shadows */
+a, p {text-shadow:none!important;}
+
+/* generic */
+.filters .active {border:1px solid #000!important;}
+.thumb {height:0!important;display:none!important;}
+
+/* Separate blockquotes a little bit from the rest */
+blockquote {
+	font-size: 13pt;
+	font-style: italic;
+}
+
+/* Show the URL after each link, whereby internal links are preceeded by the site's URL */
+article p a:after {
+	content: " (http://aucklandmuseum.com/" attr(href) ")";
+	font-size: 80%;
+	word-wrap: break-word;
+	color:#4354c4;
+}
+
+/* External links don't get this treatment */
+article p a[href^="http://"]:after, article p a[href^="https://"]:after {
+	content: " (" attr(href) ")";
+	color:#4354c4;
+}
+
+/* Append the source of the citation */
+q:after {content: " (" attr(cite) ")"}
+
+/* Block elements we want expanded */
+.container,
+.content,
+.main-header
+.byline li
+{display:block;margin:0!important}
+
+/* Hide everything unneeded */
+#mapWrapper,
+#CMSHeaderDiv,
+.old-site,
+.top-nav,
+.main-nav,
+nav,
+nav a,
+.left-nav,
+.left-nav h3,
+.left-nav a,
+.left-nav-shell,
+aside,
+.footer-wrapper,
+.left-nav,
+.menu,
+.banner-header .standard ,
+.home.filters,
+#leaveanote,
+.did-you-mean
+{border:none;margin:0!important;display:none!important}
+
+
+
+/* IE8 !#@ */
+
+html.ie8 div {width:98%!important;}
+html.ie8 .byline {position:absolute;left:82px; top:0;}
+html.ie8 .byline li {width:300px;margin:0!important;list-style:none!important;}
