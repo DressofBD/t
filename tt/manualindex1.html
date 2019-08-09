@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Fisher &amp; Paykel Oven Built In Pyrolytic 90Cm Designer Appliances</title>
         <link rel="stylesheet" href="css/font-awesome.min.css">
-	<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+        <script src="https://kit.fontawesome.com/a076d05399.js"></script>
         <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="index_files/styles-m.css" />
     <link rel="stylesheet" type="text/css" href="index_files/styles-l.css" />
@@ -2787,6 +2787,9 @@ a.nav-link:hover ul.dropdown-mnu{
 .navbar-collapse{
 	display: none;
 }
+.header.links::before {
+	background-image: url('index_files/account.png');
+}
 .enquiry-modal.modal-popup .action-close::before {
 	background-color: transparent;
 	top: 6px;
@@ -2795,6 +2798,12 @@ a.nav-link:hover ul.dropdown-mnu{
 .block-search .action.search .magnifying-glass::before, .block-search #algolia-searchbox .magnifying-glass::before {
 	content: '\f002';
 	font-family: 'FontAwesome' !important;
+}
+.product-addto-links .action.split > span::before, .product-addto-links .action.towishlist > span::before, .product-addto-links .action.tocompare > span::before, .product-addto-links .action.addto-gift-registry > span::before {
+	font-family: 'FontAwesome';
+}
+div.breadcrumbs .items .item:first-child::before {
+	font-family: 'FontAwesome';
 }
 .fa-bars{
 	    color: #ab9b36;
@@ -2948,7 +2957,6 @@ background: #fff;
 </body>
 
 </html>
-
 
 
 
