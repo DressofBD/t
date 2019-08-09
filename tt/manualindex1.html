@@ -1571,13 +1571,13 @@
 
 
 
+<iframe id="plattar-a33bf6ded809" class="iframe-for-desktop" src="https://app.plattar.com/webgleditor/preview/index.html?productId=7ac3fa30-b8f7-11e9-9418-1df21840fe4e&sceneId=7ac4de70-b8f7-11e9-8fa6-1132fe50cf0d&variationId=7ac67f40-b8f7-11e9-b167-a33bf6ded809" width="500px" height="500px" frameBorder="0" allow="camera; vr; autoplay" allowfullscreen></iframe>
 
 
 
 
 
-
-
+<iframe class="iframe-for-mobile" src=https://app.plattar.com/webgleditor/preview/modelviewer.html?fileid=8a8ac0f0-b8f7-11e9-b50c-310694e386dd width="500px" height="500px" frameBorder="0"></iframe>
 
 
 
@@ -2823,7 +2823,9 @@ div.breadcrumbs .items .item:first-child::before {
 #top-storelocator-chooser-betta .action.showpicker::before{
 	font-family: 'Font Awesome 5 free' !important;
 }
-
+.iframe-for-mobile{
+	display: none;
+}
 
 
 
@@ -2905,6 +2907,15 @@ background: #fff;
 .page-header {
 	background: transparent;
 }
+.iframe-for-mobile{
+	display: block !important;
+}
+.iframe-for-desktop{
+	display: none;
+}
+
+
+
 }
 
 
@@ -2931,12 +2942,12 @@ background: #fff;
 @media only screen and (max-width: 1023px){
 .product.data.items>.item.title>.data.switch:before {
 	font-family: "Font Awesome 5 Free";
-	content: "/f35a"
+	content: "+"
  }
  @media only screen and (max-width: 1023px){
 .product.data.items>.item.title.active>.data.switch:before {
     font-family: "Font Awesome 5 Free";
-    content: "/f35a"
+    content: "-"
 }
 
 
