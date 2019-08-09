@@ -124,6 +124,7 @@
                 <a class="logo" href="https://www.designerappliances.com.au/" title="">
                     <img src="index_files/logo.svg" title="" alt="" width="203" height="57">
                 </a>
+                <div class="location-icon-mobile"><a href="#"><i class="fa fa-location"></i><br> Store </a></div>
                 <div class="block block-search algolia-search-block">
                     <div class="block block-title"><strong>Search</strong></div>
                     <div class="block block-content">
@@ -1573,10 +1574,6 @@
 
 <iframe id="plattar-a33bf6ded809" class="iframe-for-desktop" src="https://app.plattar.com/webgleditor/preview/index.html?productId=7ac3fa30-b8f7-11e9-9418-1df21840fe4e&sceneId=7ac4de70-b8f7-11e9-8fa6-1132fe50cf0d&variationId=7ac67f40-b8f7-11e9-b167-a33bf6ded809" width="500px" height="500px" frameBorder="0" allow="camera; vr; autoplay" allowfullscreen></iframe>
 
-
-
-
-
 <iframe class="iframe-for-mobile" src=https://app.plattar.com/webgleditor/preview/modelviewer.html?fileid=8a8ac0f0-b8f7-11e9-b50c-310694e386dd width="500px" height="500px" frameBorder="0"></iframe>
 
 
@@ -2826,7 +2823,24 @@ div.breadcrumbs .items .item:first-child::before {
 .iframe-for-mobile{
 	display: none;
 }
-
+.location-icon-mobile {
+	display: none;
+	position: relative;
+	top: -110px;
+	z-index: 9999999;
+	overflow: visible;
+	background: transparent;
+	color: #fff;
+}
+.location-icon-mobile a {
+	color: #fff;
+	text-decoration: none;
+}
+.location-icon-mobile a i{
+	color: #ab9b36;
+	font-size: 30px;
+}
+.location-icon-mobile .fa{}
 
 
 
@@ -2913,7 +2927,9 @@ background: #fff;
 .iframe-for-desktop{
 	display: none;
 }
-
+.location-icon-mobile{
+	display: block;
+}
 
 
 }
