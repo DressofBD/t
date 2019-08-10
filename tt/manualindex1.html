@@ -69,7 +69,7 @@
         	<div class="for-mobile-only mobile2">
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"><i class="fa fa-bars"></i><br><span style="color: #fff; font-size: 15px;">Menu</span></span>
+      <span class="navbar-toggler-icon"><i class="fa fa-bars"></i><br><span style="color: #fff; font-size: 15px; font-family: 'Poppins','Helvetica Neue',Helvetica,Arial,sans-serif;">Menu</span></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
@@ -2825,8 +2825,8 @@ div.breadcrumbs .items .item:first-child::before {
 }
 .location-icon-mobile {
 	display: none;
-	position: relative;
-	top: -100px;
+    position: absolute;
+    top: 16px;
 	z-index: 9999999;
 	overflow: visible;
 	background: transparent;
@@ -2846,6 +2846,12 @@ font-family: 'Font Awesome 5 free' !important;
 	font-size: 30px;
 }
 .location-icon-mobile .fa{}
+.sticky-widget-container .block.widget .block-title::before, .sticky-widget-container .block .block-title::before {
+    font-family: 'FontAwesome' !important;
+}
+.header .block-search {
+    z-index: 1;
+}
 
 
 
@@ -2858,24 +2864,33 @@ font-family: 'Font Awesome 5 free' !important;
 
 
 
-
-
-
-
-
+.mobile1{
+        display: none;
+    }
 	.mobile1{
 		display: none;
 	}
 @media only screen and (min-width: 767px) and (max-width: 1023px){
-	.mobile2{
-		display: none;
-	}
-	.mobile1{
-		display: block;
-	}
+
 	.header .block-search {
 	margin-top: 5px;
 }
+.for-mobile-only .navbar {
+    margin-bottom: -85px;
+}
+.header-content-right {
+    position: absolute;
+    top: 13px;
+    right: 0;
+}
+.header.content .logo {
+    max-width: 203px;
+    padding: 13px 0 3px;
+    position: absolute;
+    top: 0;
+}
+
+
 }
 
 @media only screen and (min-width: 1024px) and (max-width: 1286px) {
@@ -2908,19 +2923,20 @@ clear: both;
 }
 
 @media (max-width: 1023px){
+    .footer-bottom-inner .footer-column {
+    text-align: center;
+}
 }
 
 @media (max-width: 767px){
-	.mobile1{
-		display: none;
-	}
+	
 	.page-main{
-		margin-top: -116px !important;
-z-index: 9999;
-background: #fff;
+    margin-top: -116px !important;
+    z-index: 9999;
+    background: #fff;
 	}
-	.navbar-collapse.in {
-	margin-top: 65px;
+.navbar-collapse.in {
+    margin-top: -5px;
 }
 
 .page-header {
@@ -2972,14 +2988,50 @@ background: #fff;
 }
 
 
+
+
+
+
+
+
+
+@media (max-width: 1023px) {
+.navbar-left,.navbar-right {
+    float: none !important;
+}
+.navbar-toggle {
+    display: block;
+}
+.navbar-collapse {
+    border-top: 1px solid transparent;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+}
+.navbar-fixed-top {
+    top: 0;
+    border-width: 0 0 1px;
+}
+.navbar-collapse.collapse {
+    display: none!important;
+}
+.navbar-nav {
+    float: none!important;
+    margin-top: 7.5px;
+}
+.navbar-nav>li {
+    float: none;
+}
+.navbar-nav>li>a {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.collapse.in {
+    display: block !important;
+    z-index: 99;
+    position: relative;
+}
+}
+
 </style>
-
-
-
-
-
-
-
 
 
 
