@@ -1922,21 +1922,37 @@ c0,0,0-0.1,0-0.1l0,0H14V9H0z M5,10h4v1H5V10z"></path>
                                 <div id="divPic" class="eight columns omega record-profile">
                                     <div id="ctl00_ctl00_cphMain_cphChildTitle_ucRecordPic_pnlSlideshow" class="profile-pic">
 
-                                        <a href="#gallery" class="scroll-animate">
-                                            <iframe class="iframe-desktop" id="plattar-c9ea09a4f15e" src="https://app.plattar.com/webgleditor/preview/index.html?productId=8a681d30-b9a2-11e9-8e71-a51ca62de34d&sceneId=8a6af930-b9a2-11e9-af61-07e52a0b0bdb&variationId=e7d82bd0-b9a8-11e9-8912-c9ea09a4f15e" width="500px" height="500px" frameBorder="0" allow="camera; vr; autoplay" allowfullscreen></iframe>
-
-
-                                            <iframe class="iframe-mobile" src=https://app.plattar.com/webgleditor/preview/modelviewer.html?fileid=f3c80be0-b9a8-11e9-bd1e-69c62b876081 width="500px" height="500px"></iframe>
-                                        </a>
                                         <div id="ctl00_ctl00_cphMain_cphChildTitle_ucRecordPic_pnlFigure">
-
                                             <figure>
-                                                <img id="ctl00_ctl00_cphMain_cphChildTitle_ucRecordPic_imgSlide" title="Hei Tiki, 359" src="http://media.api.aucklandmuseum.com/id/media/v/243933?rendering=standard.jpg" alt="Hei Tiki, 359">
+                                                <img id="ctl00_ctl00_cphMain_cphChildTitle_ucRecordPic_imgSlide" title="Hei Tiki, 359" src="index_files/243933rendering=standard.jpg" alt="Hei Tiki, 359" />
                                                 <figcaption class="figcaption">
                                                     Hei Tiki, 359
                                                 </figcaption>
                                             </figure>
-
+                                            <main id='main' class='main_area'>
+                                              <div class='center iframe-desktop'>
+                                                <label class="buttonn" for="dialog_state"></label>
+                                              </div>
+                                              <div class='center iframe-mobile'>
+                                                <label class="buttonn button2" for="dialog_state"></label>
+                                              </div>
+                                            </main>
+                                            <input type="checkbox" name="dialog_state" id="dialog_state" class="dialog_state">
+                                            <div id='dialog'>
+                                            <label id="dlg-back" for="dialog_state"></label>
+                                              <div id='dlg-wrap'>
+                                                <label id="dlg-close" for="dialog_state"><i class="icon ion-ios-close-empty"></i></label>
+                                                
+                                                
+                                                    <div  class="iframe-desktop">
+                                                        <iframe id="plattar-c9ea09a4f15e" src="https://app.plattar.com/webgleditor/preview/index.html?productId=8a681d30-b9a2-11e9-8e71-a51ca62de34d&sceneId=8a6af930-b9a2-11e9-af61-07e52a0b0bdb&variationId=e7d82bd0-b9a8-11e9-8912-c9ea09a4f15e" width="500px" height="500px" frameBorder="0" allow="camera; vr; autoplay" allowfullscreen></iframe>
+                                                    </div>
+                                                    <div  class="iframe-mobile">
+                                                        <iframe class="" src=https://app.plattar.com/webgleditor/preview/modelviewer.html?fileid=f3c80be0-b9a8-11e9-bd1e-69c62b876081 width="500px" height="500px"></iframe>
+                                                    </div>
+                                                
+                                              </div>
+                                            </div>
                                         </div>
 
                                     </div>
@@ -2274,6 +2290,112 @@ c0,0,0-0.1,0-0.1l0,0H14V9H0z M5,10h4v1H5V10z"></path>
                 </div>
             </div>
         </div>
+
+
+
+
+<div class="box">
+    <a class="button" href="#popup1">Let me Pop up</a>
+</div>
+
+<div id="popup1" class="overlay">
+    <div class="popup">
+        <h2>Here i am</h2>
+        <a class="close" href="#">&times;</a>
+        <div class="content">
+            Thank to pop me out of that button, but now i'm done so you can close this window.
+        </div>
+    </div>
+</div>
+
+<style type="text/css">
+    .box {
+  width: 40%;
+  margin: 0 auto;
+  background: rgba(255,255,255,0.2);
+  padding: 35px;
+  border: 2px solid #fff;
+  border-radius: 20px/50px;
+  background-clip: padding-box;
+  text-align: center;
+}
+
+.button {
+  font-size: 1em;
+  padding: 10px;
+  color: #fff;
+  border: 2px solid #06D85F;
+  border-radius: 20px/50px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease-out;
+}
+.button:hover {
+  background: #06D85F;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.7);
+  transition: opacity 500ms;
+  visibility: hidden;
+  opacity: 0;
+}
+.overlay:target {
+  visibility: visible;
+  opacity: 1;
+}
+
+.popup {
+  margin: 70px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 5px;
+  width: 30%;
+  position: absolute;
+  transition: all 5s ease-in-out;
+}
+
+.popup h2 {
+  margin-top: 0;
+  color: #333;
+  font-family: Tahoma, Arial, sans-serif;
+}
+.popup .close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  transition: all 200ms;
+  font-size: 30px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+}
+.popup .close:hover {
+  color: #06D85F;
+}
+.popup .content {
+  max-height: 30%;
+  overflow: auto;
+}
+
+@media screen and (max-width: 700px){
+  .box{
+    width: 70%;
+  }
+  .popup{
+    width: 70%;
+  }
+}
+</style>
+
+
+
+
 
         <footer id="ctl00_ctl00_ctl08_pnlFooter" class="global-footer">
             <div class="page">
@@ -2717,7 +2839,222 @@ c0,0,0-0.1,0-0.1l0,0H14V9H0z M5,10h4v1H5V10z"></path>
 
 
 
+<style type="text/css">
+    .profile-pic > div {
+    overflow: visible;
+}
+.record .profile-pic, .record .gallery-links {
+    width: 500px;
+}
+    .record .profile-pic img {
+    position: absolute;
+    width: 80%;
+}
+#console {display: none;}
+#dialog {
+  position: absolute;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: #f4f4f4;
+  transition: visibility 0s linear 0.5s,opacity 0.5s linear;
+  opacity: 0;
+  visibility: hidden;
+}
+.dialog_state {
+  visibility: hidden;
+  opacity: 0;
+  display: none;
+}
+.dialog_state:checked + #dialog,
+#dialog.dialog_open {
+  transition-delay:0s;
+  opacity: 1;
+  visibility: visible;
+}
+#dlg-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  cursor: pointer;
+}
+.dialog_state:checked + #dialog #dlg-wrap {
+    max-height: 500px;
+    opacity: 1;
+    padding: 0px;
+}
+#dlg-wrap {
+    position: absolute;
+    z-index: 1;
+    display: block;
+    box-sizing: border-box;
+    margin: 0 auto;
+    top: 40%;
+    transform: translateY(-50%);
+    width: 500px;
+    padding: 2rem;
+    border-radius: 0.25rem;
+    /* border: 1px solid #969696; */
+    background: #fff;
+    box-shadow: 1px 1px 6px rgba(0,0,0,0.3);
+    max-height: 0;
+    opacity: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    overflow: hidden;
+    transition: all .5s;
+    height: 500px;
+}
+#dlg-close {
+    position: absolute;
+    top: 10px;
+    right: 8px;
+    width: 50px;
+    height: 50px;
+    line-height: 2rem;
+    text-align: center;
+    cursor: pointer;
+    background-image: url(index_files/close.jpg);
+    background-size: 100%;
+}
+h2#dlg-header {
+  font: 200 2em/1em Raleway, Open Sans, Arial, Sans-Serif;
+  text-transform: initial;
+  letter-spacing: -0.025em;
+  margin: 0 0 1rem;
+}
+#dlg-content {
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 0.015em;
+}
+#dlg-prompt .button {
+  margin: 1rem 0.5rem;
+  border-radius: 1.5rem;
+}
+.main_area {
+  transition: all 0.5s ease-out;
+}
+.dialog_state:checked ~ .main_area,
+.main_area.dialog_open {
+  filter: blur(6px);
+}
+.buttonn {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 0px;
+    border: 0px solid #000;
+    transition: .1s all;
+    cursor: pointer;
+    background: url(index_files/View_in_3D.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    width: 153px;
+    height: 40px;
+    z-index: 999999 !important;
+}
+.button2{
+    background: url(index_files/View_in_AR.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.button.positive, a.button.positive {
+  border-color: #6199B7;
+  color: #6199B7;
+}
+.button.positive:hover, a.button.positive:hover {
+  border-color: #468FB6;
+  color: #fff;
+  background-color: #468FB6;
+}
 
+.icon {
+  vertical-align: middle;
+  line-height: inherit;
+  font-size: 1.75em;
+}
+#main {
+    height:  525px;
+    width: 200px;
+    box-sizing: border-box;
+    overflow: visible;
+    position: relative;
+}
+#main .center {
+    position: relative;
+    top: 497px;
+    transform: translateY(-50%);
+    text-align: center;
+    left: 300px;
+}
+
+/* Console */
+#console {position: absolute;bottom: 0;left: 0;width: 100%;height: 100px;box-sizing: border-box;background: #f0f0f0;color: #606060;font: 400 13px/16px Open Sans;letter-spacing: 0em;text-align: left;padding: 2px;overflow-y: scroll;0 } #console p {margin: 0; padding: 0;} #console p em {font-style: none;font-weight: 700;}
+
+iframe{
+    width: 500px;
+    height: 500px;
+}
+@media (max-width: 667px){
+    #dlg-wrap{
+        top: 50%;
+    }
+    iframe{
+    width: 350px;
+    height: 350px;
+    }
+}
+@media (max-width: 500px){
+    .record .profile-pic, .record .gallery-links {
+    width: 340px;
+}
+.dialog_state:checked + #dialog #dlg-wrap {
+    width: 338px;
+}
+#main .center {
+    left: 160px;
+}
+}
+@media (max-width: 992px){
+    #divPic{
+        clear: both;
+        margin: 20px auto;
+    }
+}
+
+</style>
+<script type="text/javascript">
+    $(function(){
+  $(document).keypress(function(e) {
+    cwrite(e.which,'Keypress event');
+    if(e.which==120) custom_dialog_toggle('Keypress x','You opened this window by pressing x');
+  });
+});
+function custom_dialog_toggle(title,text,buttons) {
+  if(typeof title !=='undefined') $('#dlg-header').html(title);
+  if(typeof text !=='undefined') $('#dlg-content').html(text);
+  cwrite('Current state: '+$('#dialog_state').prop("checked"),'custom_dialog_toggle');
+  $('#dialog_state').prop("checked", !$('#dialog_state').prop("checked"));
+}
+// Console logging function for debugging
+// cwrite(str, title)
+//      str:              string to be appended to console
+//      title (optional): title of the string
+// (c)  Tuomas Hatakka 2015
+//      http://tuomashatakka.fi
+function cwrite(str,title) {
+  var ce = $('#console');
+  var sg = "<p>";
+  if(typeof title !=='undefined') sg = sg+"<em>"+title+"</em> ";
+  sg = sg+str+"</p>";
+  ce.prepend(sg);
+  //if(ce.children("p").length>6) ce.children("p").first().remove();
+}
+</script>
 
 
 
@@ -2727,12 +3064,6 @@ c0,0,0-0.1,0-0.1l0,0H14V9H0z M5,10h4v1H5V10z"></path>
 </body>
 
 </html>
-
-
-
-
-
-
 
 
 
