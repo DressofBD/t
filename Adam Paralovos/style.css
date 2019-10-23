@@ -44,6 +44,9 @@ html, body {
 .background:nth-child(3) {
   background-image: url(img/3.png);
 }
+.background:nth-child(4) {
+  background-image: url(img/4.png);
+}
 
 /* Set stacking context of slides */
 .background:nth-child(1) {
