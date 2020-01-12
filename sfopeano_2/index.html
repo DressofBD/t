@@ -1,0 +1,431 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+   <head>
+      <!-- Google Tag Manager -->
+      <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+         new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+         j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+         'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+         })(window,document,'script','dataLayer','GTM-PRBW6KP');
+      </script>
+      <!-- End Google Tag Manager -->
+      <title>AFW VPOIDS</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <script type="text/javascript">(window.NREUM||(NREUM={})).loader_config={licenseKey:"139294afc1",applicationID:"29104885"};window.NREUM||(NREUM={}),__nr_require=function(n,e,t){function r(t){if(!e[t]){var i=e[t]={exports:{}};n[t][0].call(i.exports,function(e){var i=n[t][1][e];return r(i||e)},i,i.exports)}return e[t].exports}if("function"==typeof __nr_require)return __nr_require;for(var i=0;i<t.length;i++)r(t[i]);return r}({1:[function(n,e,t){function r(){}function i(n,e,t){return function(){return o(n,[u.now()].concat(f(arguments)),e?null:this,t),e?void 0:this}}var o=n("handle"),a=n(4),f=n(5),c=n("ee").get("tracer"),u=n("loader"),s=NREUM;"undefined"==typeof window.newrelic&&(newrelic=s);var p=["setPageViewName","setCustomAttribute","setErrorHandler","finished","addToTrace","inlineHit","addRelease"],d="api-",l=d+"ixn-";a(p,function(n,e){s[e]=i(d+e,!0,"api")}),s.addPageAction=i(d+"addPageAction",!0),s.setCurrentRouteName=i(d+"routeName",!0),e.exports=newrelic,s.interaction=function(){return(new r).get()};var m=r.prototype={createTracer:function(n,e){var t={},r=this,i="function"==typeof e;return o(l+"tracer",[u.now(),n,t],r),function(){if(c.emit((i?"":"no-")+"fn-start",[u.now(),r,i],t),i)try{return e.apply(this,arguments)}catch(n){throw c.emit("fn-err",[arguments,this,n],t),n}finally{c.emit("fn-end",[u.now()],t)}}}};a("actionText,setName,setAttribute,save,ignore,onEnd,getContext,end,get".split(","),function(n,e){m[e]=i(l+e)}),newrelic.noticeError=function(n,e){"string"==typeof n&&(n=new Error(n)),o("err",[n,u.now(),!1,e])}},{}],2:[function(n,e,t){function r(n,e){var t=n.getEntries();t.forEach(function(n){"first-paint"===n.name?a("timing",["fp",Math.floor(n.startTime)]):"first-contentful-paint"===n.name&&a("timing",["fcp",Math.floor(n.startTime)])})}function i(n){if(n instanceof c&&!s){var e,t=Math.round(n.timeStamp);e=t>1e12?Date.now()-t:f.now()-t,s=!0,a("timing",["fi",t,{type:n.type,fid:e}])}}if(!("init"in NREUM&&"page_view_timing"in NREUM.init&&"enabled"in NREUM.init.page_view_timing&&NREUM.init.page_view_timing.enabled===!1)){var o,a=n("handle"),f=n("loader"),c=NREUM.o.EV;if("PerformanceObserver"in window&&"function"==typeof window.PerformanceObserver){o=new PerformanceObserver(r);try{o.observe({entryTypes:["paint"]})}catch(u){}}if("addEventListener"in document){var s=!1,p=["click","keydown","mousedown","pointerdown","touchstart"];p.forEach(function(n){document.addEventListener(n,i,!1)})}}},{}],3:[function(n,e,t){function r(n,e){if(!i)return!1;if(n!==i)return!1;if(!e)return!0;if(!o)return!1;for(var t=o.split("."),r=e.split("."),a=0;a<r.length;a++)if(r[a]!==t[a])return!1;return!0}var i=null,o=null,a=/Version\/(\S+)\s+Safari/;if(navigator.userAgent){var f=navigator.userAgent,c=f.match(a);c&&f.indexOf("Chrome")===-1&&f.indexOf("Chromium")===-1&&(i="Safari",o=c[1])}e.exports={agent:i,version:o,match:r}},{}],4:[function(n,e,t){function r(n,e){var t=[],r="",o=0;for(r in n)i.call(n,r)&&(t[o]=e(r,n[r]),o+=1);return t}var i=Object.prototype.hasOwnProperty;e.exports=r},{}],5:[function(n,e,t){function r(n,e,t){e||(e=0),"undefined"==typeof t&&(t=n?n.length:0);for(var r=-1,i=t-e||0,o=Array(i<0?0:i);++r<i;)o[r]=n[e+r];return o}e.exports=r},{}],6:[function(n,e,t){e.exports={exists:"undefined"!=typeof window.performance&&window.performance.timing&&"undefined"!=typeof window.performance.timing.navigationStart}},{}],ee:[function(n,e,t){function r(){}function i(n){function e(n){return n&&n instanceof r?n:n?c(n,f,o):o()}function t(t,r,i,o){if(!d.aborted||o){n&&n(t,r,i);for(var a=e(i),f=v(t),c=f.length,u=0;u<c;u++)f[u].apply(a,r);var p=s[y[t]];return p&&p.push([b,t,r,a]),a}}function l(n,e){h[n]=v(n).concat(e)}function m(n,e){var t=h[n];if(t)for(var r=0;r<t.length;r++)t[r]===e&&t.splice(r,1)}function v(n){return h[n]||[]}function g(n){return p[n]=p[n]||i(t)}function w(n,e){u(n,function(n,t){e=e||"feature",y[t]=e,e in s||(s[e]=[])})}var h={},y={},b={on:l,addEventListener:l,removeEventListener:m,emit:t,get:g,listeners:v,context:e,buffer:w,abort:a,aborted:!1};return b}function o(){return new r}function a(){(s.api||s.feature)&&(d.aborted=!0,s=d.backlog={})}var f="nr@context",c=n("gos"),u=n(4),s={},p={},d=e.exports=i();d.backlog=s},{}],gos:[function(n,e,t){function r(n,e,t){if(i.call(n,e))return n[e];var r=t();if(Object.defineProperty&&Object.keys)try{return Object.defineProperty(n,e,{value:r,writable:!0,enumerable:!1}),r}catch(o){}return n[e]=r,r}var i=Object.prototype.hasOwnProperty;e.exports=r},{}],handle:[function(n,e,t){function r(n,e,t,r){i.buffer([n],r),i.emit(n,e,t)}var i=n("ee").get("handle");e.exports=r,r.ee=i},{}],id:[function(n,e,t){function r(n){var e=typeof n;return!n||"object"!==e&&"function"!==e?-1:n===window?0:a(n,o,function(){return i++})}var i=1,o="nr@id",a=n("gos");e.exports=r},{}],loader:[function(n,e,t){function r(){if(!x++){var n=E.info=NREUM.info,e=l.getElementsByTagName("script")[0];if(setTimeout(s.abort,3e4),!(n&&n.licenseKey&&n.applicationID&&e))return s.abort();u(y,function(e,t){n[e]||(n[e]=t)}),c("mark",["onload",a()+E.offset],null,"api");var t=l.createElement("script");t.src="https://"+n.agent,e.parentNode.insertBefore(t,e)}}function i(){"complete"===l.readyState&&o()}function o(){c("mark",["domContent",a()+E.offset],null,"api")}function a(){return O.exists&&performance.now?Math.round(performance.now()):(f=Math.max((new Date).getTime(),f))-E.offset}var f=(new Date).getTime(),c=n("handle"),u=n(4),s=n("ee"),p=n(3),d=window,l=d.document,m="addEventListener",v="attachEvent",g=d.XMLHttpRequest,w=g&&g.prototype;NREUM.o={ST:setTimeout,SI:d.setImmediate,CT:clearTimeout,XHR:g,REQ:d.Request,EV:d.Event,PR:d.Promise,MO:d.MutationObserver};var h=""+location,y={beacon:"bam.nr-data.net",errorBeacon:"bam.nr-data.net",agent:"js-agent.newrelic.com/nr-1158.min.js"},b=g&&w&&w[m]&&!/CriOS/.test(navigator.userAgent),E=e.exports={offset:f,now:a,origin:h,features:{},xhrWrappable:b,userAgent:p};n(1),n(2),l[m]?(l[m]("DOMContentLoaded",o,!1),d[m]("load",r,!1)):(l[v]("onreadystatechange",i),d[v]("onload",r)),c("mark",["firstbyte",f],null,"api");var x=0,O=n(6)},{}],"wrap-function":[function(n,e,t){function r(n){return!(n&&n instanceof Function&&n.apply&&!n[a])}var i=n("ee"),o=n(5),a="nr@original",f=Object.prototype.hasOwnProperty,c=!1;e.exports=function(n,e){function t(n,e,t,i){function nrWrapper(){var r,a,f,c;try{a=this,r=o(arguments),f="function"==typeof t?t(r,a):t||{}}catch(u){d([u,"",[r,a,i],f])}s(e+"start",[r,a,i],f);try{return c=n.apply(a,r)}catch(p){throw s(e+"err",[r,a,p],f),p}finally{s(e+"end",[r,a,c],f)}}return r(n)?n:(e||(e=""),nrWrapper[a]=n,p(n,nrWrapper),nrWrapper)}function u(n,e,i,o){i||(i="");var a,f,c,u="-"===i.charAt(0);for(c=0;c<e.length;c++)f=e[c],a=n[f],r(a)||(n[f]=t(a,u?f+i:i,o,f))}function s(t,r,i){if(!c||e){var o=c;c=!0;try{n.emit(t,r,i,e)}catch(a){d([a,t,r,i])}c=o}}function p(n,e){if(Object.defineProperty&&Object.keys)try{var t=Object.keys(n);return t.forEach(function(t){Object.defineProperty(e,t,{get:function(){return n[t]},set:function(e){return n[t]=e,e}})}),e}catch(r){d([r])}for(var i in n)f.call(n,i)&&(e[i]=n[i]);return e}function d(e){try{n.emit("internal-error",e)}catch(t){}}return n||(n=i),t.inPlace=u,t.flag=a,t}},{}]},{},["loader"]);</script><script type="text/javascript">window.NREUM||(NREUM={}),__nr_require=function(t,n,e){function r(e){if(!n[e]){var o=n[e]={exports:{}};t[e][0].call(o.exports,function(n){var o=t[e][1][n];return r(o?o:n)},o,o.exports)}return n[e].exports}if("function"==typeof __nr_require)return __nr_require;for(var o=0;o<e.length;o++)r(e[o]);return r}({QJf3ax:[function(t,n){function e(t){function n(n,e,o){t&&t(n,e,o),o||(o={});for(var a=i(n),u=a.length,c=o[r]||(o[r]={}),f=0;u>f;f++)a[f].apply(c,e);return c}function o(t,n){u[t]=i(t).concat(n)}function i(t){return u[t]||[]}function a(){return e(n)}var u={};return{on:o,emit:n,create:a,listeners:i,_events:u}}var r="nr@context";n.exports=e()},{}],ee:[function(t,n){n.exports=t("QJf3ax")},{}],D5DuLP:[function(t,n){function e(t,n,e){return r.listeners(t).length?r.emit(t,n,e):(o[t]||(o[t]=[]),void o[t].push(n))}var r=t("ee").create(),o={};n.exports=e,e.ee=r,r.q=o},{ee:"QJf3ax"}],handle:[function(t,n){n.exports=t("D5DuLP")},{}],loader:[function(t,n){n.exports=t("G9z0Bl")},{}],G9z0Bl:[function(t,n){function e(){var t=l.info=NREUM.info;if(t&&t.agent&&t.licenseKey&&t.applicationID&&c&&c.body){l.proto="https"===p.split(":")[0]||t.sslForHttp?"https://":"http://",a("mark",["onload",i()]);var n=c.createElement("script");n.src=l.proto+t.agent,c.body.appendChild(n)}}function r(){"complete"===c.readyState&&o()}function o(){a("mark",["domContent",i()])}function i(){return(new Date).getTime()}var a=t("handle"),u=window,c=u.document,f="addEventListener",s="attachEvent",p=(""+location).split("?")[0],l=n.exports={offset:i(),origin:p,features:{}};c[f]?(c[f]("DOMContentLoaded",o,!1),u[f]("load",e,!1)):(c[s]("onreadystatechange",r),u[s]("onload",e)),a("mark",["firstbyte",i()])},{handle:"D5DuLP"}]},{},["G9z0Bl"]);</script>
+      <meta name="title" content="AFW VPOIDS" />
+      <link rel="shortcut icon" href="/favicon.png" />
+      <script type="text/javascript" src="js/jquery-1.10.2.js"></script>
+      <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
+      <script type="text/javascript" src="js/jquery.main.js"></script>
+      <script type="text/javascript" src="js/signature_pad/jquery.signaturepad.min.js"></script>
+      <script type="text/javascript" src="js/signature_pad/json2.min.js"></script>
+      <style>
+         body {font-family:sans-serif; font-size:100%; line-height:140%;}
+         * { box-sizing:border-box }
+         h2 {clear:both;}
+         .wrap, .form-submit { max-width: calc(100% - 10px); } /* ADD THIS - under h2 {clear: both; }  - HTML line 24 */
+         @media only screen and (max-width: 35em) { /* minimum screen size, portait phones */
+         body {background:#ddd; color:#000;}
+         #wrapper {width:100%; margin:0 auto; padding:0 10px;}
+         .logo_block {width:200px; margin:0 auto;}
+         .address_block {text-align:center; font-size:13px;}
+         h2 {text-align:center;}
+         label { display: block; margin: 7px 0 3px 0; } /* change from display: none; to display: block – HTML line 55 */
+         input[type=text] {width:100%; padding:.6em .8em; border-radius:6px; border:1px solid #ccc; font-size:1.0em; margin:.5em 0;}
+         input[type=submit] { width:60%; -webkit-appearance:none; -moz-appearance:none; appearance:nome; background:#164e81; padding:8px; font-size:1.3em; color:#fff; clear:both; margin:10px 0; border-radius:30px; border:none;}
+         #medical_release_agency_zipcode, #medical_release_appointment_date {width:60%;}
+         #medical_release_testimonial {width:100%; height:80px; padding:.6em .8em; border-radius:6px; border:1px solid #ccc; font-size:1.0em; margin:.5em 0;}
+         select {-webkit-appearance: initial; background: #fff;width:100%;color:#999;padding:.6em .8em; border-radius:6px; border:1px solid #ddd; font-size:1.0em; margin:.5em 0;}
+         .sigPad_Required  {width:100%; background:#fff; border-radius:6px; border:1px solid #ddd; margin: 10px 0 10px 0; padding:5px 10px 10px 10px;}
+         .sigWrapper {clear:both; height:80px!important; border:none!important; text-align:center;}
+         canvas.pad {width:265px; height:80px; margin:5px auto 20px auto; border:1px dotted #ddd!important; }
+         .drawItDesc {color:#000; font-style:normal!important; float:none!important; font-family:inherit!important; padding:5px 0 0 0!important; margin:0!important;}
+         .clearButton { display:block; width:60px; margin:5px auto 0 auto; background:#ddd; padding:5px 10px; color:#000; border-radius:10px; text-decoration:none!important; }
+         .clearButtonWrap {text-align:center;}
+         }
+         /* 
+         Samsung Galaxy SIII portrait
+         iPhone 5 portait
+         Galaxy note II portrait
+         LG Nexus 4 portrait
+         */
+         @media only screen and (min-width: 35.063em) and (max-width: 40em) { /* minimum screen size, landscape phones */
+         body {background:#fff; color:#000; padding:0 2em;}
+         #wrapper {width:100%; margin:0 auto; padding:0 10px;}
+         .logo_block {width:200px; float:left; margin:0 auto 20px auto;}
+         .address_block {text-align:left; width:250px; float:left; padding:20px 0 0 0; font-size:13px;}
+         label { display: block; margin: 7px 0 3px 0; } /* change from display: none; to display: block – HTML line 55 */
+         input[type=text] {width:100%; padding:.6em .8em; border-radius:6px; border:1px solid #ccc; font-size:1.0em; margin:.5em 0;}
+         input[type=submit] { width:60%; -webkit-appearance:none; -moz-appearance:none; appearance:nome; background:#164e81; padding:8px; font-size:1.3em; color:#fff; margin:20px 0; border-radius:30px; border:none;}
+         #medical_release_agency_zipcode, #medical_release_appointment_date {width:60%;}
+         #medical_release_testimonial {width:100%; height:60px; padding:.6em .8em; border-radius:6px; border:1px solid #ccc; font-size:1.0em; margin:.5em 0;}
+         select {-webkit-appearance: initial; background: #fff;width:100%;color:#999;padding:.6em .8em; border-radius:6px; border:1px solid #ddd; font-size:1.0em; margin:.5em 0;}
+         .sigPad_Required  {width:100%; background:#fff; border-radius:6px; border:1px solid #ddd; margin: 10px 0 10px 0; padding:5px 10px 10px 10px;}
+         .sigWrapper {clear:both; height:160px!important; border:none!important; text-align:center;}
+         canvas.pad {margin:5px auto 20px auto; border:1px dotted #ddd!important; }
+         .drawItDesc {color:#000; font-style:normal!important; float:none!important; font-family:inherit!important; padding:5px 0 0 0!important; margin:0!important;}
+         .clearButton {position:absolute; right:0; top:0; text-align:center; display:block; width:60px; margin:5px auto 0 auto; background:#ddd; padding:5px 10px; color:#000; border-radius:10px; text-decoration:none!important; }
+         .clearButtonWrap {position:relative; float:right; margin-top:-20px;}
+         }
+         /* 
+         Samsung Galaxy SIII landscape
+         iPhone 5 landscape
+         LG Nexus 4 landscape
+         Kindle 2 portrait
+         */
+         @media only screen and (min-width: 40.063em) {  /* mid screen size, portrait tabs */
+         body {background:#fff; color:#000;}
+         #wrapper {width:75% margin:0 auto; padding:0 3em;}
+         .logo_block {width:200px; float:left; margin:0 auto 20px auto;}
+         .address_block {text-align:left; width:250px; float:left; padding:20px 0 0 50px; font-size:13px;}
+         .address_block span {display:block;}
+         label {display:inline-block;width:25%; margin:7px 0 3px 0;}
+         label[for="medical_release_testimonial"] { display:block;width:100%; margin:7px 0 3px 0;}
+         input[type=text] {width:70%; padding:.6em .8em; border-radius:6px; border:1px solid #ccc; font-size:1.0em; margin:.5em 0;}
+         input[type=submit] { width:40%; -webkit-appearance:none; -moz-appearance:none; appearance:nome; background:#164e81; padding:8px; font-size:1.3em; color:#fff; margin:20px 0; border-radius:30px; border:none;}
+         #medical_release_agency_zipcode, #medical_release_appointment_date {width:40%;}
+         select {-webkit-appearance: initial; background: #fff;width:100%;color:#999;padding:.6em .8em; border-radius:6px; border:1px solid #ddd; font-size:1.0em; margin:.5em 0;}
+         #medical_release_testimonial {width:100%; height:60px; padding:.6em .8em; border-radius:6px; border:1px solid #ccc; font-size:1.0em; margin:.5em 0;}
+         ::-webkit-input-placeholder { color:#fff; }
+         ::-moz-placeholder { color:#fff; }
+         :-ms-input-placeholder { color:#fff; }
+         .sigPad_Required  {width:100%; background:#fff; border-radius:6px; border:1px solid #ddd; margin: 10px 0 10px 0; padding:5px 10px 10px 10px;}
+         .sigWrapper {clear:both; height:160px!important; border:none!important; text-align:center;}
+         canvas.pad {margin:5px auto 20px auto; border:1px dotted #ddd!important; }
+         .drawItDesc {color:#000; font-style:normal!important; float:none!important; font-family:inherit!important; padding:5px 0 0 0!important; margin:0!important;}
+         .clearButton {position:absolute; right:0; top:0; text-align:center; display:block; width:60px; margin:5px auto 0 auto; background:#ddd; padding:5px 10px; color:#000; border-radius:10px; text-decoration:none!important; }
+         .clearButtonWrap {position:relative; float:right; margin-top:-25px;}
+         }
+         /* 
+         Galaxy note II landscape
+         Kindle Fire HD portrait
+         Nexus 7 portrait only
+         iPad mini portrait
+         iPad 3 portrait
+         Windows 7 IE9 800x600, 1024x768
+         */
+         @media only screen and (min-width: 50.063em) and (max-width: 64em)  { /* mid screen size, landscape tabs */
+         body {background:#fff; color:#000;}
+         #wrapper {width:100%; margin:0 auto; padding:0 10em;}
+         #medical_release_agency_zipcode, #medical_release_appointment_date {width:40%;}
+         #medical_release_testimonial {height:80px; }
+         }
+         /* 
+         min-width 641px, medium screens 
+         iPad mini portrait and landscape
+         iPad 3 portrait and landscape
+         Galaxy note II landscape
+         Kindle 2 landscape only
+         */
+         @media only screen and (min-width: 64.063em) { /* desktop eperience */
+         body {background:#fff; color:#000;}
+         #wrapper {width:900px; margin:0 auto; padding:0 1em;}
+         .logo_block {width:200px; float:left; margin:0 auto 20px auto;}
+         .address_block {text-align:right; width:450px; float:right; padding:20px 0 0 50px; font-size:13px;}
+         .address_block span {display:block;}
+         label {width:20%;}
+         input[type=text] {width:70%;}
+         #medical_release_agency_zipcode, #medical_release_appointment_date {width:30%;}
+         #medical_release_testimonial {height:80px; }
+         input[type=submit] { width:200px;}
+         }
+         /*
+         Nexus tab 7 landscape
+         Kindle Fire tab HD landscape
+         Galaxy Tab II landscape
+         Windows 7 IE8 does not apply any styles in media queries
+         Windows 7 IE9 1280 x 1024
+         */
+      </style>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+      <script type="text/javascript" src="js/jquery.NobleCount.min.js"></script>
+   </head>
+   <body>
+      ﻿<!-- Google Tag Manager (noscript) -->
+      <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PRBW6KP" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+      <!-- End Google Tag Manager (noscript) -->  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+      ﻿
+      <style>
+         .error {color:red;}
+         table {
+         border: 1px solid #ccc;
+         border-collapse: collapse;
+         margin: 0;
+         padding: 0;
+         width: 100%;
+         table-layout: fixed;
+         }
+         table caption {
+         font-size: 1.5em;
+         margin: .5em 0 .75em;
+         }
+         table tr {
+         background-color: #f8f8f8;
+         border: 1px solid #ddd;
+         padding: .35em;
+         }
+         table th,
+         table td {
+         padding: .625em;
+         text-align: left;
+         }
+         table th {
+         font-size: .85em;
+         letter-spacing: .1em;
+         }
+         @media screen and (max-width: 600px) {
+         table {
+         border: 0;
+         }
+         table caption {
+         font-size: 1.3em;
+         }
+         table thead {
+         border: none;
+         clip: rect(0 0 0 0);
+         height: 1px;
+         margin: -1px;
+         overflow: hidden;
+         padding: 0;
+         width: 1px;
+         }
+         table tr {
+         border-bottom: 3px solid #ddd;
+         display: block;
+         margin-bottom: .625em;
+         }
+         table td {
+         border-bottom: 1px solid #ddd;
+         display: block;
+         font-size: .8em;
+         text-align: left;
+         }
+         .mobile-right {
+         text-align: right;
+         }
+         table td::before {
+         /*
+         * aria-label has no advantage, it won't be read inside a table
+         content: attr(aria-label);
+         */
+         content: attr(data-label);
+         float: left;
+         font-weight: bold;
+         text-transform: uppercase;
+         }
+         table td:last-child {
+         border-bottom: 0;
+         }
+         }  
+      </style>
+      <div class="add-mission">
+      <h2>Multi-Leg Request Mission</h2>
+      <p>This mission has been set up with the following legs.</p>
+      <form action="/frontend_dev.php/pilotRequest/publicUpdate" id="pilot_request" method="post">
+         <table>
+            <caption>Mission Summary</caption>
+            <thead>
+               <tr>
+                  <th scope="col">
+                     121403-1<br/>12/14/04 (Tue)<br/>4 pm<br/>Appointment:  
+                  </th>
+                  <th scope="col">
+                     Passengers: 1<br/>Total weight: 150 lbs<br/>
+                     <a href="javascript:void(0)" onclick="javascript:show_passengers('20121')">
+                        Get Detail      
+                  </th>
+                  <th scope="col">
+                  Passenger: Sarah Stearns<br/>Date of birth: 01-02-1978<br/>Weight: 150 lbs. 
+                  </th>
+               </tr>
+               <tr>
+               <th colspan="3">Reason for travel: Surgery</th>  
+               </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td data-label="Leg Number" class="mobile-right">
+            <input type="checkbox" name="mlids[]" value="29029"/>&nbsp;Leg 1        </td>
+            <td data-label="Origin" class="mobile-right">
+            <a href="http://www.airnav.com">ADQ</a> (Kodiak, AK) (GMT-9)  
+            </td>
+            <td data-label="Destination" class="mobile-right">
+            <a href="http://www.airnav.com">ANC</a> (Anchorage, AK)&nbsp; (GMT-9)        </td>
+            </tr>
+            </tbody>
+         </table>
+         <h3>Request these legs</h3>
+         <!-- Start the request form -->  
+         <input type="hidden" name="source" id="source" value=""/> 
+         <input type="hidden" name="mid" id="member_id" value="4"/>
+         <table>
+            <tr>
+               <td>Select Your Aircraft</td>
+               <td>
+                  <select id="aircraft" name="aircraft" class="text">
+                     <option value="38806">Beechcraft 33 series (N563GH)</option>
+                  </select>
+                  <span style="color:red" id="aircraft_error"></span>
+               </td>
+            </tr>
+            <tr>
+               <td>Comment</td>
+               <td>
+                  <textarea style="width:300px;height:80px;" class="text" name="comment" id="pilot_request_comment"></textarea>
+                  <div style="clear:left;padding-top:6px;margin-left:88px;"><span id="pilot_request_comment_count"></span>&nbsp;characters remaining</div>
+                  <input type="hidden" id="date" name="date" value="2004-12-14"/>
+               </td>
+            </tr>
+            <tr>
+               <td>Affirmation</td>
+               <td>
+                  <!-- insert a possible pilot affirmation -->
+                  <p>I certify that I am in compliance with all provisions of the Pilot Affirmation I agreed to when I became a Command Pilot, including but not limited to:</p>
+                  <ol style="margin-left: 20px;">
+                     <li>I meet all applicable requirements of the Federal Aviation Regulations to act as pilot in command</li>
+                     <li>My medical certification is current and I am aware of no medical deficiency that precludes my acting as pilot in command per FAR 61.53.</li>
+                     <li>If I intend to conduct this flight under IFR, I meet all requirements for recent flight experience contained in FAR 61.57 including instrument experience under FAR 61.57(c)</li>
+                     <li>The aircraft to be flown has a valid standard airworthiness certificate (normal, utility, acrobatic, commuter or transport category) and is airworthy in all respects per FAR Part 23.</li>
+                     <li>Whether flying rented or owned aircraft, I have in force liability insurance applicable to the flight providing minimum coverage of $500,000 per occurrence and $100,000 per seat.</li>
+                     <li>If I am renting an aircraft, I have met the requirements of the renting agency for currency. If I belong to a flying club, I am a member in good standing and I have met all requirements to fly club airplanes for which I am approved.</li>
+                     <li>I have flown at least 50 hours as pilot-in-command in the last 12 calendar months. If not, within the last 12 months I have completed: a Flight Review (per FAR 61.56); a Wings Pilot Proficiency Program Level; added a new Rating; or completed an Instrument Proficiency Check (per FAR 61.57(d)).</li>
+                     <li>I have at least 250 PIC hours and at least 75 of these hours have been logged as pilot-in-command for cross country flight; or I hold a valid Commercial certificate and at least 75 hours as pilot- in-command for cross country flight, or a valid Airline Transport Pilot certificate.</li>
+                  </ol>
+                  <p><input type="checkbox" name="affirmation_agreed" id="affirmation_agreed" value="1"/><span id="agree_label">&nbsp;I agree&nbsp;</span><span style="color:red" id="agree_error"></span></p>
+               </td>
+            </tr>
+            <tr>
+               <td>&nbsp;</td>
+               <td>
+                  <input type="submit" class="hide" value="Request These Legs"/>
+                  <div id="form_error" class="error" style="display:none;margin-top:10px;"></div>
+            </tr>
+         </table>
+      </form>
+      <div id="loading" style="display:none"></div>
+      <script type="text/javascript">
+         function show_passengers(mission_id) {
+          /// grab the passengers list
+          jQuery.ajax({
+            url: '/mission/getPassengerList?mission_id=' + mission_id,
+            dataType: 'html',
+            success: function (html) {
+              jQuery('#loading').html(html);
+            }
+          })
+         
+         // display the loading dialoge
+           jQuery('#loading').dialog({
+               buttons: {},
+               title: "Passengers",
+               width: 400,
+               modal: true
+          });
+         jQuery('#loading').dialog('open');
+         }
+         
+         jQuery(document).ready(function() {
+         jQuery("#pilot_request_comment").NobleCount("#pilot_request_comment_count",{ 
+           max_chars: 200,
+           block_negative: true
+          });   
+         
+         jQuery("#pilot_request").submit(function(event) {
+           jQuery("#form_error").hide();
+            var err_str = "";
+          if (!jQuery("input[name=mlids\\[\\]]:checked").val()) {
+            err_str+= "<li>Please select at least one leg to request</li>";
+           }
+          if (!jQuery("#aircraft").val()) {
+             jQuery("#aircraft_error").html("Please select the aircraft you plan to fly on these legs");
+             err_str+= "<li>Please select the aircraft you plan to fly on these legs</li>";
+           }
+          // make sure the affirmation is agreed
+          // however, we only need to check if the affirmation is in use by this organization
+          // a hidden field called affirmation_bypass is inserted in place of the affirmation if the organization
+          // doesn't use the affirmation
+          if (jQuery("#affirmation_bypass").val()  != 1) {
+            if (jQuery("#affirmation_agreed").is(':checked')) {
+              // no problem
+             } else {
+              jQuery("#affirmation_agreed").addClass("error");
+              jQuery("#agree_error").html("Please indicate your agreement to the affirmation");
+              err_str+= "<li>Please indicate your agreement to the affirmation</li>";
+             }
+           }
+           // check the important considerations, but only if the element is present
+          if (jQuery("#ack_important_considerations").length) {
+            if (jQuery("#ack_important_considerations").is(':checked')) {
+              // no problem
+             } else {
+              jQuery("#ack_important_considerations").addClass("error");
+              jQuery("#ack_important_considerations_error").html("Please indicate your agreement to the important considerations");
+              err_str+= "<li>Please indicate your agreement to the important considerations for this passenger</li>";
+             }
+           }
+         
+            if (err_str != "") {
+              jQuery("#form_error").html(err_str);
+              jQuery("#form_error").show();
+              return false;
+            }
+            return true;
+         });
+         });
+      </script>
+      <script type="text/javascript">window.NREUM||(NREUM={});NREUM.info={"beacon":"bam.nr-data.net","licenseKey":"139294afc1","applicationID":"29104885","transactionName":"YgNabBFZXEAAWxYKC1tJeVsXUV1dTkgLDwtBNF1JFl1BR05IFwEIXAVtSAdZRlY=","queueTime":0,"applicationTime":192,"atts":"TkRZGllDT04=","errorBeacon":"bam.nr-data.net","agent":""}</script>
+
+
+      <style type="text/css">
+         body{
+            max-width: 991px !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            margin-top: 0;
+         }
+         .add-mission {
+            padding: 10px 30px;
+            text-align: center;
+            background: #ddd;
+            padding-bottom: 30px;
+         }
+         input[type="submit"]{
+            padding: 10px 20px;
+            text-align: center;
+            margin: 0;
+            width: auto;
+            cursor: pointer;
+            border-radius: 0;
+            transition: 0.3s;
+            border:1px solid transparent;
+         }
+         input[type="submit"]:hover{
+            background-color: #ccc;
+            color: #164e81;
+            border:1px solid #164e81;
+         }
+
+         @media screen and (max-width: 600px) {
+            table th {
+               letter-spacing: 0;
+            }
+            .add-mission {
+               padding: 10px;
+               text-align: center;
+            }
+            input[type="submit"]{
+               width: 200px;
+               position: relative;
+               left: 50%;
+               margin-left: -100px;
+               margin-top: 5px;
+            }
+         }
+      </style>
+   </body>
+</html>
+
