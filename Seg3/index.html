@@ -124,6 +124,62 @@ img{
 }
 
 
+@-webkit-keyframes heartBeat {
+  0% {
+    -webkit-transform: scale(1);
+    transform: scale(1)
+  }
+  14% {
+    -webkit-transform: scale(1.3);
+    transform: scale(1.3)
+  }
+  28% {
+    -webkit-transform: scale(1);
+    transform: scale(1)
+  }
+  42% {
+    -webkit-transform: scale(1.3);
+    transform: scale(1.3)
+  }
+  70% {
+    -webkit-transform: scale(1);
+    transform: scale(1)
+  }
+}
+
+@keyframes heartBeat {
+  0% {
+    -webkit-transform: scale(1);
+    transform: scale(1)
+  }
+  14% {
+    -webkit-transform: scale(1.05);
+    transform: scale(1.05)
+  }
+  28% {
+    -webkit-transform: scale(1);
+    transform: scale(1)
+  }
+  42% {
+    -webkit-transform: scale(1.05);
+    transform: scale(1.05)
+  }
+  70% {
+    -webkit-transform: scale(1);
+    transform: scale(1)
+  }
+}
+
+.giftboxtop{
+  margin-bottom: -200px;
+  position: relative;
+  z-index: 9;
+  -webkit-animation-name: heartBeat;
+  animation-name: heartBeat;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+}
+
 .container {
   max-width: 720px;
 }
@@ -158,7 +214,9 @@ img{
 .bottom img {
   width: 325px;
 }
-
+.giftboxtop {
+  margin-bottom: -120px;
+}
 }
 
 @media screen and (max-width:419px){
@@ -179,10 +237,13 @@ img{
 .gbox {
   margin-bottom: -173px;
 }
+
 .bottom img {
   width: 250px;
 }
-
+.giftboxtop {
+  margin-bottom: -88px;
+}
 }
 
 </style>
@@ -200,7 +261,8 @@ img{
         <div class="middle">
           <div class="giftbox">
             <img src="images/ribbon.png" class="ribbon">
-            <img src="images/gbox.png" class="gbox">
+            <img src="images/giftboxtop.png" class="giftboxtop">
+            <img src="images/giftbox.png" class="gbox">
           </div>
           <div class="bottom">
             <img src="images/tcontent.png">
