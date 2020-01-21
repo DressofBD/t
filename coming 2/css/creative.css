@@ -161,6 +161,7 @@ header.masthead2 {
   background-repeat: no-repeat;
   background-attachment: scroll;
   background-size: cover;
+    min-height: 850px;
 }
 
 :root {
