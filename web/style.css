@@ -638,8 +638,7 @@ header .container {
   font-size: 20px;
   display: flex;
   color: #fff;
-  max-width: 60%;
-  margin: 0 auto;
+  justify-content: center;
 }
 .consult-more-top li{
   float: left;
@@ -656,7 +655,7 @@ header .container {
 .consult-more-details {
   display: flex;
   margin: 0 auto;
-  max-width: 70%;
+  max-width: 80%;
   font-family: 'Heebo Medium';
   padding-top: 20px;
 }
@@ -859,6 +858,13 @@ footer.footer .container {
 
 
 /*Responsive CSS*/
+@media (max-width: 991px){
+  .consult-more-details {
+  max-width: 100%;
+}
+.consult-more-top {
+}
+}
 @media (max-width: 767px){
 .navbar {
 margin-top: 0;
