@@ -523,6 +523,9 @@ header .container {
 }
 .tbl-content ul li:last-child input {
 }
+.profile-list{
+  color: #1c1d1f;
+}
 /* The customcheck */
 .customcheck2 {
   display: block;
@@ -910,6 +913,13 @@ font-size: 30px;
 .tbl-content .d-none{
   display: none !important;
 }
+li.man-name{
+  width: 25% !important;
+}
+li.security {
+  font-family: 'Heebo Bold';
+}
+li.department{}
 .man-name{
   font-family: 'Heebo Bold';
 }
@@ -919,6 +929,9 @@ font-size: 30px;
 }
 .tbl-content ul li {
   width: 16.5%;
+}
+.profile-list li {
+  padding-top: 0;
 }
 .favorites .container {
   background-color: #e9eaee;
