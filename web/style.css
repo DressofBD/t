@@ -160,6 +160,10 @@ a:hover{
 .rtl, h1, h2, h3, h4, h5, h6, p, a, strong, b,li, input, button, label{
   direction: rtl !important;
 }
+body, html{
+  max-width: 100%;
+  overflow-x: hidden;
+}
 body{
   font-family: 'Heebo Regular';
 }
@@ -346,6 +350,7 @@ header .container {
 }
 .category img:hover, .article-block img:hover {
   transform: scale(1.03);
+  -webkit-transform: scale(1.03);
 }
 .category h2 {
   text-align: center;
@@ -873,6 +878,9 @@ font-size: 30px;
 .nav-item:last-child::before {
   display: none;
 }
+.category h2 {
+  font-size: 20px;
+}
 .fav-menu {
   margin-left: auto;
   margin-right: auto;
@@ -904,6 +912,10 @@ font-size: 30px;
 }
 .man-name{
   font-family: 'Heebo Bold';
+}
+.profile-pic img {
+  width: 60px;
+  height: 60px;
 }
 .tbl-content ul li {
   width: 16.5%;
@@ -950,6 +962,9 @@ font-size: 30px;
   width: 100%;
   margin-bottom: 10px;
 }
+footer.footer .container {
+  padding: 70px 15px 100px 15px;
+}
 .footer-row{
   flex-flow: column;
 }
@@ -965,12 +980,15 @@ font-size: 30px;
   order: 3;
 }
 .footer-logo {
-  width: 300px;
+  width: 210px;
   height: 70px;
-  margin-top: -250px;
-  position: relative;
-  margin-left: auto;
+  margin-top: -43px;
+  position: absolute;
+  margin-left: -105px;
   margin-right: auto;
+  float: none;
+  display: block;
+  left: 50%;
 }
 .ftr-mnu {
   text-align: right;
