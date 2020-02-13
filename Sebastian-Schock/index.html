@@ -1,7 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
+<!doctype html>
+<html class="no-js" lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
 	<title>Animation</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
 
@@ -83,6 +87,61 @@
   90% {
     transform: translateX(-50);
   }
+}
+
+
+@media(max-width: 767px){
+.circle-animation {
+	padding-top: 25px;
+	width: 400px;
+}
+.circle-big {
+	-webkit-animation-name: animation-6;
+	animation-name: animation-6;
+	width: 350px;
+	height: 350px;
+}
+.circle-small-1, .circle-small-2 {
+	width: 200px;
+	height: 200px;
+	margin-top: 70px;
+}
+.circle-small-1 {
+	-webkit-animation-name: animation-4;
+	animation-name: animation-4;
+}
+.circle-small-2 {
+	-webkit-animation-name: animation-5;
+	animation-name: animation-5;
+	width: 200px;
+	height: 200px;
+}
+
+	@keyframes animation-4 {
+  0% {
+    transform: translateX(-150px);
+  }
+  100% {
+    transform: translateX(280px);
+  }
+}
+	@keyframes animation-5 {
+  0% {
+    transform: translateX(-100px);
+  }
+  100% {
+    transform: translateX(280px);
+  }
+}
+	@keyframes animation-6 {
+  0% {
+    transform: translateX(50px);
+  }
+
+  90% {
+    transform: translateX(-50);
+  }
+}
 }
 </style>
 
