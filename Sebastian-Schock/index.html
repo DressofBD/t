@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Animation</title>
+</head>
+<body>
+
+
+<div class="circle-animation">
+		<div class="circle-small-2"></div>
+	<div class="circle-big">
+		<div class="circle-small-1"></div>
+	</div>
+</div>
+
+
+
+<style type="text/css">
+	body{}
+.circle-animation {
+	position: relative;
+	padding-top: 90px;
+	margin: 0 auto;
+	width: 500px;
+}
+.circle-big {
+	background-color: rgba(242, 115, 128, 1);
+	border-radius: 100%;
+	overflow: hidden;
+	width: 500px;
+	height: 500px;
+	-webkit-animation-name: animation-2;
+	animation-name: animation-2;
+	-webkit-animation-iteration-count: infinite;
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
+	animation-duration: 1.5s;
+	animation-timing-function: ease-in-out;
+}
+.circle-small-1{
+	background-color: rgba(106, 111, 165, 1);
+}
+.circle-small-2{
+	background-color: rgba(251, 191, 154, 1);
+	position: absolute;
+}
+.circle-small-1, .circle-small-2 {
+	-webkit-animation-name: animation-1;
+	animation-name: animation-1;
+	-webkit-animation-iteration-count: infinite;
+	animation-iteration-count: infinite;
+	width: 300px;
+	height: 300px;
+	margin-top: 18%;
+	border-radius: 100%;
+	animation-direction: alternate;
+	animation-duration: 1.5s;
+	animation-timing-function: ease-in-out;
+}
+
+	@keyframes animation-1 {
+  0% {
+    transform: translateX(-200px);
+  }
+  100% {
+    transform: translateX(400px);
+  }
+}
+	@keyframes animation-2 {
+  0% {
+    transform: translateX(50px);
+  }
+
+  90% {
+    transform: translateX(-50);
+  }
+}
+</style>
+
+
+
+
+</body>
+</html>
