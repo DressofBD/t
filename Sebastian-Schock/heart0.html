@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Heart Animation</title>
+</head>
+<body>
+<div class="steps">
+	<span class="step step1"></span>
+</div>
+<div id="heart">
+</div>
+<style type="text/css">
+	body{
+  padding:200px 0;
+}
+.steps {
+	position: absolute;
+	width: 100px;
+	height: 100px;
+	left: 50%;
+	margin-left: -50px;
+	padding-top: 50px;
+}
+.step{
+	width: 30px;
+	height: 30px;
+	background-color: #f27380;
+	border-radius: 100%;
+	display: block;
+}
+.step1{
+  margin: 0 auto; 
+  -webkit-animation: step1 .5s ease-in-out infinite;
+  animation: step1 1s ease-in-out infinite;
+}
+.step1 {
+box-shadow: 
+-11.48528em -10.48528em 0 -0.16667em #f27380, -10.38671em -8.44639em 0 -0.58333em #fbbf9a, -9.095em -9.65455em 0 -0.36667em #97e3d5, -0.38671em -11.44639em 0 -0.58333em #fbbf9a, 1.495em -11.75455em 0 -0.36667em #97e3d5, -0.28528em -13.58528em 0 -0.16667em #f27380, 8.61329em -10.44639em 0 -0.58333em #fbbf9a, 10.555em -9.81455em 0 -0.36667em #97E3D5, 9.51472em -12.48528em 0 -0.16667em #f27380, 15.61329em -2.44639em 0 -0.58333em #fbbf9a, 15.905em -0.65455em 0 -0.36667em #97e3d5, 18.02913em -2.95276em 0 -0.1667em #f27380,10.905em 10.34545em 0 -0.36667em #97e3d5, 14.02913em 10.04724em 0 -0.1667em #f27380, 11.21329em 8.55361em 0 -0.58333em #fbbf9a, -1.295em 18.58545em 0 -0.36667em #97e3d5, 0.02913em 21.04724em 0 -0.1667em #f27380, 0.21329em 18.55361em 0 -0.58333em #fbbf9a, -10.295em 10.58545em 0 -0.36667em #97e3d5, -12.97087em 11.04724em 0 -0.1667em #f27380, -11.78671em 9.55361em 0 -0.58333em #fbbf9a, -14.295em 2.58545em 0 -0.36667em #97e3d5, -15.97087em 0.04724em 0 -0.1667em #f27380, -13.78671em 0.55361em 0 -0.58333em #fbbf9a
+
+
+}
+
+@keyframes step1{
+  0%,
+  18.51852% {
+    box-shadow: -2.48528em -1.48528em 0 -0.16667em #f27380, -1.38671em 0.55361em 0 -0.58333em #fbbf9a, -0.095em -0.65455em 0 -0.36667em #97e3d5, -0.38671em -0.44639em 0 -0.58333em #fbbf9a, 0.495em -0.75455em 0 -0.36667em #97e3d5, -0.28528em -1.58528em 0 -0.16667em #f27380, 0.61329em -1.44639em 0 -0.58333em #fbbf9a, 0.555em -0.81455em 0 -0.36667em #97E3D5, 2.51472em -2.48528em 0 -0.16667em #f27380, 0.61329em -0.44639em 0 -0.58333em #fbbf9a, -0.095em -0.65455em 0 -0.36667em #97e3d5, 3.02913em -0.95276em 0 -0.1667em #f27380, 0.905em 1.34545em 0 -0.36667em #97e3d5, 3.02913em 2.04724em 0 -0.1667em #f27380, 2.21329em 0.55361em 0 -0.58333em #fbbf9a, -0.295em 1.58545em 0 -0.36667em #97e3d5, 0.02913em 4.04724em 0 -0.1667em #f27380, -1.78671em 1.55361em 0 -0.58333em #fbbf9a, -0.295em 1.58545em 0 -0.36667em #97e3d5, -0.97087em 3.04724em 0 -0.1667em #f27380, 2.21329em 2.55361em 0 -0.58333em #fbbf9a, -3.295em 2.58545em 0 -0.36667em #97e3d5, -3.97087em 0.04724em 0 -0.1667em #f27380, -1.78671em 0.55361em 0 -0.58333em #fbbf9a
+  }
+  22.22222% {
+  }
+  51.85185% {
+    box-shadow: -11.48528em -10.48528em 0 -0.16667em #f27380, -10.38671em -8.44639em 0 -0.58333em #fbbf9a, -9.095em -9.65455em 0 -0.36667em #97e3d5, -0.38671em -11.44639em 0 -0.58333em #fbbf9a, 1.495em -11.75455em 0 -0.36667em #97e3d5, -0.28528em -13.58528em 0 -0.16667em #f27380, 8.61329em -10.44639em 0 -0.58333em #fbbf9a, 10.555em -9.81455em 0 -0.36667em #97E3D5, 9.51472em -12.48528em 0 -0.16667em #f27380, 15.61329em -2.44639em 0 -0.58333em #fbbf9a, 15.905em -0.65455em 0 -0.36667em #97e3d5, 18.02913em -2.95276em 0 -0.1667em #f27380,10.905em 10.34545em 0 -0.36667em #97e3d5, 14.02913em 10.04724em 0 -0.1667em #f27380, 11.21329em 8.55361em 0 -0.58333em #fbbf9a, -1.295em 18.58545em 0 -0.36667em #97e3d5, 0.02913em 21.04724em 0 -0.1667em #f27380, 0.21329em 18.55361em 0 -0.58333em #fbbf9a, -10.295em 10.58545em 0 -0.36667em #97e3d5, -12.97087em 11.04724em 0 -0.1667em #f27380, -11.78671em 9.55361em 0 -0.58333em #fbbf9a, -14.295em 2.58545em 0 -0.36667em #97e3d5, -15.97087em 0.04724em 0 -0.1667em #f27380, -13.78671em 0.55361em 0 -0.58333em #fbbf9a
+  }
+  81.48148%,
+  100% {
+    box-shadow: -11.48528em -10.48528em 0 -1.16667em #f27380, -10.38671em -8.44639em 0 -1.58333em #fbbf9a, -9.095em -9.65455em 0 -1.36667em #97e3d5, -0.38671em -11.44639em 0 -1.58333em #fbbf9a, 1.495em -11.75455em 0 -1.36667em #97e3d5, -0.28528em -13.58528em 0 -1.16667em #f27380, 8.61329em -10.44639em 0 -1.58333em #fbbf9a, 10.555em -9.81455em 0 -1.36667em #97E3D5, 9.51472em -12.48528em 0 -1.16667em #f27380, 15.61329em -2.44639em 0 -1.58333em #fbbf9a, 15.905em -0.65455em 0 -1.36667em #97e3d5, 18.02913em -2.95276em 0 -1.1667em #f27380, 10.905em 10.34545em 0 -1.36667em #97e3d5, 14.02913em 10.04724em 0 -1.1667em #f27380, 11.21329em 8.55361em 0 -1.58333em #fbbf9a, -1.295em 18.58545em 0 -1.36667em #97e3d5, 0.02913em 21.04724em 0 -1.1667em #f27380, 0.21329em 18.55361em 0 -1.58333em #fbbf9a, -10.295em 10.58545em 0 -1.36667em #97e3d5, -12.97087em 11.04724em 0 -1.1667em #f27380, -11.78671em 9.55361em 0 -1.58333em #fbbf9a, -14.295em 2.58545em 0 -1.36667em #97e3d5, -15.97087em 0.04724em 0 -1.1667em #f27380, -13.78671em 0.55361em 0 -1.58333em #fbbf9a
+  }
+}
+
+
+
+
+
+#heart {
+	position: relative;
+	width: 330px;
+	height: 260px;
+	animation: heartbeat 1s infinite;
+	margin: 0 auto;
+}
+#heart::before, #heart::after {
+	position: absolute;
+	content: "";
+	left: 170px;
+	top: 0;
+	width: 170px;
+	height: 250px;
+	background: #435aa8;
+	-moz-border-radius: 50px 50px 0 0;
+	border-radius: 100px 100px 0 0;
+	-webkit-transform: rotate(-45deg);
+	-moz-transform: rotate(-45deg);
+	-ms-transform: rotate(-45deg);
+	-o-transform: rotate(-45deg);
+	transform: rotate(-45deg);
+	-webkit-transform-origin: 0 100%;
+	-moz-transform-origin: 0 100%;
+	-ms-transform-origin: 0 100%;
+	-o-transform-origin: 0 100%;
+	transform-origin: 0 100%;
+}
+#heart:after {
+    left: 0;
+    -webkit-transform: rotate(45deg);
+       -moz-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+         -o-transform: rotate(45deg);
+            transform: rotate(45deg);
+    -webkit-transform-origin: 100% 100%;
+       -moz-transform-origin: 100% 100%;
+        -ms-transform-origin: 100% 100%;
+         -o-transform-origin: 100% 100%;
+            transform-origin :100% 100%;
+}
+@keyframes heartbeat
+{
+  0%
+  {
+    transform: scale( .90 );
+  }
+  20%
+  {
+    transform: scale( 1.05 );
+  }
+  40%
+  {
+    transform: scale( .95 );
+  }
+  60%
+  {
+    transform: scale( 1 );
+  }
+  80%
+  {
+    transform: scale( .95 );
+  }
+  100%
+  {
+    transform: scale( .95 );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</style>
+</body>
+</html>
