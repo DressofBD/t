@@ -9,23 +9,28 @@
 	<img src="You_Color.svg" class="circle">
 	<img src="Injury_Color.svg" class="cross">
 	<img src="Progress_Color.svg" class="arrow">
-	<img src="heart.svg" class="heart">
-	<img src="Goal_Color.svg" class="heart2">
+	<img src="Goal_Color.svg" class="heart">
 </div>
 
 
 
 <style type="text/css">
+	*{
+		padding: 0;
+		margin: 0;
+	}
 body{
 	padding: 10vw 0;
+	margin: 0;
 }
 .animation-box {
-width: 43vw;
+width: 60vw;
 height: 7vw;
 margin: 0 auto;
 display: flex;
 align-items: center;
 justify-content: center;
+position: relative;
 }
 .animation-box img{
 	width: 100%;
@@ -116,8 +121,9 @@ img.heart{
 img.heart2{
 	animation: img5 5.5s infinite;
 	position: absolute;
-	max-width: 7vw;
-	margin-left: 32.3vw;
+	/*width: 7vw;*/
+	/*margin-left: 32.3vw;*/
+	margin-left: 34.1vw;
 }
 @keyframes img5{
 	0%, 43% {
