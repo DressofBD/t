@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Final complex animation</title>
+</head>
+<body>
+
+<div class="animation-box">
+	<img src="You_Color.svg" class="circle">
+	<img src="Injury_Color.svg" class="cross">
+	<img src="Progress_Color.svg" class="arrow">
+	<img src="heart.svg" class="heart">
+	<img src="Goal_Color.svg" class="heart2">
+</div>
+
+
+
+<style type="text/css">
+body{
+	padding: 10vw 0;
+}
+.animation-box {
+width: 43vw;
+height: 7vw;
+margin: 0 auto;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+.animation-box img{
+	width: 100%;
+	height: 100%;
+}
+img.circle{
+	transform: translateX(150%) scale(0.7);
+	z-index: 9;
+	position: relative;
+	animation: img1 5.5s infinite;
+}
+@keyframes img1{
+	0% {
+	transform: translateX(150%) scale(0.7);
+	}
+	2% {
+	transform: translateX(150%) scale(1.2);
+	}
+	10% {
+	transform: translateX(150%) scale(1);
+	}
+	30%, 100% {
+	transform: translateX(0%) scale(1);
+	}
+}
+img.cross{
+	transform: translateX(50%);
+	animation: img2 5.5s infinite;
+}
+@keyframes img2{
+	0%, 12% {
+	transform: translateX(50%) rotate(0deg) scale(0.7);
+	}
+	15% {
+	transform: translateX(50%) rotate(0deg) scale(1);
+	}
+	30% {
+	transform: translateX(100%) rotate(250deg)  scale(1);
+	}
+	38% {
+	transform: translateX(0%) rotate(270deg) scale(0.95);
+	}49% {
+	transform: translateX(0%) rotate(270deg) scale(1);
+	}
+	60%, 100% {
+	transform: translateX(0%) rotate(270deg) scale(1);
+	}
+}
+img.arrow{
+	animation: img3 5.5s infinite;
+}
+@keyframes img3{
+	0%, 30% {
+	opacity: 0;
+	transform: translateX(0%) scale(0.7);
+	}
+	35% {
+	opacity: 1;
+	transform: translateX(0%) scale(1);
+	}
+	40% {
+	transform: translateX(70%) scale(1);
+	}
+	50%, 100% {
+	transform: translateX(0%) scale(1);
+	}
+}
+img.heart{
+	animation: img4 5.5s infinite;
+}
+@keyframes img4{
+	0%, 40% {
+	opacity: 0;
+	transform: scale(0);
+	}
+	45% {
+	opacity: .8;
+	transform: scale(1.1);
+	}
+	50% {
+	opacity: 1;
+	transform: scale(1);
+	}
+	55%, 100% {
+	transform: scale(1);
+	}
+}
+img.heart2{
+	animation: img5 5.5s infinite;
+	position: absolute;
+	max-width: 7vw;
+	margin-left: 32.3vw;
+}
+@keyframes img5{
+	0%, 43% {
+	opacity: 0;
+	transform: scale(0);
+	}
+	47% {
+	opacity: 1;
+	transform: scale(1.2);
+	}
+	50% {
+	opacity: 1;
+	transform: scale(1.1);
+	}
+	55%, 100% {
+	transform: scale(1.1);
+	}
+}
+</style>
+
+</body>
+</html>
