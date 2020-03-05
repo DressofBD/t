@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Heart Animation</title>
+</head>
+<body>
+<div class="steps">
+	<span class="step step1"></span>
+	<span class="step step2"></span>
+	<span class="step step3"></span>
+	<span class="step step4"></span>
+	<span class="step step5"></span>
+	<span class="step step6"></span>
+	<span class="step step7"></span>
+	<span class="step step8"></span>
+</div>
+<div id="heart">
+</div>
+<style type="text/css">
+	body{
+  padding:200px 0;
+}
+.steps {
+	position: absolute;
+	width: 100px;
+	height: 100px;
+	left: 50%;
+	margin-left: -50px;
+	padding-top: 50px;
+}
+.step{
+	width: 30px;
+	height: 30px;
+	background-color: #f27380;
+	border-radius: 100%;
+	display: block;
+}
+.step:before, .step:after{
+	position: absolute;
+	content: "";
+	border-radius: 100%;
+}
+.step::before {
+	width: 20px;
+	height: 20px;
+	background-color: #fbbf9a;
+	margin-top: 70px;
+	margin-left: 50px;
+}
+.step::after {
+	width: 15px;
+	height: 15px;
+	background-color: #fbbf9a;
+	margin-top: 70px;
+	margin-left: 6px;
+}
+.step1{
+  transform: translate3d(0,0,0) scale(1)  rotate(-45deg);
+	-webkit-animation: step1 .5s ease-in-out infinite;
+	animation: step1 1s ease-in-out infinite;
+  animation-delay: .02s;
+}
+
+@keyframes step1{
+  0% {
+    transform: translate3d(0,0,0) scale(1)  rotate(-45deg);
+  }
+  60% {
+    transform: translate3d(-130px,  -150px,  0px) scale(.4)  rotate(-45deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(-130px,  -150px,  0px) scale(0)  rotate(-45deg);
+    opacity: 0;
+  }
+}
+.step2{
+	transform: translate3d(0,0,0) scale(1);
+	-webkit-animation: step2 .5s ease-in-out infinite;
+	animation: step2 1s ease-in-out infinite;
+  animation-delay: .04s;
+}
+
+@keyframes step2{
+  0% {
+    transform: translate3d(0,0,0) scale(1);
+  }
+  60% {
+    transform: translate3d(10px, -210px, 0px) scale(.4);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(10px, -210px, 0px) scale(0);
+    opacity: 0;
+  }
+}
+.step3{
+  transform: translate3d(25px, -50px, 0px) scale(1) rotate(60deg);
+  -webkit-animation: step3 .5s ease-in-out infinite;
+  animation: step3 1s ease-in-out infinite;
+  animation-delay: .06s;
+}
+
+@keyframes step3{
+  0% {
+    transform: translate3d(25px, -50px, 0px) scale(1) rotate(60deg);
+  }
+  60% {
+    transform: translate3d(200px, -210px, 0px) scale(.4) rotate(60deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(200px, -210px, 0px) scale(0) rotate(60deg);
+    opacity: 0;
+  }
+}
+.step4{
+  transform: translate3d(25px, -50px, 0px) scale(1) rotate(100deg);
+  -webkit-animation: step4 .5s ease-in-out infinite;
+  animation: step4 1s ease-in-out infinite;
+  animation-delay: .08s;
+}
+
+@keyframes step4{
+  0% {
+    transform: translate3d(25px, -50px, 0px) scale(1) rotate(100deg);
+  }
+  60% {
+    transform: translate3d(300px, -120px, 0px) scale(.4) rotate(100deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(300px, -120px, 0px) scale(0) rotate(100deg);
+    opacity: 0;
+  }
+}
+.step5{
+  transform: translate3d(78px, -75px, 0px) scale(1) rotate(140deg);
+  -webkit-animation: step5 .5s ease-in-out infinite;
+  animation: step5 1s ease-in-out infinite;
+  animation-delay: .1s;
+}
+
+@keyframes step5{
+  0% {
+    transform: translate3d(78px, -75px, 0px) scale(1) rotate(140deg);
+  }
+  60% {
+    transform: translate3d(210px, 60px, 0px) scale(.4) rotate(140deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(210px, 60px, 0px) scale(0) rotate(140deg);
+    opacity: 0;
+  }
+}
+.step6{
+  transform: translate3d(60px, -90px, 0px) scale(1) rotate(-180deg);
+  -webkit-animation: step6 .5s ease-in-out infinite;
+  animation: step6 1s ease-in-out infinite;
+  animation-delay: .12s;
+}
+
+@keyframes step6{
+  0% {
+    transform: translate3d(50px, -90px, 0px) scale(1) rotate(-170deg);
+  }
+  60% {
+    transform: translate3d(50px, 130px, 0px) scale(.4) rotate(-170deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(50px, 130px, 0px) scale(0) rotate(-170deg);
+    opacity: 0;
+  }
+}
+
+.step7{
+  transform: translate3d(75px, -125px, 0px) scale(1) rotate(-180deg);
+  -webkit-animation: step7 .5s ease-in-out infinite;
+  animation: step7 1s ease-in-out infinite;
+  animation-delay: .14s;
+}
+
+@keyframes step7{
+  0% {
+    transform: translate3d(75px, -125px, 0px) scale(1) rotate(-180deg);
+  }
+  60% {
+    transform: translate3d(-137px, -31px, 0px) scale(.4) rotate(-121deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(-137px, -31px, 0px) scale(0) rotate(-121deg);
+    opacity: 0;
+  }
+}
+
+.step8{
+  transform: translate3d(7px, -191px, 0px) scale(1) rotate(-68deg);
+  -webkit-animation: step8 .5s ease-in-out infinite;
+  animation: step8 1s ease-in-out infinite;
+  animation-delay: .16s;
+}
+
+@keyframes step8{
+  0% {
+    transform: translate3d(7px, -191px, 0px) scale(1) rotate(-68deg);
+  }
+  60% {
+    transform: translate3d(-213px, -209px, 0px) scale(.4) rotate(-68deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(-213px, -209px, 0px) scale(0) rotate(-68deg);
+    opacity: 0;
+  }
+}
+
+
+#heart {
+	position: relative;
+	width: 330px;
+	height: 260px;
+	animation: heartbeat 1s infinite;
+	margin: 0 auto;
+}
+#heart::before, #heart::after {
+	position: absolute;
+	content: "";
+	left: 170px;
+	top: 0;
+	width: 170px;
+	height: 250px;
+	background: #435aa8;
+	-moz-border-radius: 50px 50px 0 0;
+	border-radius: 100px 100px 0 0;
+	-webkit-transform: rotate(-45deg);
+	-moz-transform: rotate(-45deg);
+	-ms-transform: rotate(-45deg);
+	-o-transform: rotate(-45deg);
+	transform: rotate(-45deg);
+	-webkit-transform-origin: 0 100%;
+	-moz-transform-origin: 0 100%;
+	-ms-transform-origin: 0 100%;
+	-o-transform-origin: 0 100%;
+	transform-origin: 0 100%;
+}
+#heart:after {
+    left: 0;
+    -webkit-transform: rotate(45deg);
+       -moz-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+         -o-transform: rotate(45deg);
+            transform: rotate(45deg);
+    -webkit-transform-origin: 100% 100%;
+       -moz-transform-origin: 100% 100%;
+        -ms-transform-origin: 100% 100%;
+         -o-transform-origin: 100% 100%;
+            transform-origin :100% 100%;
+}
+@keyframes heartbeat{
+  0%{
+    transform: scale( .90 );
+  }
+  20%{
+    transform: scale( 1.05 );
+  }
+  40%{
+    transform: scale( .95 );
+  }
+  60%{
+    transform: scale( 1 );
+  }
+  80%{
+    transform: scale( .95 );
+  }
+  100%{
+    transform: scale( .95 );
+  }
+}
+@-webkit-keyframes heartbeat{
+  0%{
+    transform: scale( .90 );
+  }
+  20%{
+    transform: scale( 1.05 );
+  }
+  40%{
+    transform: scale( .95 );
+  }
+  60%{
+    transform: scale( 1 );
+  }
+  80%{
+    transform: scale( .95 );
+  }
+  100%{
+    transform: scale( .95 );
+  }
+}
+</style>
+</body>
+</html>
