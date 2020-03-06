@@ -1,0 +1,73 @@
+
+<svg viewBox="0 0 700 700" xmlns="http://www.w3.org/2000/svg">
+  <title>Svg Heart Animation</title>
+<style type="text/css">
+svg {
+  margin: 0 auto;
+}
+.heart {
+  transform:scale(0.5);
+  transform-origin: center;
+  animation: heartbeat 2s infinite;
+  z-index: 999;
+  position: relative;
+}
+@keyframes heartbeat{
+  0%{
+    transform: scale( 0.4 );
+  }
+  10%{
+    transform: scale( .45 );
+  }
+  20%{
+    transform: scale( 0.38 );
+  }
+  30%{
+    transform: scale( 0.4 );
+  }
+  80%{
+    transform: scale( 0.4 );
+  }
+  100%{
+    transform: scale( 0.4 );
+  }
+}
+.circle1, .circle1b, .circle1c{
+  -webkit-animation: circle1 2s ease-in-out infinite;
+  animation: circle1 2s ease-in-out infinite;
+  animation-delay: .02s;
+}
+
+@keyframes circle1{
+  0% {
+    transform: translate3d(0px,0px,0);
+  }
+  20% {
+    transform: translate3d(-300px,-200px,0);
+    opacity: 1;
+  }
+  40%, 100% {
+    transform: translate3d(-300px,-200px,0);
+    opacity: 0;
+  }
+}
+</style>
+    <circle class="circle1" fill="#f27380" cy="330" r="10" cx="340"/>
+    <circle class="circle1b" fill="#fbbf9a" cy="330" r="5" cx="370"/>
+    <circle class="circle1c" fill="#fbbf9a" cy="350" r="5" cx="360"/>
+  <g externalresourcesrequired="false" id="layer1" class="heart">
+    <path d="m224.667542,85.145897c-92.323044,0 -167.251804,73.31797 -167.251804,163.656151c0,183.779739 189.458942,231.965225 318.562473,413.651871c122.057922,-180.571899 318.562561,-235.739288 318.562561,-413.651871c0,-90.338181 -74.928711,-163.656151 -167.251892,-163.656151c-66.967529,0 -124.604889,38.691612 -151.310669,94.357994c-26.705658,-55.666382 -84.343018,-94.357994 -151.310669,-94.357994z" id="path7" stroke-miterlimit="4" fill="#f27380">
+    </path>
+  </g>
+<!--   <animateTransform 
+    attributeName="transform" 
+    type="scale" 
+    values="1; 1.5; 1.25; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1;" 
+    dur="3s" 
+    repeatCount="indefinite">      
+    </animateTransform> -->
+  
+</svg>
+
+
+
