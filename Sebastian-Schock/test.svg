@@ -8,8 +8,6 @@ svg {
   transform:scale(0.5);
   transform-origin: center;
   animation: heartbeat 2s infinite;
-  z-index: 999;
-  position: relative;
 }
 @keyframes heartbeat{
   0%{
