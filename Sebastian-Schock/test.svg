@@ -1,5 +1,4 @@
-
-<svg viewBox="0 0 700 700" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 700 700" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
   <title>Svg Heart Animation</title>
 <style type="text/css">
 svg {
@@ -35,38 +34,189 @@ svg {
 .circle1, .circle1b, .circle1c{
   -webkit-animation: circle1 2s ease-in-out infinite;
   animation: circle1 2s ease-in-out infinite;
-  animation-delay: .02s;
+  animation-delay: .1s;
 }
-
 @keyframes circle1{
   0% {
     transform: translate3d(0px,0px,0);
   }
   20% {
-    transform: translate3d(-300px,-200px,0);
+    transform: translate3d(-32%,-31%,0);
     opacity: 1;
   }
   40%, 100% {
-    transform: translate3d(-300px,-200px,0);
+    transform: translate3d(-32%,-31%,0);
+    opacity: 0;
+  }
+}
+.circle2, .circle2b, .circle2c{
+  -webkit-animation: circle2 2s ease-in-out infinite;
+  animation: circle2 2s ease-in-out infinite;
+  animation-delay: .13s;
+}
+@keyframes circle2{
+  0% {
+    transform: translate3d(0px,0px,0);
+  }
+  20% {
+    transform: translate3d(0%,-38%,0);
+    opacity: 1;
+  }
+  40%, 100% {
+    transform: translate3d(0%,-38%,0);
+    opacity: 0;
+  }
+}
+.circle3, .circle3b, .circle3c{
+  -webkit-animation: circle3 2s ease-in-out infinite;
+  animation: circle3 2s ease-in-out infinite;
+  animation-delay: .16s;
+}
+@keyframes circle3{
+  0% {
+    transform: translate3d(0px,0px,0);
+  }
+  20% {
+    transform: translate3d(30%,-33%,0);
+    opacity: 1;
+  }
+  40%, 100% {
+    transform: translate3d(30%,-33%,0);
+    opacity: 0;
+  }
+}
+.circle4, .circle4b, .circle4c{
+  -webkit-animation: circle4 2s ease-in-out infinite;
+  animation: circle4 2s ease-in-out infinite;
+  animation-delay: .19s;
+}
+@keyframes circle4{
+  0% {
+    transform: translate3d(0px,0px,0);
+  }
+  20% {
+    transform: translate3d(45%,-7%,0);
+    opacity: 1;
+  }
+  40%, 100% {
+    transform: translate3d(45%,-7%,0);
+    opacity: 0;
+  }
+}
+.circle5, .circle5b, .circle5c{
+  -webkit-animation: circle5 2s ease-in-out infinite;
+  animation: circle5 2s ease-in-out infinite;
+  animation-delay: .22s;
+}
+@keyframes circle5{
+  0% {
+    transform: translate3d(0px,0px,0);
+  }
+  20% {
+    transform: translate3d(38%,27%,0);
+    opacity: 1;
+  }
+  40%, 100% {
+    transform: translate3d(38%,27%,0);
+    opacity: 0;
+  }
+}
+.circle6, .circle6b, .circle6c{
+  -webkit-animation: circle6 2s ease-in-out infinite;
+  animation: circle6 2s ease-in-out infinite;
+  animation-delay: .25s;
+}
+@keyframes circle6{
+  0% {
+    transform: translate3d(0px,0px,0);
+  }
+  20% {
+    transform: translate3d(0%,43%,0);
+    opacity: 1;
+  }
+  40%, 100% {
+    transform: translate3d(0%,43%,0);
+    opacity: 0;
+  }
+}
+.circle7, .circle7b, .circle7c{
+  -webkit-animation: circle7 2s ease-in-out infinite;
+  animation: circle7 2s ease-in-out infinite;
+  animation-delay: .28s;
+}
+@keyframes circle7{
+  0% {
+    transform: translate3d(0px,0px,0);
+  }
+  20% {
+    transform: translate3d(-30%,30%,0);
+    opacity: 1;
+  }
+  40%, 100% {
+    transform: translate3d(-30%,30%,0);
+    opacity: 0;
+  }
+}
+.circle8, .circle8b, .circle8c{
+  -webkit-animation: circle8 2s ease-in-out infinite;
+  animation: circle8 2s ease-in-out infinite;
+  animation-delay: .31s;
+}
+@keyframes circle8{
+  0% {
+    transform: translate3d(0px,0px,0);
+  }
+  20% {
+    transform: translate3d(-45%,0%,0);
+    opacity: 1;
+  }
+  25% {
+    transform: translate3d(-45%,0%,0);
+    opacity: 0;
+  }
+  40%, 100% {
+    transform: translate3d(-45%,0%,0);
     opacity: 0;
   }
 }
 </style>
-    <circle class="circle1" fill="#f27380" cy="330" r="10" cx="340"/>
-    <circle class="circle1b" fill="#fbbf9a" cy="330" r="5" cx="370"/>
-    <circle class="circle1c" fill="#fbbf9a" cy="350" r="5" cx="360"/>
+  <g>
+    <circle class="circle1" fill="#f27380" cy="320" r="7" cx="350"/>
+    <circle class="circle1b" fill="#fbbf9a" cy="340" r="5" cx="380"/>
+    <circle class="circle1c" fill="#fbbf9a" cy="350" r="4" cx="360"/>
+
+    <circle class="circle2" fill="#f27380" cy="330" r="7" cx="345"/>
+    <circle class="circle2b" fill="#fbbf9a" cy="360" r="4" cx="340"/>
+    <circle class="circle2c" fill="#fbbf9a" cy="360" r="5" cx="360"/>
+
+    <circle class="circle3" fill="#f27380" cy="335" r="7" cx="355"/>
+    <circle class="circle3b" fill="#fbbf9a" cy="360" r="4" cx="330"/>
+    <circle class="circle3c" fill="#fbbf9a" cy="370" r="5" cx="355"/>
+
+    <circle class="circle4" fill="#f27380" cy="340" r="7" cx="355"/>
+    <circle class="circle4b" fill="#fbbf9a" cy="335" r="4" cx="320"/>
+    <circle class="circle4c" fill="#fbbf9a" cy="360" r="5" cx="320"/>
+
+    <circle class="circle5" fill="#f27380" cy="340" r="7" cx="355"/>
+    <circle class="circle5b" fill="#fbbf9a" cy="315" r="4" cx="330"/>
+    <circle class="circle5c" fill="#fbbf9a" cy="340" r="5" cx="320"/>
+
+    <circle class="circle6" fill="#f27380" cy="340" r="7" cx="360"/>
+    <circle class="circle6b" fill="#fbbf9a" cy="310" r="4" cx="360"/>
+    <circle class="circle6c" fill="#fbbf9a" cy="310" r="5" cx="335"/>
+
+    <circle class="circle7" fill="#f27380" cy="340" r="7" cx="360"/>
+    <circle class="circle7b" fill="#fbbf9a" cy="325" r="4" cx="385"/>
+    <circle class="circle7c" fill="#fbbf9a" cy="305" r="5" cx="370"/>
+
+    <circle class="circle8" fill="#f27380" cy="340" r="7" cx="360"/>
+    <circle class="circle8b" fill="#fbbf9a" cy="340" r="4" cx="390"/>
+    <circle class="circle8c" fill="#fbbf9a" cy="315" r="5" cx="390"/>
+  </g>
   <g externalresourcesrequired="false" id="layer1" class="heart">
     <path d="m224.667542,85.145897c-92.323044,0 -167.251804,73.31797 -167.251804,163.656151c0,183.779739 189.458942,231.965225 318.562473,413.651871c122.057922,-180.571899 318.562561,-235.739288 318.562561,-413.651871c0,-90.338181 -74.928711,-163.656151 -167.251892,-163.656151c-66.967529,0 -124.604889,38.691612 -151.310669,94.357994c-26.705658,-55.666382 -84.343018,-94.357994 -151.310669,-94.357994z" id="path7" stroke-miterlimit="4" fill="#f27380">
     </path>
   </g>
-<!--   <animateTransform 
-    attributeName="transform" 
-    type="scale" 
-    values="1; 1.5; 1.25; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1;" 
-    dur="3s" 
-    repeatCount="indefinite">      
-    </animateTransform> -->
-  
 </svg>
 
 
