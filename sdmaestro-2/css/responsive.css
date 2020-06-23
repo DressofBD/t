@@ -184,7 +184,7 @@
     line-height: 35px;
     margin-bottom: 10px; }
   .hero-area .contents {
-    padding: 200px 0 50px; }
+    padding: 70px 0 50px; }
   .hero-area .contents p {
     color: #fff;
     font-size: 14px;
@@ -208,7 +208,7 @@
   .hero-area .intro-img {
     padding: 30px 0 0px; }
   .section {
-    padding: 70px 0px; }
+    padding: 20px 0px; }
   #services .services-item {
     padding: 30px 15px;
     margin-bottom: 15px; }
@@ -227,7 +227,8 @@
     line-height: 24px;
     margin-bottom: 0; }
   #features .feature-item {
-    padding: 10px; }
+    padding: 10px;
+    margin-left: 10px; }
   #features .feature-item .feature-icon {
     margin-bottom: 20px; }
   #features .feature-item p {
@@ -438,3 +439,12 @@
     color: #5e629c;
     font-style: italic;
     line-height: 33px; } }
+
+@media (max-width: 991px){
+  .hero-area .intro-img {
+  padding: 10px 0 0px;
+  }
+  .hero-area .contents {
+  padding: 60px 0 20px 0;
+}
+}
