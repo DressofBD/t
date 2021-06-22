@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+    <title></title>
+    <link rel="shortcut icon" type="image/icon" href="assets/images/icon.png">
+<style>
+* {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box
+}
+@font-face {
+  font-family: Gilroy-Regular;
+  src: url(assets/fonts/Gilroy-Regular.otf);
+}
+@font-face {
+  font-family: Gilroy-Bold;
+  src: url(assets/fonts/Gilroy-Bold.otf);
+}
+@font-face {
+  font-family: Sugo-Pro-Classic-Regular-trial;
+  src: url(assets/fonts/Sugo-Pro-Classic-Regular-trial.ttf);
+}
+body {
+  font-family: "Gilroy-Regular", "Helvetica", "Arial", sans-serif;
+  font-size: 16px;
+  color: #666;
+  background-color: #fff;
+  margin: 0;
+  padding: 0;
+}
+a{
+  font-family: "Sugo-Pro-Classic-Regular-trial", "Helvetica", "Arial", sans-serif;
+}
+.prud h1, h2, h3, h4, h5, h6, ul, ol, p{
+  margin: 0;
+  padding: 0;
+}
+.prud {
+  max-width: 800px;
+  height: auto;
+  margin: 0 auto;
+  text-align: center;
+  overflow: hidden;
+  position: relative;
+  background-color: #F2EEEA;
+  color: #635E5A;
+}
+.prud img{
+  max-width: 100%;
+  height: auto;
+}
+.prud .pabs{
+  position: absolute;
+}
+.prud .banner {
+  margin-bottom: -4px;
+}
+.prud .top-images {
+  top: 0;
+  left: 50%;
+  margin-left: -29%;
+  width: 58%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 25px;
+}
+.prud .top-logos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.prud .top-logos img {
+  max-width: 45%;
+  margin: 0px 20px;
+}
+.prud .top-logos img:first-child {
+  border-right: 1px solid #6D6E6E;
+  padding-right: 35px;
+}
+.prud .shop-products {
+  margin-top: 30px;
+}
+.prud .banner-bg {
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+  padding: 10px 8px;
+}
+.prud .banner-bg img {
+  max-width: 90px;
+  margin: 0 10px;
+  max-height: 35px;
+}
+.prud .get-prizes {
+  max-width: 75%;
+  margin: 0 auto;
+  padding-top: 20px;
+  position: relative;
+}
+.prud .spin-now-btn {
+  position: absolute;
+  left: 34%;
+  top: 70%;
+  text-decoration: none;
+  color: #fff;
+  background: #516A77;
+  border-radius: 20px;
+  padding: 10px 15px;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+.prud .spin-now {
+  text-align: center;
+  padding: 30px 0;
+  font-size: 24px;
+}
+.prud .blocks {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  padding-bottom: 10px;
+}
+.prud .block {
+  margin: 0 10px;
+}
+.prud .block small, .prud .block b{
+  display: block;
+}
+.prud .block b{
+  font-size: 15px;
+}
+.prud .block small {
+  font-size: 12px;
+}
+.prud .footer {
+  background: #E4DBD3;
+  padding: 30px 55px;
+}
+.prud .footer-desc {
+  position: relative;
+}
+.prud .footer-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.prud .join-now-footer {
+  text-decoration: none;
+  color: #5F717B;
+  background: #fff;
+  padding: 10px 15px;
+  border-radius: 20px;
+  font-size: 16px;
+  text-transform: uppercase;
+  display: block;
+  width: 120px;
+  text-align: center;
+  left: 45px;
+  bottom: 25px;
+}
+.prud .icon {
+  width: 7px;
+}
+
+
+
+
+
+
+
+
+
+
+
+@media screen and (max-width:767px){
+.prud {
+  width: 400px;
+}
+.prud .top-images {
+  margin-left: -40%;
+  width: 80%;
+  padding-top: 15px;
+}
+.prud .top-logos img {
+  max-width: 135px;
+  max-height: 30px;
+  margin: 0px 10px;
+}
+.prud .top-logos img:first-child {
+  padding-right: 15px;
+}
+.prud .shop-products {
+  margin-top: 10px;
+  max-width: 230px;
+}
+.prud .banner-bg, .prud .blocks {
+  flex-wrap: wrap;
+}
+.prud .banner-bg img {
+  max-width: 80px;
+  margin: 5px;
+  max-height: 35px;
+}
+.prud .get-prizes {
+  max-width: 95%;
+  padding-top: 15px;
+}
+.prud .spin-now-btn {
+  padding: 6px 10px;
+  top: 67%;
+}
+.prud .spin-now {
+  padding: 15px 10px;
+  font-size: 20px;
+}
+.prud .blocks {
+  padding-bottom: 20px;
+}
+.prud .block {
+  width: 40%;
+}
+.prud .footer {
+  background: #E4DBD3;
+  padding: 20px 15px;
+}
+.prud .join-now-footer {
+  padding: 5px 10px;
+  width: 100px;
+  left: 15px;
+  bottom: 15px;
+}
+
+
+
+
+
+
+
+
+}
+</style>
+</head>
+   <body>
+      <section class="prud">
+        <div class="banner">
+          <img src="assets/images/banner-bg1.jpg" alt="">
+          <div class="pabs top-images">
+            <div class="top-logos">
+              <img src="assets/images/logo1.png" alt="">
+              <img src="assets/images/logo2.png" alt="">
+            </div>
+            <img src="assets/images/shop-products.png" class="shop-products" alt="">
+          </div>
+        </div>
+        <div class="banner-bg">
+          <img src="assets/images/mn1.png" alt="">
+          <img src="assets/images/mn2.png" alt="">
+          <img src="assets/images/mn3.png" alt="">
+          <img src="assets/images/mn4.png" alt="">
+          <img src="assets/images/mn5.png" alt="">
+          <img src="assets/images/mn6.png" alt="">
+          <img src="assets/images/mn7.png" alt="">
+        </div>
+        <div class="middle-section">
+          <div class="get-prizes">
+            <img src="assets/images/get-prize.png" alt="">
+            <a href="#!" class="spin-now-btn">Spin Now <img src="assets/images/icon1.png" class="icon"></a>
+          </div>
+          <p class="spin-now">Spin for a chance to win these exclusive prizes now!</p>
+          <div class="blocks">
+            <div class="block">
+              <img src="assets/images/pz1.png" alt="Peize">
+              <div class="pz-desc">
+                <b>Xiaomi</b>
+                <b>Air Purifier 3H</b>
+                <small>(NP:RM699)</small>
+              </div>
+            </div>
+            <div class="block">
+              <img src="assets/images/pz2.png" alt="Peize">
+              <div class="pz-desc">
+                <b>Xiaomi</b>
+                <b>Air Fryer</b>
+                <small>(NP:RM449)</small>
+              </div>
+            </div>
+            <div class="block">
+              <img src="assets/images/pz3.png" alt="Peize">
+              <div class="pz-desc">
+                <b>Xiaomi Cordless</b>
+                <b>UV Mites</b>
+                <b>Vacuum Cleaner</b>
+                <small>(NP:RM429)</small>
+              </div>
+            </div>
+            <div class="block">
+              <img src="assets/images/pz4.png" alt="Peize">
+              <div class="pz-desc">
+                <b>Xiaomi DC</b>
+                <b>Frequency Conversion</b>
+                <b>Circulating Fan</b>
+                <small>(NP:RM349)</small>
+              </div>
+            </div>
+          </div>
+          <div class="footer">
+            <div class="footer-desc">
+              <img src="assets/images/footer.png" alt="">
+              <div class="footer-content">
+                <a class="pabs join-now-footer" href="https://shopee.com.my/johnsonandjohnson.os?utm_campaign=p62781995_ss_my_othr_jnjsuperbrandday&utm_content=jnjtotal&utm_medium=seller&utm_source=email" target="_blank">Join Now <img src="assets/images/icon2.png" class="icon"></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </body>
+</html>
+
