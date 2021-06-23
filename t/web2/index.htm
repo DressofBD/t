@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+    <title></title>
+<style>
+* {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box
+}
+@font-face {
+  font-family: Gilroy-Regular;
+  src: url(assets/fonts/Gilroy-Regular.otf);
+}
+@font-face {
+  font-family: Gilroy-Bold;
+  src: url(assets/fonts/Gilroy-Bold.otf);
+}
+@font-face {
+  font-family: Gilroy-SemiBold;
+  src: url(assets/fonts/Gilroy-SemiBold.otf);
+}
+@font-face {
+  font-family: Sugo-Pro-Classic-Regular-trial;
+  src: url(assets/fonts/Sugo-Pro-Classic-Regular-trial.ttf);
+}
+body {
+  font-family: "Gilroy-SemiBold", "Helvetica", "Arial", sans-serif;
+  font-size: 16px;
+  color: #666;
+  background-color: #fff;
+  margin: 0;
+  padding: 0;
+}
+a{
+  font-family: "Sugo-Pro-Classic-Regular-trial", "Helvetica", "Arial", sans-serif;
+}
+.prud h1, h2, h3, h4, h5, h6, ul, ol, p{
+  margin: 0;
+  padding: 0;
+}
+.prud {
+  max-width: 800px;
+  height: auto;
+  margin: 0 auto;
+  text-align: center;
+  overflow: hidden;
+  position: relative;
+  background-color: #F5F4F3;
+  color: #635E5A;
+}
+.prud img{
+  max-width: 100%;
+  height: auto;
+}
+.prud .pabs{
+  position: absolute;
+}
+.prud .banner {
+  margin-bottom: -4px;
+  position: relative;
+}
+.prud .top-images {
+  top: 0;
+  left: 50%;
+  margin-left: -29%;
+  width: 58%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 25px;
+}
+.prud .top-logos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.prud .top-logos img {
+  max-width: 45%;
+  margin: 0px 20px;
+}
+.prud .top-logos img:first-child {
+  border-right: 1px solid #6D6E6E;
+  padding-right: 35px;
+}
+.prud .shop-products {
+  margin-top: 30px;
+}
+.prud .gift-prizes {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 25px 45px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.prud .gift-prizes img {
+  max-width: 150px;
+}
+.prud .enjoy-gift {
+  text-align: left;
+  padding: 15px 25px;
+  font-size: 21px;
+  color: #635E5A;
+}
+.prud .blocks {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  padding: 0 30px 10px 50px;
+  z-index: 1;
+  position: relative;
+}
+.prud .block {
+  margin: 15px 0;
+  width: 30%;
+}
+.prud .block b {
+  display: block;
+  color: #7C909C;
+  padding-right: 17px;
+  font-size: 14px;
+  font-family: "font-family: Gilroy-SemiBold;", "Helvetica", "Arial", sans-serif;
+}
+.prud .join-now {
+  text-decoration: none;
+  color: #5F717B;
+  background: #fff;
+  padding: 10px 30px;
+  border-radius: 50px;
+  font-size: 20px;
+  text-transform: uppercase;
+  display: block;
+  text-align: center;
+  left: 45px;
+  bottom: 35px;
+}
+.prud .icon {
+  width: 7px;
+}
+.prud .footer {
+  position: relative;
+}
+.prud .footer p {
+  display: block;
+  padding: 10px 0;
+  z-index: 1;
+  position: relative;
+  text-align: center;
+  color: #7C909C;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+.prud .footer::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #DAE2E2;
+  top: 90px;
+  left: 0;
+}
+
+
+
+
+
+
+
+
+
+@media screen and (max-width:767px){
+.prud {
+  width: 400px;
+}
+.prud .top-images {
+  margin-left: -40%;
+  width: 80%;
+  padding-top: 15px;
+}
+.prud .top-logos img {
+  max-width: 135px;
+  max-height: 30px;
+  margin: 0px 10px;
+}
+.prud .top-logos img:first-child {
+  padding-right: 15px;
+}
+.prud .shop-products {
+  margin-top: 10px;
+  max-width: 230px;
+}
+.prud .blocks {
+  flex-wrap: wrap;
+}
+.prud .enjoy-gift {
+  text-align: center;
+  padding: 15px 10px;
+  font-size: 16px;
+}
+.prud .blocks {
+  padding: 0 6px 0px 12px;
+}
+.prud .block {
+  width: 48%;
+  margin: 10px 0;
+
+}
+.prud .footer {
+  background: #E4DBD3;
+  padding: 20px 15px;
+}
+.prud .join-now {
+  padding: 5px 10px;
+  width: 100px;
+  left: 15px;
+  bottom: 15px;
+  font-size: 18px;
+}
+.prud .gift-prizes img {
+  max-width: 90px;
+}
+.prud .gift-prizes {
+  padding: 20px;
+}
+.prud .block b {
+  padding-right: 12px;
+  font-size: 12px;
+}
+.prud .footer p {
+  margin-bottom: 0;
+}
+
+
+
+
+}
+</style>
+</head>
+   <body>
+      <section class="prud">
+        <div class="banner">
+          <img src="assets/images/banner-bg.jpg" alt="">
+          <div class="pabs top-images">
+            <div class="top-logos">
+              <img src="assets/images/logo1.png" alt="">
+              <img src="assets/images/logo2.png" alt="">
+            </div>
+          </div>
+          <a class="pabs join-now" href="https://shopee.com.my/johnsonandjohnson.os?utm_campaign=p62781995_ss_my_othr_jnjbrandmembership&utm_content=jnjtotal&utm_medium=seller&utm_source=email" target="_blank">Join Now <img src="assets/images/icon2.png" class="icon"></a>
+        </div>
+        <div class="middle-section">
+          <div class="gift-prizes">
+            <img src="assets/images/gift-left.png" alt="">
+            <p class="enjoy-gift">Enjoy a complimentary Welcome Gift from us when you sign up today!</p>
+            <img src="assets/images/gift-right.png" alt="">
+          </div>
+        </div>
+        <div class="footer">
+          <div class="blocks">
+            <div class="block">
+              <img src="assets/images/pz1.png" alt="Peize">
+              <div class="pz-desc">
+                <b>Listerine Cool Mint Mouthwash 100ml</b>
+              </div>
+            </div>
+            <div class="block">
+              <img src="assets/images/pz2.png" alt="Peize">
+              <div class="pz-desc">
+                <b>Johnson's Baby Milk + Rice Bath 750ml & OGX Argan Oil Morocco Shampoo 88ml</b>
+              </div>
+            </div>
+            <div class="block">
+              <img src="assets/images/pz3.png" alt="Peize">
+              <div class="pz-desc">
+                <b>Neutrogena Rainbath Shower Gel 16oz & Neutrogena Deep Clean Foaming Cleanser 100g</b>
+              </div>
+            </div>
+            <div class="block">
+              <img src="assets/images/pz4.png" alt="Peize">
+              <div class="pz-desc">
+                <b>E-Voucher</b>
+              </div>
+            </div>
+            <div class="block">
+              <img src="assets/images/pz5.png" alt="Peize">
+              <div class="pz-desc">
+                <b>Xiaomi Wireless Earbuds</b>
+              </div>
+            </div>
+            <div class="block">
+              <img src="assets/images/pz6.png" alt="Peize">
+              <div class="pz-desc">
+                <b>Arctic Hunter Backpack</b>
+              </div>
+            </div>
+          </div>
+          <p>*Gift subject to availability/changes</p>
+        </div>
+      </section>
+    </body>
+</html>
+
